@@ -1,0 +1,19 @@
+package com.hyw.webSite.web.model;
+
+import lombok.Data;
+
+import java.util.List;
+import java.util.Map;
+
+@Data
+public class EventInfo {
+    // {"eventList":[{"event":"change","type":"webDataReq","id":"getLibFromDb","relEleId":"libName"}]}
+    private String event; // click
+    private String type; // menuReq/buttonReq
+    private String id; // MR001/BR001
+    private String relEleId;
+    private String relEleType;
+    private String relEleChgType; //改变的类型：value-改变值
+    private String selectedValue;
+    private List<Map<String,String>> recordMap;
+}
