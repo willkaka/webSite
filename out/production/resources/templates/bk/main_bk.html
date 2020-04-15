@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title th:text="${webSiteName}">1</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        .fakeimg {
+            height: 500px;
+            background: #aaa;
+        }
+    </style>
+</head>
+
+<body>
+<div class="jumbotron text-center" style="margin-bottom:0">
+    <h1 th:text="${webSiteName}">页面名称</h1>
+</div>
+
+
+<div class="container" th:with="firstPer=${curFunction}">
+    <div class="row">
+        <div class="col-sm-2">
+            <p>菜单</p>
+            <ul class="nav nav-pills nav-stacked" id="menuList">
+<!--                <li class="active"><a href="#">功能 1</a></li>-->
+<!--                <li><a href="#">功能 2</a></li>-->
+<!--                <li><a href="#">功能 3</a></li>-->
+            </ul>
+        </div>
+
+        <div class="col-sm-10">
+            <ul class="breadcrumb" id="navPath">
+<!--                <li><a href="#">Home</a></li>-->
+<!--                <li><a href="#">2013</a></li>-->
+<!--                <li class="active">十一月</li>-->
+            </ul>
+
+            <div class="container">
+                <div class="form-inline" id="conditionDiv">
+                    <!-- 条件录入区域 -->
+                    <form th:action="@{~/test}" th:object="${htmlRtnMsg}" method="post">
+<!--                        <input type="text" th:field="*{curFunction}" th:value="${curFunName}" name="curFunName" hidden>-->
+
+                        <div class="input-group">
+                            <span class="input-group-addon">type</span>
+                            <input type="text" class="form-control" placeholder="type" th:field="*{value0}" name="type">
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon">xxx</span>
+                            <input type="text" class="form-control" placeholder="type" th:field="*{value1}" name="type">
+                        </div>
+
+                        <button type="submit" class="pull-right btn btn-info" >查询<i class="fa fa-arrow-circle-right"></i></button>
+                    </form>
+                </div>
+
+                <div class="row">
+                    <p>数据输出区域</p>
+                    <table class="table" id="dataTable">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="jumbotron text-center" style="margin-bottom:0">
+    <p>底部内容</p>
+</div>
+</body>
+
+<script type="text/javascript" th:inline="javascript">
+    $(function(){
+        //填充菜单清单
+        var mbody="";
+        var menulist =[[${menuObjectList}]];
+        $.each(menulist,function(index,menu){ //使用each进行遍历
+            //mbody = mbody+"<li><a href=\"test\">"+menu.name+"</a></li>";
+            mbody = mbody+"<li><a th:href=\"@{'/main/' + ${menu.id}}\">"+menu.name+"</a></li>";
+        //<a class="btn btn-primary btn-sm" th:href="@{'/main/' + ${menu.id}}">Create Message</a>
+        });
+        $("#menuList").append(mbody);
+
+        //填充导航信息
+        var navbody="";
+        var navlist =[[${navPathList}]];
+        $.each(navlist,function(index,value){ //使用each进行遍历
+            navbody = navbody+"<li><a href=\"#\">"+value+"</a></li>";
+        });
+        $("#navPath").append(navbody);
+
+        //填充条件输入内容
+        //var conditionBody="<form th:action=\"@{~/test}\" method=\"post\">";
+        // var conditionBody="<form th:action=\"@{test}\"  th:href=\"/test\" th:object=\"${htmlRtnMsg}\"  action=\"#\" method=\"post\">";
+        // conditionBody+="<input type=\"text\" th:value=\"${curFunction}\" name=\"curFunction\" hidden>";
+        // var inputList = [[${inputList}]];
+        // $.each(inputList,function (index,inputObject) {
+        //     if(!inputObject.hidden){
+        //         conditionBody+="<div class=\"input-group\">";
+        //         conditionBody+="<span class=\"input-group-addon\">"+inputObject.inputName+"</span>";
+        //         conditionBody+="<input " +
+        //             "id=\"" + inputObject.inputId +"\" " +
+        //             "type=\""+inputObject.inputType+"\" " +
+        //             "class=\""+inputObject.inputClass+"\" " +
+        //             "placeholder=\""+inputObject.inputPrompt+"\" " +
+        //             "th:field=\"*{"+inputObject.inputRtnVar+"}\" " +
+        //             "name=\"type\">";
+        //         conditionBody+="</div>";
+        //     }
+        // })
+        // conditionBody += "<button type=\"submit\" class=\"pull-right btn btn-info\" >查询<i class=\"fa fa-arrow-circle-right\"></i></button>";
+        // conditionBody +="</form>";
+        // $("#conditionDiv").append(conditionBody);
+
+        //填充数据表，表头及内容
+        var tbody="";
+        var collist =[[${tableColList}]];
+        tbody = "<thead><tr>";
+        $.each(collist,function(index,value){ //使用each进行遍历
+            tbody = tbody+"<th>"+value+"</th>";
+        });
+        tbody = tbody + "</tr></thead>";
+
+        tbody = tbody + "<tbody>";
+        var records =[[${tableRecList}]];
+        //遍历List
+        for(var j=0;j<records.length;j++)
+        {
+            tbody = tbody+"<tr>";
+            var newMap = records[j];
+            for(var k=0;k<collist.length;k++){
+                var colName = collist[k];
+                var cellValue=newMap[colName];
+                tbody = tbody+"<td>"+cellValue+"</td>";
+            }
+            tbody = tbody+"</tr>";
+        }
+        tbody = tbody+"</tbody>";
+        $("#dataTable").append(tbody);
+    });
+</script>
+</html>

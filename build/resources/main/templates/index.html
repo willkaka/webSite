@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title th:text="${webSiteName}">1</title>
+        <link rel="stylesheet" href="../css/bootstrap.min.css">
+<!--        <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">-->
+<!--        <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>-->
+                <script src="../jstools/jquery.min.js"></script>
+<!--        <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+        <script src="../jstools/bootstrap.min.js">
+        <script src="../jstools/json3.min.js"></script>
+        <script src="../jstools/viewer.min.js"></script>
+
+        <script src="../js/sendJson.js"></script>
+
+        <style>
+            .fakeimg {
+                height: 500px;
+                background: #aaa;
+            }
+        </style>
+    </head>
+
+    <body onload="getPageInfo()">
+<!--        <script type="text/javascript" src="../js/sendJson.js"></script>-->
+
+        <div id="topLogo" class="jumbotron text-center" style="margin-bottom:0">
+            <h1 th:text="${webSiteName}">页面名称</h1>
+        </div>
+
+        <div id="pageContainer" class="container">
+            <div id="row" class="row">
+                <!-- 菜单 -->
+                <div id="menudiv" class="col-sm-2 ">
+                    <ul id="menuList" class="nav nav-pills nav-stacked"><!-- 菜单填充区 --></ul>
+                </div>
+
+                <!-- 内容区域 -->
+                <div id="container" class="col-sm-10">
+                    <!-- 导航 -->
+                    <div id="navList" class="breadcrumb"><!-- 导航填充区 --></div>
+
+                    <!-- 输入输出区域 -->
+                    <div id="detailContainer" class="container">
+                        <!-- 条件输入区域 -->
+                        <div id="inputArea" class="form-inline"><!-- 条件输入框填充区 --></div>
+                        <!-- 数据输出区域 -->
+                        <div id="outputArea" class="row"><!-- 结果输出填充区 --></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="jumbotron text-center" style="margin-bottom:0">
+            <p>底部内容</p>
+        </div>
+
+        <!-- 模态框（Modal） -->
+<!--        <div class="modal fade" id="edit-modal" tabindex="-1" role="dialog" aria-labelledby="edit-modal-label" aria-hidden="true">-->
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" data-show="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="editModalLabel">编辑</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    </div>
+                    <div class="modal-body" id="editModalBody"></div>
+                    <div class="modal-footer" id="editModalFooter">
+<!--                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>-->
+<!--                        <button type="button" class="btn btn-default" id="dele-submit-button">删除</button>-->
+<!--                        <button type="button" class="btn btn-primary" id="edit-submit-button">更改</button>-->
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </body>
+</html>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyw.homesite.mapper.DynamicTableMapper">
+
+    <select id="selectAll" parameterType="com.hyw.homesite.dto.DynamicTableDto" resultType="java.util.Map">
+        select ${ew.selectFields}
+        from ${ew.tableName}
+        <if test="ew.selectWhere != null and ew.selectWhere != ''">
+            WHERE ${ew.selectWhere}
+        </if>
+
+        <if test="ew.selectGroupby != null and ew.selectGroupby !=''">
+            GROUP BY ${ew.selectGroupby}
+        </if>
+
+        <if test="ew.selectOrderby != null and ew.selectOrderby !=''">
+            ORDER BY ${ew.selectOrderby}
+        </if>
+
+    </select>
+
+    <insert id="insert" parameterType="com.hyw.homesite.dto.DynamicTableDto">
+        insert into ${tableName}
+        <if test="fieldValueMap != null">
+            <foreach collection="fieldValueMap.entrySet()" index="field" item="value" open="(" separator="," close=")">
+                ${field}
+            </foreach>
+            <foreach collection="fieldValueMap.entrySet()" index="field" item="value" open=" values(" separator="," close=")">
+                <trim>'${value}'</trim>
+            </foreach>
+        </if>
+    </insert>
+
+    <update id="update" parameterType="com.hyw.homesite.dto.DynamicTableDto">
+        update ${ew.tableName}
+        <foreach collection="ew.fieldValueMap.entrySet()" index="field" item="value" open="SET " separator=",">
+            ${field}=${value}
+        </foreach>
+        <if test="ew.selectWhere != null and ew.selectWhere != ''">
+            WHERE ${ew.selectWhere}
+        </if>
+        <if test="ew.whereFieldValueMap != null">
+            <foreach collection="ew.whereFieldValueMap.entrySet()" index="field" item="value" open="WHERE" separator="AND" close="">
+                <trim>${field}</trim> = <trim>'${value}'</trim>
+            </foreach>
+        </if>
+    </update>
+
+    <delete id="delete" parameterType="com.hyw.homesite.dto.DynamicTableDto">
+        delete from ${ew.tableName}
+        <if test="ew.selectWhere != null and ew.selectWhere != ''">
+            WHERE ${ew.selectWhere}
+        </if>
+        <if test="ew.fieldValueMap != null">
+            <foreach collection="ew.fieldValueMap.entrySet()" index="field" item="value" open="WHERE" separator="AND" close="">
+                <trim>${field}</trim> = <trim>'${value}'</trim>
+            </foreach>
+        </if>
+    </delete>
+
+</mapper>

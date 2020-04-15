@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="f8eb5d13-d8bb-49b9-9c01-eda1782517d4" name="Default Changelist" comment="0">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/caes" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/Application.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/constant/Constant.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/dao/ConfigDatabaseInfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/dao/WebConfigInput.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/dao/WebConfigMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/dto/DynamicTableDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/dto/ImageInfoDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/exception/BaseException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/exception/BaseRuntimeException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/exception/BizException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/exception/ExceptionHandle.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/exception/ExceptionUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/exception/FastRuntimeException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFun.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/About.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/DisplayDir.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/InsertRecord.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/QueryDatabase.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/QueryTable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/QueryTableRecords.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/ReadHtml.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/UpdateRecord.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/UpdateTableField.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/deleteRecord.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/WebDataReqFun.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/WebDataReqFunImpl/GetFieldList.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/WebDataReqFunImpl/GetLibFromDb.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/WebDataReqFunImpl/GetTabFromLib.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/mapper/DynamicTableMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/model/SpringDatabaseConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/service/ConfigDatabaseInfoService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/service/DynamicTableService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/service/NonStaticResourceHttpRequestHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/service/SpringDataSourceService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/service/WebConfigInfoService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/temp/CheckIPConnect.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/temp/CheckIPDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/temp/CheckIPandPort.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/temp/CheckIPandPortThread.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/CollectionUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/DataUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/DbUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/FileUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/HttpUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/ImageUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/ObjectUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/ReadDir.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/SqlUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/SqliteUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/StringUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/controller/BaseInfoController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/controller/UploadController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/controller/VideoController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/dto/ReqJsonDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/dto/RequestDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/dto/ReturnDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/model/EventInfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/model/WebElement.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/util/WebInfoUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/mapper/DynamicTableMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/sql/ddl.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/sql/ddl_sqlite.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/sql/dml.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/sqlitedb/hlhome.db" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/css/bootstrap.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/css/webSite.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/image/THUMB_dir_image.jpg.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/image/THUMB_unkonwFile_image.jpg.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/image/dir_image.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/image/unkonwFile_image.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/image/zip_image.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/js/fillHtmlInputArea.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/js/fillHtmlModal.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/js/fillHtmlOutputArea.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/js/fillPageInfo.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/js/utils.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/js_bk/sendJson.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/jstools/bootstrap.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/jstools/jquery.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/jstools/json3.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/jstools/viewer-jquery.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/jstools/viewer.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/bk/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/bk/index_bk.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/bk/main_bk.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/bk/test.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/bk/upload.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/video/mov_bbb.mp4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/hyw/webSite/ApplicationTests.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ErrorTreeViewConfiguration">
+    <option name="hideInfoMessages" value="true" />
+    <option name="HIDE_INFO_MESSAGES" value="true" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="webSite" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="HTML File" />
+        <option value="FxmlFile" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1W0L1tLyG9EvYJ9LA8ske4sTdZS" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="show.unlinked.gradle.project.popup" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Java\HywSource\homesite\src\main\resources\static\js_bk" />
+      <recent name="D:\Java\HywSource\homesite\src\main\resources\templates\bk" />
+      <recent name="E:\javasource\homesite\src\main\resources\sqlitedb" />
+      <recent name="E:\javasource\homesite\src\main" />
+      <recent name="E:\javasource\homesite\src" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.hyw.homesite.funbean.WebDataReqFunImpl" />
+      <recent name="com.hyw.homesite.funbean.RequestFunImpl" />
+      <recent name="com.hyw.homesite.funbean" />
+      <recent name="com.hyw.homesite.utils" />
+      <recent name="com.hyw.homesite.funbean.impl" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Java\HywSource\homesite\src\main\java\com\hyw\homesite\temp" />
+      <recent name="E:\javasource\homesite\src\main\resources\static\js" />
+      <recent name="E:\javasource\homesite\src\main\java\com\hyw\homesite\utils\dbutil" />
+      <recent name="E:\javasource\homesite\src\main\resources\sql" />
+      <recent name="E:\javasource\homesite\src\main\db" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Application">
+    <configuration name="Application" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.hyw.homesite.Application" />
+      <module name="homesite.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.hyw.webSite.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CheckIPandPort" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.hyw.homesite.temp.CheckIPandPort" />
+      <module name="homesite.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.hyw.homesite.temp.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DbUtil" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.hyw.homesite.utils.DbUtil" />
+      <module name="homesite.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.hyw.homesite.utils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HttpUtil" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.hyw.homesite.utils.HttpUtil" />
+      <module name="homesite.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.hyw.homesite.utils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SqliteUtil" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.hyw.homesite.utils.SqliteUtil" />
+      <module name="homesite.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.hyw.homesite.utils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Application" />
+        <item itemvalue="Application.CheckIPandPort" />
+        <item itemvalue="Application.DbUtil" />
+        <item itemvalue="Application.SqliteUtil" />
+        <item itemvalue="Application.HttpUtil" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f8eb5d13-d8bb-49b9-9c01-eda1782517d4" name="Default Changelist" comment="" />
+      <created>1578281354030</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1578281354030</updated>
+    </task>
+    <task id="LOCAL-00001" summary="0">
+      <created>1586944257045</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1586944257045</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="0" />
+    <option name="LAST_COMMIT_MESSAGE" value="0" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="552" y="178" key="#Custom_Plugin_Repositories" timestamp="1578359888598">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="552" y="178" key="#Custom_Plugin_Repositories/0.0.1920.1040@0.0.1920.1040" timestamp="1578359888598" />
+    <state x="690" y="275" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog" timestamp="1586828833520">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="690" y="275" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1586828833520" />
+    <state x="636" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1582255535182">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="636" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1582255535182" />
+    <state x="690" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1586329654305">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="690" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1586329654305" />
+    <state x="585" y="114" key="CommitChangelistDialog2" timestamp="1586944798310">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="585" y="114" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1586944798310" />
+    <state width="514" height="466" key="DebuggerActiveHint" timestamp="1586842859681">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="514" height="466" key="DebuggerActiveHint/0.0.1920.1040@0.0.1920.1040" timestamp="1586842859681" />
+    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog" timestamp="1586316255704">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1586316255704" />
+    <state x="740" y="235" key="FileChooserDialogImpl" timestamp="1578562299446">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="235" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1578562299446" />
+    <state width="1877" height="278" key="GridCell.Tab.0.bottom" timestamp="1586942740597">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1037" height="221" key="GridCell.Tab.0.bottom/0.0.1080.2208@0.0.1080.2208" timestamp="1579531582613" />
+    <state width="1877" height="278" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1586942740597" />
+    <state width="1877" height="278" key="GridCell.Tab.0.center" timestamp="1586942740597">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1037" height="221" key="GridCell.Tab.0.center/0.0.1080.2208@0.0.1080.2208" timestamp="1579531582613" />
+    <state width="1877" height="278" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1586942740597" />
+    <state width="1877" height="278" key="GridCell.Tab.0.left" timestamp="1586942740597">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1037" height="221" key="GridCell.Tab.0.left/0.0.1080.2208@0.0.1080.2208" timestamp="1579531582613" />
+    <state width="1877" height="278" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1586942740597" />
+    <state width="1877" height="278" key="GridCell.Tab.0.right" timestamp="1586942740597">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1037" height="221" key="GridCell.Tab.0.right/0.0.1080.2208@0.0.1080.2208" timestamp="1579531582613" />
+    <state width="1877" height="278" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1586942740597" />
+    <state width="1877" height="278" key="GridCell.Tab.1.bottom" timestamp="1586942740497">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1037" height="221" key="GridCell.Tab.1.bottom/0.0.1080.2208@0.0.1080.2208" timestamp="1579531582614" />
+    <state width="1877" height="278" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1586942740497" />
+    <state width="1877" height="278" key="GridCell.Tab.1.center" timestamp="1586942740497">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1037" height="221" key="GridCell.Tab.1.center/0.0.1080.2208@0.0.1080.2208" timestamp="1579531582613" />
+    <state width="1877" height="278" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1586942740497" />
+    <state width="1877" height="278" key="GridCell.Tab.1.left" timestamp="1586942740497">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1037" height="221" key="GridCell.Tab.1.left/0.0.1080.2208@0.0.1080.2208" timestamp="1579531582613" />
+    <state width="1877" height="278" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1586942740497" />
+    <state width="1877" height="278" key="GridCell.Tab.1.right" timestamp="1586942740497">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1037" height="221" key="GridCell.Tab.1.right/0.0.1080.2208@0.0.1080.2208" timestamp="1579531582614" />
+    <state width="1877" height="278" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1586942740497" />
+    <state x="626" y="61" key="SettingsEditor" timestamp="1586418593144">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="626" y="61" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1586418593144" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1586944805425">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1586944805425" />
+    <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog" timestamp="1586316255704">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1586316255704" />
+    <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1585210478892">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585210478892" />
+    <state x="567" y="220" width="786" height="600" key="find.popup" timestamp="1586944126480">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="567" y="220" width="786" height="600" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1586944126480" />
+    <state x="675" y="311" key="git4idea.merge.GitPullDialog" timestamp="1586944227754">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="675" y="311" key="git4idea.merge.GitPullDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1586944227754" />
+    <state x="616" y="240" width="672" height="677" key="run.anything.popup" timestamp="1586333709541">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="616" y="240" width="672" height="677" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1586333709541" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1586506835314">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1586506835314" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/HttpUtil.java</url>
+          <line>47</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/HttpUtil.java</url>
+          <line>65</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/HttpUtil.java</url>
+          <line>108</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/UpdateRecord.java</url>
+          <line>43</line>
+          <option name="timeStamp" value="49" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/UpdateRecord.java</url>
+          <line>45</line>
+          <option name="timeStamp" value="50" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/DbUtil.java</url>
+          <line>192</line>
+          <option name="timeStamp" value="51" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/controller/VideoController.java</url>
+          <line>33</line>
+          <option name="timeStamp" value="52" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="enumKey.substring(3)" language="JAVA" />
+      </configuration>
+    </watches-manager>
+  </component>
+</project>

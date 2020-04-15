@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>hlhome</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../css/homeSite.css">
+
+    <script src="../jstools/jquery.min.js"></script>
+
+    <script src="../js/utils.js"></script>
+
+    <script src="../js/fillHtmlModal.js"></script>
+    <script src="../js/fillHtmlOutputArea.js"></script>
+    <script src="../js/fillHtmlInputArea.js"></script>
+    <script src="../js/fillPageInfo.js"></script>
+    <!-- 后加载的可以用前加载的函数 -->
+
+</head>
+<body onload="initPageInfo()">
+
+<!-- 菜单区域 -->
+<div id="menuArea" class="menu_div">
+    <div class="dropbtn" href="#home">主页</div>
+    <div class="dropdown">
+        <a class="dropbtn" href="#">下拉菜单</a>
+        <div class="dropdown-content">
+            <a href="#">链接 1</a>
+            <a href="#">链接 2</a>
+            <a href="#">链接 3</a>
+        </div>
+    </div>
+
+    <div class="dropbtn" href="#about" style="float:right">关于</div>
+</div>
+
+<div class="contentArea">
+    <!-- 导航区域 -->
+    <div class="navArea">
+        <span id="navSpan"></span>
+    </div>
+
+    <!-- 条件输入区域 -->
+    <div id="inputArea" class="inputArea"><!-- 条件输入框填充区 -->
+
+        <div class="inputArea_div_grp">
+            <label class="inputArea_sub_label">输入1</label>
+            <input class="inputArea_sub_input" placeholder="输入1...">
+        </div>
+
+        <div class="inputArea_div_grp">
+            <label class="inputArea_sub_label">输入2</label>
+            <input class="inputArea_sub_input" placeholder="输入2...">
+        </div>
+
+        <div class="inputArea_div_grp">
+            <label class="inputArea_sub_label">选择1</label>
+            <select class="inputArea_sub_select">
+                <option value="1">sss1</option>
+                <option value="2">sss3333332</option>
+            </select>
+        </div>
+
+        <button class="inputArea_sub_button"><span>按钮1</span></button>
+    </div>
+
+    <!-- 数据输出区域 -->
+    <div id="outputArea" class="outputArea">
+        <table class="output_table">
+            <tr>
+                <th class="output_table_th">Company</th>
+                <th class="output_table_th">Contact</th>
+                <th class="output_table_th">Country</th>
+            </tr>
+            <tr>
+                <td class="output_table_td_0">Alfreds Futterkiste</td>
+                <td class="output_table_td_0">Maria Anders</td>
+                <td class="output_table_td_0">Germany</td>
+            </tr>
+            <tr>
+                <td class="output_table_td_1">Berglunds snabbköp</td>
+                <td class="output_table_td_1">Christina Berglund</td>
+                <td class="output_table_td_1">Sweden</td>
+            </tr>
+            <tr>
+                <td class="output_table_td_0">Centro comercial Moctezuma</td>
+                <td class="output_table_td_0">Francisco Chang</td>
+                <td class="output_table_td_0">Mexico</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="bottomContent">
+    <p>底部内容</p>
+</div>
+
+<!-- test -->
+<!--<div>-->
+<!--    <video width="1120" height="540" controls="controls" id="video" preload="auto">-->
+<!--        <source src="video?path=mov_bbb.mp4">-->
+<!--    </video>-->
+<!--</div>-->
+<div>
+    <object classid="clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA" height="515" id="RAOCX" name="rmplay" width="700">
+        <param name="SRC" value="video/mov_bbb.mp4" />
+        <param name="_ExtentX" value="9313" />
+        <param name="_ExtentY" value="7620" />
+        <param name="AUTOSTART" value="1" />
+        <param name="SHUFFLE" value="0" />
+        <param name="PREFETCH" value="0" />
+        <param name="NOLABELS" value="0" />
+        <param name="CONTROLS" value="ImageWindow,ControlPanel" />
+        <param name="CONSOLE" value="Clip2" />
+        <param name="LOOP" value="0" />
+        <param name="NUMLOOP" value="0" />
+        <param name="CENTER" value="0" />
+
+        <param name="MAINTAINASPECT" value="0" />
+        <param name="BACKGROUNDCOLOR" value="#000000" />
+        <embed src="video/mov_bbb.mp4" type="audio/x-pn-realaudio-plugin" console="Clip1" controls="ImageWindow,ControlPanel" height="515" width="700" autostart="true" />
+    </object>
+</div>
+
+<!-- 弹窗 -->
+<div id="swBackGround" class="subWindowBackGround" style="display:none;">
+    <div id='swBorder' class="subWindow">
+        <div id="swContent" class="subWidowContent">
+            <div id="swHeader" class="subWidowHeader">
+
+                <div id="header-x-div" class="subWidowHeaderCloseBtn" onclick="hidder()">x</div>
+            </div>
+            <div id="swBody" class="subWidowBody"></div>
+            <div id="swFooter" class="subWidowFooter"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
