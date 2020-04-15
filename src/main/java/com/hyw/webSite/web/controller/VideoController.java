@@ -27,14 +27,14 @@ public class VideoController {
     @GetMapping("/video")
     public void videoPreview(HttpServletRequest request, HttpServletResponse response) throws Exception {
         log.info("后台收到请求video");
-        String path = request.getParameter("path");
-//        log.info("fileName:"+fileName);
-//        String path = "E:\\t\\"+fileName;
+        String fileName = request.getParameter("path");
+        log.info("fileName:"+fileName);
+        String path = "E:\\t\\"+fileName;
         Path filePath = Paths.get(path);
-//        if (!Files.exists(filePath)) {
-//            path = "F:\\娱乐\\movies\\"+fileName;
-//            filePath = Paths.get(path);
-//        }
+        if (!Files.exists(filePath)) {
+            path = "F:\\娱乐\\movies\\"+fileName;
+            filePath = Paths.get(path);
+        }
         if (Files.exists(filePath)) {
             String mimeType = Files.probeContentType(filePath);
             if (!StringUtil.isBlank(mimeType)) {

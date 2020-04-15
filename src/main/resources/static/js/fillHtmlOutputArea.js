@@ -47,7 +47,7 @@ function fillOutPutAreaWithImgDiv() {
         img_img.setAttribute("src","data:image/jpeg;base64,"+elementList[i].prompt);
         img_img.setAttribute("class","imgTag");
 
-        if(elementList[i].type.substr(0,5) == "video"){
+        if(elementList[i].type.indexOf("video") != -1 || elementList[i].type.indexOf("realmedia") != -1 ){
             img_img.addEventListener("click",playVideo.bind(this,elementList[i],getCurPageInfo()),false);
         }
 
@@ -192,7 +192,7 @@ function playVideo(element,pageInfoMap){
     }
 
     let htmlSource = document.createElement("source");
-    htmlSource.setAttribute("src","video?path="+value.replace()+"%2F"+element.id);
+    htmlSource.setAttribute("src","video?path="+element.id);
     htmlVideo.appendChild(htmlSource);
 
     let footerDiv = document.getElementById("swFooter");
