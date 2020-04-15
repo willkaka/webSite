@@ -1,5 +1,6 @@
 package com.hyw.webSite.utils;
 
+import com.hyw.webSite.exception.BizException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -17,6 +18,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import sun.misc.BASE64Encoder;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,6 +58,15 @@ public class FileUtil {
         return m.matches();
     }
 
+    public static boolean isVideo(File file) {
+        String mimeType;
+        try {
+            mimeType = Files.probeContentType(file.toPath());
+        }catch(Exception e){
+            throw new BizException("取文件类型出错！");
+        }
+        return mimeType.contains("video");
+    }
 
     /**
      * 将文件转为base64码

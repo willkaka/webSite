@@ -28,13 +28,17 @@ public class VideoController {
     public void videoPreview(HttpServletRequest request, HttpServletResponse response) throws Exception {
         log.info("后台收到请求video");
         String path = request.getParameter("path");
-        if("mov_bbb.mp4".equals(path)){
-            path ="D:\\Java\\HywSource\\webSite\\src\\main\\resources\\video\\mov_bbb.mp4";
-        }
+//        log.info("fileName:"+fileName);
+//        String path = "E:\\t\\"+fileName;
         Path filePath = Paths.get(path);
+//        if (!Files.exists(filePath)) {
+//            path = "F:\\娱乐\\movies\\"+fileName;
+//            filePath = Paths.get(path);
+//        }
         if (Files.exists(filePath)) {
             String mimeType = Files.probeContentType(filePath);
             if (!StringUtil.isBlank(mimeType)) {
+                log.info("ContentType:"+mimeType);
                 response.setContentType(mimeType);
             }
             request.setAttribute(NonStaticResourceHttpRequestHandler.ATTR_FILE, filePath);

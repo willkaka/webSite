@@ -46,6 +46,11 @@ function fillOutPutAreaWithImgDiv() {
         let img_img = document.createElement("img");
         img_img.setAttribute("src","data:image/jpeg;base64,"+elementList[i].prompt);
         img_img.setAttribute("class","imgTag");
+
+        if(elementList[i].type.substr(0,5) == "video"){
+            img_img.addEventListener("click",playVideo.bind(this,elementList[i],getCurPageInfo()),false);
+        }
+
         img_a.appendChild(img_img);
 
         let desc_div = document.createElement("div");
@@ -149,4 +154,49 @@ function fillOutPutAreaWithTable() {
             }
         }
     }
+}
+
+function playVideo(element,pageInfoMap){
+
+    //弹窗标题和关闭按钮
+    clearChildren("swHeader");
+    let header = document.getElementById("swHeader");
+    let header_span = document.createElement("span");
+    header_span.innerHTML = "播放视频";//标题
+    header.appendChild(header_span);
+    let header_close = document.createElement("div");
+    header_close.setAttribute("class","subWidowHeaderCloseBtn");
+    header_close.addEventListener("click",hidder.bind(this,"swBackGround"),false);
+    header_close.innerHTML = "X";//标题
+    header.appendChild(header_close);
+
+    clearChildren("swBody");
+    let body = document.getElementById("swBody");
+//<!--    <video width="1120" height="540" controls="controls" id="video" preload="auto">-->
+//<!--        <source src="video?path=mov_bbb.mp4">-->
+//<!--    </video>-->
+    let htmlVideo = document.createElement("video");
+    htmlVideo.setAttribute("controls","controls");
+    htmlVideo.setAttribute("id","playVideo");
+    htmlVideo.setAttribute("preload","auto");
+    htmlVideo.setAttribute("width","1120px");
+    htmlVideo.setAttribute("height","540px");
+    body.appendChild(htmlVideo);
+
+    let inputEle = document.getElementById("localAddress");
+    let index = inputEle.selectedIndex; // 选中索引
+    let value ="";
+    if(index >= 0){
+        let text = inputEle.options[index].text; // 选中文本
+        value = inputEle.options[index].value; // 选中值
+    }
+
+    let htmlSource = document.createElement("source");
+    htmlSource.setAttribute("src","video?path="+value.replace()+"%2F"+element.id);
+    htmlVideo.appendChild(htmlSource);
+
+    let footerDiv = document.getElementById("swFooter");
+    clearChildren("swFooter");
+
+    display("swBackGround");
 }
