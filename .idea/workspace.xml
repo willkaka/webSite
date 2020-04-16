@@ -1,106 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f8eb5d13-d8bb-49b9-9c01-eda1782517d4" name="Default Changelist" comment="0">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/caes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/Application.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/constant/Constant.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/dao/ConfigDatabaseInfo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/dao/WebConfigInput.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/dao/WebConfigMenu.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/dto/DynamicTableDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/dto/ImageInfoDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/exception/BaseException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/exception/BaseRuntimeException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/exception/BizException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/exception/ExceptionHandle.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/exception/ExceptionUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/exception/FastRuntimeException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFun.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/About.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/DisplayDir.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/InsertRecord.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/QueryDatabase.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/QueryTable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/QueryTableRecords.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/ReadHtml.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/UpdateRecord.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/UpdateTableField.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/RequestFunImpl/deleteRecord.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/WebDataReqFun.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/WebDataReqFunImpl/GetFieldList.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/WebDataReqFunImpl/GetLibFromDb.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/funbean/WebDataReqFunImpl/GetTabFromLib.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/mapper/DynamicTableMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/model/SpringDatabaseConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/service/ConfigDatabaseInfoService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/service/DynamicTableService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/service/NonStaticResourceHttpRequestHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/service/SpringDataSourceService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/service/WebConfigInfoService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/temp/CheckIPConnect.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/temp/CheckIPDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/temp/CheckIPandPort.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/temp/CheckIPandPortThread.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/CollectionUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/DataUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/DbUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/FileUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/HttpUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/ImageUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/ObjectUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/ReadDir.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/SqlUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/SqliteUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/utils/StringUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/controller/BaseInfoController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/controller/UploadController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/controller/VideoController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/dto/ReqJsonDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/dto/RequestDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/dto/ReturnDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/model/EventInfo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/model/WebElement.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/util/WebInfoUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/mapper/DynamicTableMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/sql/ddl.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/sql/ddl_sqlite.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/sql/dml.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/sqlitedb/hlhome.db" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/css/bootstrap.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/css/webSite.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/image/THUMB_dir_image.jpg.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/image/THUMB_unkonwFile_image.jpg.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/image/dir_image.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/image/unkonwFile_image.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/image/zip_image.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/js/fillHtmlInputArea.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/js/fillHtmlModal.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/js/fillHtmlOutputArea.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/js/fillPageInfo.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/js/utils.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/js_bk/sendJson.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/jstools/bootstrap.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/jstools/jquery.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/jstools/json3.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/jstools/viewer-jquery.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/jstools/viewer.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/bk/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/bk/index_bk.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/bk/main_bk.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/bk/test.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/bk/upload.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/video/mov_bbb.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/hyw/webSite/ApplicationTests.java" afterDir="false" />
+    <list default="true" id="f8eb5d13-d8bb-49b9-9c01-eda1782517d4" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/META-INF/homesite.main.kotlin_module" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/Application.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/constant/Constant.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/dao/ConfigDatabaseInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/dao/WebConfigInput.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/dao/WebConfigMenu.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/dto/DynamicTableDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/dto/ImageInfoDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/exception/BaseException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/exception/BaseRuntimeException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/exception/BizException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/exception/ExceptionHandle.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/exception/ExceptionUtils.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/exception/FastRuntimeException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/funbean/RequestFun.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/funbean/RequestFunImpl/About.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/funbean/RequestFunImpl/DisplayDir.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/funbean/RequestFunImpl/InsertRecord.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/funbean/RequestFunImpl/QueryDatabase.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/funbean/RequestFunImpl/QueryTable.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/funbean/RequestFunImpl/QueryTableRecords.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/funbean/RequestFunImpl/ReadHtml.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/funbean/RequestFunImpl/UpdateRecord.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/funbean/RequestFunImpl/UpdateTableField.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/funbean/RequestFunImpl/deleteRecord.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/funbean/WebDataReqFun.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/funbean/WebDataReqFunImpl/GetFieldList.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/funbean/WebDataReqFunImpl/GetLibFromDb$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/funbean/WebDataReqFunImpl/GetLibFromDb.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/funbean/WebDataReqFunImpl/GetTabFromLib$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/funbean/WebDataReqFunImpl/GetTabFromLib.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/mapper/DynamicTableMapper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/model/SpringDatabaseConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/service/ConfigDatabaseInfoService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/service/DynamicTableService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/service/NonStaticResourceHttpRequestHandler.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/service/SpringDataSourceService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/service/WebConfigInfoService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/temp/CheckIPConnect.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/temp/CheckIPDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/temp/CheckIPandPort.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/temp/CheckIPandPortThread.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/utils/CollectionUtil$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/utils/CollectionUtil.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/utils/DataUtil.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/utils/DbUtil.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/utils/FileUtil.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/utils/HttpUtil.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/utils/ImageUtil.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/utils/ObjectUtil.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/utils/ReadDir.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/utils/SqlUtil.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/utils/SqliteUtil.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/utils/StringUtil.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/web/controller/BaseInfoController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/web/controller/UploadController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/web/controller/VideoController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/web/dto/ReqJsonDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/web/dto/RequestDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/web/dto/ReturnDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/web/model/EventInfo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/web/model/WebElement.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/classes/com/hyw/homesite/web/util/WebInfoUtil.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/resources/mapper/DynamicTableMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/resources/mapper/DynamicTableMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/resources/static/css/homeSite.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/resources/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/resources/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,12 +94,7 @@
         </task>
         <projects_view>
           <tree_state>
-            <expand>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="webSite" type="f1a62948:ProjectNode" />
-              </path>
-            </expand>
+            <expand />
             <select />
           </tree_state>
         </projects_view>
@@ -166,7 +131,7 @@
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.project.gradle" />
     <property name="show.unlinked.gradle.project.popup" value="true" />
   </component>
   <component name="RecentsManager">
@@ -194,8 +159,8 @@
   </component>
   <component name="RunManager" selected="Application.Application">
     <configuration name="Application" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.hyw.homesite.Application" />
-      <module name="homesite.main" />
+      <option name="MAIN_CLASS_NAME" value="com.hyw.webSite.Application" />
+      <shortenClasspath name="MANIFEST" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.hyw.webSite.*" />
@@ -298,7 +263,28 @@
       <option name="project" value="LOCAL" />
       <updated>1586944257045</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="0">
+      <created>1586944802195</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1586944802195</updated>
+    </task>
+    <task id="LOCAL-00003" summary="0">
+      <created>1586944915386</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1586944915386</updated>
+    </task>
+    <task id="LOCAL-00004" summary="0">
+      <created>1586945012241</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1586945012241</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -306,6 +292,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="0" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="653" y="176" key="#Application" timestamp="1586999904742">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="653" y="176" key="#Application/0.0.1920.1040@0.0.1920.1040" timestamp="1586999904742" />
     <state x="552" y="178" key="#Custom_Plugin_Repositories" timestamp="1578359888598">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -326,10 +316,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="690" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1586329654305" />
-    <state x="585" y="114" key="CommitChangelistDialog2" timestamp="1586944914522">
+    <state x="585" y="114" key="CommitChangelistDialog2" timestamp="1586945011754">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="585" y="114" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1586944914522" />
+    <state x="585" y="114" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1586945011754" />
     <state width="514" height="466" key="DebuggerActiveHint" timestamp="1586842859681">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -342,26 +332,26 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="235" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1578562299446" />
-    <state width="1877" height="278" key="GridCell.Tab.0.bottom" timestamp="1586942740597">
+    <state width="1877" height="305" key="GridCell.Tab.0.bottom" timestamp="1586945272543">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1037" height="221" key="GridCell.Tab.0.bottom/0.0.1080.2208@0.0.1080.2208" timestamp="1579531582613" />
-    <state width="1877" height="278" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1586942740597" />
-    <state width="1877" height="278" key="GridCell.Tab.0.center" timestamp="1586942740597">
+    <state width="1877" height="305" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1586945272543" />
+    <state width="1877" height="305" key="GridCell.Tab.0.center" timestamp="1586945272543">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1037" height="221" key="GridCell.Tab.0.center/0.0.1080.2208@0.0.1080.2208" timestamp="1579531582613" />
-    <state width="1877" height="278" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1586942740597" />
-    <state width="1877" height="278" key="GridCell.Tab.0.left" timestamp="1586942740597">
+    <state width="1877" height="305" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1586945272543" />
+    <state width="1877" height="305" key="GridCell.Tab.0.left" timestamp="1586945272542">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1037" height="221" key="GridCell.Tab.0.left/0.0.1080.2208@0.0.1080.2208" timestamp="1579531582613" />
-    <state width="1877" height="278" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1586942740597" />
-    <state width="1877" height="278" key="GridCell.Tab.0.right" timestamp="1586942740597">
+    <state width="1877" height="305" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1586945272542" />
+    <state width="1877" height="305" key="GridCell.Tab.0.right" timestamp="1586945272543">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1037" height="221" key="GridCell.Tab.0.right/0.0.1080.2208@0.0.1080.2208" timestamp="1579531582613" />
-    <state width="1877" height="278" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1586942740597" />
+    <state width="1877" height="305" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1586945272543" />
     <state width="1877" height="278" key="GridCell.Tab.1.bottom" timestamp="1586942740497">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -382,14 +372,14 @@
     </state>
     <state width="1037" height="221" key="GridCell.Tab.1.right/0.0.1080.2208@0.0.1080.2208" timestamp="1579531582614" />
     <state width="1877" height="278" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1586942740497" />
-    <state x="626" y="61" key="SettingsEditor" timestamp="1586418593144">
+    <state x="626" y="61" key="SettingsEditor" timestamp="1586999955348">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="626" y="61" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1586418593144" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1586944916707">
+    <state x="626" y="61" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1586999955348" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1586945013412">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1586944916707" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1586945013412" />
     <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog" timestamp="1586316255704">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -402,10 +392,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="567" y="220" width="786" height="600" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1586944126480" />
-    <state x="675" y="311" key="git4idea.merge.GitPullDialog" timestamp="1586944227754">
+    <state x="675" y="311" key="git4idea.merge.GitPullDialog" timestamp="1586998958753">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="675" y="311" key="git4idea.merge.GitPullDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1586944227754" />
+    <state x="675" y="311" key="git4idea.merge.GitPullDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1586998958753" />
     <state x="616" y="240" width="672" height="677" key="run.anything.popup" timestamp="1586333709541">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -450,7 +440,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/hyw/webSite/web/controller/VideoController.java</url>
-          <line>33</line>
+          <line>32</line>
           <option name="timeStamp" value="52" />
         </line-breakpoint>
       </breakpoints>

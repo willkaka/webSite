@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hyw.homesite.mapper.DynamicTableMapper">
+<mapper namespace="com.hyw.webSite.mapper.DynamicTableMapper">
 
-    <select id="selectAll" parameterType="com.hyw.homesite.dto.DynamicTableDto" resultType="java.util.Map">
+    <select id="selectAll" parameterType="com.hyw.webSite.dto.DynamicTableDto" resultType="java.util.Map">
         select ${ew.selectFields}
         from ${ew.tableName}
         <if test="ew.selectWhere != null and ew.selectWhere != ''">
@@ -19,7 +19,7 @@
 
     </select>
 
-    <insert id="insert" parameterType="com.hyw.homesite.dto.DynamicTableDto">
+    <insert id="insert" parameterType="com.hyw.webSite.dto.DynamicTableDto">
         insert into ${tableName}
         <if test="fieldValueMap != null">
             <foreach collection="fieldValueMap.entrySet()" index="field" item="value" open="(" separator="," close=")">
@@ -31,7 +31,7 @@
         </if>
     </insert>
 
-    <update id="update" parameterType="com.hyw.homesite.dto.DynamicTableDto">
+    <update id="update" parameterType="com.hyw.webSite.dto.DynamicTableDto">
         update ${ew.tableName}
         <foreach collection="ew.fieldValueMap.entrySet()" index="field" item="value" open="SET " separator=",">
             ${field}=${value}
@@ -46,7 +46,7 @@
         </if>
     </update>
 
-    <delete id="delete" parameterType="com.hyw.homesite.dto.DynamicTableDto">
+    <delete id="delete" parameterType="com.hyw.webSite.dto.DynamicTableDto">
         delete from ${ew.tableName}
         <if test="ew.selectWhere != null and ew.selectWhere != ''">
             WHERE ${ew.selectWhere}
