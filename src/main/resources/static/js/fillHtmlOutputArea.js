@@ -158,6 +158,15 @@ function fillOutPutAreaWithTable() {
 
 function playVideo(element,pageInfoMap){
 
+    if(elementList[i].type.indexOf("video") != -1}
+        setVideoTag(element,pageInfoMap);
+    }
+
+    if(elementList[i].type.indexOf("realmedia") != -1 ){
+        setRealPlayTag(element,pageInfoMap);
+    }
+}
+function setVideoTag(element,pageInfoMap){
     //弹窗标题和关闭按钮
     clearChildren("swHeader");
     let header = document.getElementById("swHeader");
@@ -199,4 +208,41 @@ function playVideo(element,pageInfoMap){
     clearChildren("swFooter");
 
     display("swBackGround");
+}
+
+//<!--    <object classid="clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA" height="515" id="RAOCX" name="rmplay" width="700">-->
+//<!--        <param name="SRC" value="video/mov_bbb.mp4" />-->
+//<!--        <param name="_ExtentX" value="9313" />-->
+//<!--        <param name="_ExtentY" value="7620" />-->
+//<!--        <param name="AUTOSTART" value="1" />-->
+//<!--        <param name="SHUFFLE" value="0" />-->
+//<!--        <param name="PREFETCH" value="0" />-->
+//<!--        <param name="NOLABELS" value="0" />-->
+//<!--        <param name="CONTROLS" value="ImageWindow,ControlPanel" />-->
+//<!--        <param name="CONSOLE" value="Clip2" />-->
+//<!--        <param name="LOOP" value="0" />-->
+//<!--        <param name="NUMLOOP" value="0" />-->
+//<!--        <param name="CENTER" value="0" />-->
+//
+//<!--        <param name="MAINTAINASPECT" value="0" />-->
+//<!--        <param name="BACKGROUNDCOLOR" value="#000000" />-->
+//<!--        <embed src="video/mov_bbb.mp4" type="audio/x-pn-realaudio-plugin" console="Clip1" controls="ImageWindow,ControlPanel" height="515" width="700" autostart="true" />-->
+//<!--    </object>-->
+function setRealPlayTag(element,pageInfoMap){
+    //弹窗标题和关闭按钮
+    clearChildren("swHeader");
+    let header = document.getElementById("swHeader");
+    let header_span = document.createElement("span");
+    header_span.innerHTML = "播放视频";//标题
+    header.appendChild(header_span);
+    let header_close = document.createElement("div");
+    header_close.setAttribute("class","subWidowHeaderCloseBtn");
+    header_close.addEventListener("click",hidder.bind(this,"swBackGround"),false);
+    header_close.innerHTML = "X";//标题
+    header.appendChild(header_close);
+
+    clearChildren("swBody");
+    let body = document.getElementById("swBody");
+    let htmlObject = document.createElement("object");
+    htmlObject.setAttribute("controls","controls");
 }
