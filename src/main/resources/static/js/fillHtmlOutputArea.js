@@ -158,7 +158,7 @@ function fillOutPutAreaWithTable() {
 
 function playVideo(element,pageInfoMap){
 
-    if(elementList[i].type.indexOf("video") != -1}
+    if(elementList[i].type.indexOf("video") != -1){
         setVideoTag(element,pageInfoMap);
     }
 
@@ -166,6 +166,7 @@ function playVideo(element,pageInfoMap){
         setRealPlayTag(element,pageInfoMap);
     }
 }
+
 function setVideoTag(element,pageInfoMap){
     //弹窗标题和关闭按钮
     clearChildren("swHeader");

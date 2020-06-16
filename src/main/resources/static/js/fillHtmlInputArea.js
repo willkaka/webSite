@@ -58,6 +58,17 @@ function fillChangedEle(){
                         ele.appendChild(option);
                     }
                 }
+            }else if(eleInfo.chgType == "inputDataList"){
+                ele.value = "";
+                clearChildren("datalist"+eleId); //清空已有的内容
+                var dataList = document.getElementById("datalist"+eleId);
+                if (JSON.stringify(eleInfo.dataMap) != JSON.stringify({})){
+                    for(let value in eleInfo.dataMap){
+                        let option = document.createElement("option");
+                        option.setAttribute("value",value);
+                        dataList.appendChild(option);
+                    }
+                }
             }
         }
         changedMap.isChanged = false;

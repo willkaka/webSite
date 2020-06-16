@@ -26,6 +26,7 @@ function putInputList(id,seq,fun,area,type){
 function writeWebElement(parentEle,elementInfo){
     if(elementInfo.type == "input") writeInput(parentEle,elementInfo);
     if(elementInfo.type == "dropDown") writeDropDown(parentEle,elementInfo);
+    if(elementInfo.type == "inputDataList") writeInputDataList(parentEle,elementInfo);
     if(elementInfo.type == "button") writeButton(parentEle,elementInfo);
 }
 
@@ -52,13 +53,39 @@ function writeInput(parentEle,elementInfo){
 }
 
 
-//<div class="inputArea_div_grp">
-//    <label class="inputArea_sub_label">选择1</label>
-//    <select class="inputArea_sub_select">
-//        <option value="1">sss1</option>
-//        <option value="2">sss3333332</option>
-//    </select>
-//</div>
+/**
+ * 
+ * @param {*} parentEle 
+ * @param {*} elementInfo 
+ */
+function writeInputDataList(parentEle,elementInfo){
+    let groupDiv = document.createElement("div");
+    groupDiv.setAttribute("class","inputArea_div_grp");
+
+    let label = document.createElement("label");
+    label.setAttribute("class","inputArea_sub_label");
+    label.innerHTML = elementInfo.prompt;//名称
+    groupDiv.appendChild(label);
+
+    let input = document.createElement("input");
+    input.setAttribute("id",elementInfo.id);
+    input.setAttribute("list","datalist"+elementInfo.id);
+    input.setAttribute("class","inputArea_sub_select");
+    setEventListener(input,elementInfo.eventInfoList); //事件
+    let dataList = document.createElement("datalist");
+    dataList.setAttribute("id","datalist"+elementInfo.id);
+
+    let dataMap = elementInfo.dataMap;
+    for(let value in dataMap){
+        let option = document.createElement("option");
+        option.setAttribute("value",value);
+        dataList.appendChild(option);
+    }
+    groupDiv.appendChild(input);
+    groupDiv.appendChild(dataList);
+    parentEle.appendChild(groupDiv);
+}
+
 function writeDropDown(parentEle,elementInfo){
     let groupDiv = document.createElement("div");
     groupDiv.setAttribute("class","inputArea_div_grp");
@@ -135,12 +162,22 @@ function setEventListener(element,eventInfoList){
  * @param menuId
  */
 function eventProcessMethod(eventInfo,recordMap) {
-    if(eventInfo.type == "menuReq"){
-        curMenuId = eventInfo.id;
-        document.getElementById("navSpan").innerHTML= eventInfo.id;
-    } else if(eventInfo.type == "webDataReq"){
-        var selectedValue = $('select  option:selected').val();
-        eventInfo.selectedValue = selectedValue;
+    //target：触发事件的元bai素。currentTarget：事件绑定的元素。
+    var event = window.event || arguments[0];
+    var eventEle = event.currentTarget;
+    if(eventEle.tagName == "INPUT"){
+        if(eventEle.value == undefined || eventEle.value == "" || eventEle.value == null){
+            return;
+        }
+        eventInfo.selectedValue = eventEle.value;
+    }else{
+        if(eventInfo.type == "menuReq"){
+            curMenuId = eventInfo.id;
+            document.getElementById("navSpan").innerHTML= eventInfo.id;
+        } else if(eventInfo.type == "webDataReq"){
+            var selectedValue = $('select  option:selected').val();
+            eventInfo.selectedValue = selectedValue;
+        }
     }
 
     //仅页面处理即可，不需要请求主机
@@ -266,6 +303,8 @@ function getInputValueMap(){
                 inputValue[curInputList[i].id] = "";
             }
         }else if("input"===curInputList[i].type){
+            inputValue[curInputList[i].id] = inputEle.value;
+        }else if("inputDataList"===curInputList[i].type){
             inputValue[curInputList[i].id] = inputEle.value;
         }
     }
