@@ -36,7 +36,7 @@ public class GetFieldList implements WebDataReqFun {
             configDatabaseInfo.setDatabaseLabel(selectedLib);
         }
         Connection connection = DbUtil.getConnection(configDatabaseInfo);
-        List<Map<String,Object>> fields = DbUtil.getFieldInfo(connection,selectedDb,tableName);
+        List<Map<String,Object>> fields = DbUtil.getFieldInfo(connection,selectedDb,selectedLib,tableName);
         DbUtil.closeConnection(connection);
 
         changedEleMap.put("recordMap",fields);

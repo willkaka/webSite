@@ -35,6 +35,10 @@ public class QueryTableRecords implements RequestFun {
         Map<String,String> inputValue = (Map<String,String>) requestDto.getReqParm().get("inputValue");
         String dbName = (String) inputValue.get("dbName");
         if(StringUtil.isBlank(dbName)){
+            throw new BizException("DB不允许为空值!");
+        }
+        String libName = (String) inputValue.get("libName");
+        if(StringUtil.isBlank(libName)){
             throw new BizException("数据库,不允许为空值!");
         }
         String tableName = (String) inputValue.get("tableName");
@@ -43,9 +47,10 @@ public class QueryTableRecords implements RequestFun {
         }
 
         ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(dbName);
+        configDatabaseInfo.setDatabaseLabel(libName);
         Connection connection = DbUtil.getConnection(configDatabaseInfo);
 
-        List<String> tableColList = DbUtil.getFieldNameList(connection,null,tableName);
+        List<String> tableColList = DbUtil.getFieldNameList(connection,libName,tableName);
         List<Map<String,Object>> records = DbUtil.getTableRecords(connection,tableName);
 
         DbUtil.closeConnection(connection);

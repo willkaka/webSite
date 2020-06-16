@@ -52,8 +52,8 @@ public class QueryTable implements RequestFun {
         delNeedlessFields(tableColList);
         returnDto.getOutputMap().put("tableColList", tableColList);
 
-        //表格记录数据
-        List<Map<String,Object>> fields = DbUtil.getFieldInfo(connection,dbName,tableName);
+        //表格定义字段
+        List<Map<String,Object>> fields = DbUtil.getFieldInfo(connection,dbName,libName,tableName);
         DbUtil.closeConnection(connection);
         delNeedlessRecords(fields);
         returnDto.getOutputMap().put("tableRecordList", fields);

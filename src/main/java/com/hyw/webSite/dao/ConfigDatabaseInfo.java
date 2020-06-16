@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class ConfigDatabaseInfo {
+    private int configDatabaseInfoId;
     private String databaseName;
     private String databaseType;
     private String databaseDriver;

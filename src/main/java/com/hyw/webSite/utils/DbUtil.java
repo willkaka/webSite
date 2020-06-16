@@ -62,8 +62,8 @@ public class DbUtil {
         return tableList;
     }
 
-    public static List<Map<String,Object>> getFieldInfo(Connection connection,String dbName, String tableName) {
-        String   catalog           = null;  //表所在的编目
+    public static List<Map<String,Object>> getFieldInfo(Connection connection,String dbName, String libName,String tableName) {
+        String   catalog           = libName;  //表所在的编目
         String   schemaPattern     = dbName;  //表所在的模式
         String   tableNamePattern  = tableName; //匹配表名
         String   columnNamePattern = null; //
@@ -81,8 +81,8 @@ public class DbUtil {
     }
 
     public static List<String> getFieldNameList(Connection connection,String dbName, String tableName) {
-        String   catalog           = null;  //表所在的编目
-        String   schemaPattern     = dbName;  //表所在的模式
+        String   catalog           = dbName;  //表所在的编目
+        String   schemaPattern     = null;  //表所在的模式
         String   tableNamePattern  = tableName; //匹配表名
         String   columnNamePattern = null; //
 
@@ -149,8 +149,8 @@ public class DbUtil {
      * @return
      */
     public static List<String> getTablePrimaryKeys(Connection connection,String dbName, String tableName) {
-        String   catalog           = null;  //表所在的编目
-        String   schemaPattern     = dbName;  //表所在的模式
+        String   catalog           = dbName;  //表所在的编目
+        String   schemaPattern     = null;  //表所在的模式
         String   tableNamePattern  = tableName; //匹配表名
 
         List<String> primaryKeys = new ArrayList<>();
@@ -182,7 +182,7 @@ public class DbUtil {
         List<String> libs = DbUtil.getLibraryNames(connection);
         List<String> tables = DbUtil.getTableNames(connection,"caes");
         List<Map<String,Object>> fields = getTableFieldsMapList(connection,"test1");
-        fields = getFieldInfo(connection,"caes","test1");
+        fields = getFieldInfo(connection,"caes","caes","test1");
         DbUtil.closeConnection(connection);
 
         driver="org.sqlite.JDBC";
@@ -413,116 +413,6 @@ public class DbUtil {
             //DbUtil.closeConnection(connection);
         }
         return fieldList;
-    }
-
-    /**
-     * 查询数据表返回记录集
-     * @param connection 数据库连接
-     * @param table 查询数据表
-     */
-    public static void getTableRecords(Connection connection,String table,List<String> fields,List<Map<String,Object>> records){
-        if(connection == null){
-            log.error("数据库连接不允许为null！");
-            return;
-        }
-        if(StringUtil.isBlank(table)){
-            log.error("查询数据表不允为空！");
-            return;
-        }
-
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet set = statement.executeQuery("select * from " + table);
-            if(set != null) {
-                //取字段名
-                ResultSetMetaData metaData1 = set.getMetaData();
-                for (int fieldNum = 1; fieldNum <= metaData1.getColumnCount(); fieldNum++) {
-                    fields.add(metaData1.getColumnLabel(fieldNum));
-                }
-
-                //取记录
-                while(set.next()) {
-                    ResultSetMetaData metaData = set.getMetaData();
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    for (int fieldNum = 1; fieldNum <= metaData.getColumnCount(); fieldNum++) {
-                        if (metaData.getColumnName(fieldNum) != null && !"".equals(metaData.getColumnName(fieldNum))) {
-                            String fieldName;
-                            if (StringUtils.isNotBlank(metaData.getColumnLabel(fieldNum))) {
-                                fieldName = metaData.getColumnLabel(fieldNum);
-                            } else {
-                                fieldName = metaData.getColumnName(fieldNum);
-                            }
-                            Object fieldValue = set.getObject(fieldName);
-                            map.put(fieldName, fieldValue);
-                        }
-                    }
-                    records.add(map);
-                }
-            }
-            if(set != null) set.close();
-            statement.close();
-        }catch(Exception e){
-            log.error("查询数据表({})出错！",table,e);
-        }finally {
-            DbUtil.closeConnection(connection);
-        }
-    }
-
-
-    /**
-     * 查询数据表返回记录集
-     * @param connection 数据库连接
-     * @param sql 查询sql语句
-     * @return 记录集
-     */
-    public static List<Map<String,Object>> getSelectSqlRecords(Connection connection,String sql){
-        if(connection == null){
-            log.error("数据库连接不允许为null！");
-            return null;
-        }
-        if(StringUtil.isBlank(sql)){
-            log.error("查询sql语句不允为空！");
-            return null;
-        }
-
-        List<Map<String,Object>> records = new ArrayList<>();
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet set = statement.executeQuery(sql);
-            if(set != null) {
-                //取字段名
-//                ResultSetMetaData metaData1 = set.getMetaData();
-//                for (int fieldNum = 1; fieldNum <= metaData1.getColumnCount(); fieldNum++) {
-//                    fields.add(metaData1.getColumnLabel(fieldNum));
-//                }
-
-                //取记录
-                while(set.next()) {
-                    ResultSetMetaData metaData = set.getMetaData();
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    for (int fieldNum = 1; fieldNum <= metaData.getColumnCount(); fieldNum++) {
-                        if (metaData.getColumnName(fieldNum) != null && !"".equals(metaData.getColumnName(fieldNum))) {
-                            String fieldName;
-                            if (StringUtils.isNotBlank(metaData.getColumnLabel(fieldNum))) {
-                                fieldName = metaData.getColumnLabel(fieldNum);
-                            } else {
-                                fieldName = metaData.getColumnName(fieldNum);
-                            }
-                            Object fieldValue = set.getObject(fieldName);
-                            map.put(fieldName, fieldValue);
-                        }
-                    }
-                    records.add(map);
-                }
-            }
-            if(set != null) set.close();
-            statement.close();
-        }catch(Exception e){
-            log.error("查询Sql语句({})出错！",sql,e);
-        }finally {
-            DbUtil.closeConnection(connection);
-        }
-        return records;
     }
 
     /**

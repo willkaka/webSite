@@ -7,6 +7,7 @@ import java.util.Map;
 
 @Data
 public class WebElement {
+    private int webElementId;
     private String id; // 唯一标识
     private String seq; // 序号，显示顺序
     private String function; // 所属功能

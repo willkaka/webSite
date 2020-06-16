@@ -16,6 +16,8 @@ import java.util.Map;
 public interface DynamicTableMapper{
     List<Map<String, Object>> selectAll(@Param( "ew" ) DynamicTableDto dynamicTableDto);
 
+    List<Map<String, Object>> query(@Param( "ew" ) DynamicTableDto dynamicTableDto);
+
     int insert(DynamicTableDto dynamicTableDto);
 
     int update(@Param( "ew" ) DynamicTableDto dynamicTableDto);

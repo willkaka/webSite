@@ -29,6 +29,11 @@ public class DynamicTableDto{
     private String tableName;
 
     /**
+     * 对象类名
+     */
+    private String className;
+
+    /**
      * 选取字段
      */
     private String selectFields;
@@ -49,6 +54,16 @@ public class DynamicTableDto{
     private String selectOrderby;
 
     /**
+     * 字段名集合(insert字段名)
+     */
+    private String fieldNames;
+
+    /**
+     * 字段值集合(insert字段值)
+     */
+    private String fieldValues;
+
+    /**
      * 字段值集合(insert字段/值，update字段/值)
      */
     private Map<String,Object> fieldValueMap;
@@ -63,5 +78,14 @@ public class DynamicTableDto{
      */
     private List<Map<String,String>> dataList;
 
+    /**
+     * 每次读取开始记录号
+     */
+    private long limitBegNum;
+
+    /**
+     * 每次读取记录数
+     */
+    private long limitCountNum;
 }
 
