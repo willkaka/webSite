@@ -148,7 +148,7 @@ function fillOutPutAreaWithTable() {
                             eventInfo.recordMap = recordMap;
                         }
                     }
-                    writeWebElement(element_table_td,formatInfoList[i]);
+                    writeWebElementRoute(element_table_td,formatInfoList[i]);
                     element_table_tr.appendChild(element_table_td);
                 }
             }
@@ -176,7 +176,7 @@ function setVideoTag(element,pageInfoMap){
     header.appendChild(header_span);
     let header_close = document.createElement("div");
     header_close.setAttribute("class","subWidowHeaderCloseBtn");
-    header_close.addEventListener("click",hidder.bind(this,"swBackGround"),false);
+    header_close.addEventListener("click",hide.bind(this,"swBackGround"),false);
     header_close.innerHTML = "X";//标题
     header.appendChild(header_close);
 
@@ -238,7 +238,7 @@ function setRealPlayTag(element,pageInfoMap){
     header.appendChild(header_span);
     let header_close = document.createElement("div");
     header_close.setAttribute("class","subWidowHeaderCloseBtn");
-    header_close.addEventListener("click",hidder.bind(this,"swBackGround"),false);
+    header_close.addEventListener("click",hide.bind(this,"swBackGround"),false);
     header_close.innerHTML = "X";//标题
     header.appendChild(header_close);
 

@@ -14,6 +14,7 @@ public class WebElement {
     private String area; // 区域 input/output/modal
     private String type; // 类型 input/dropDown/button
     private String prompt; // 显示名称
+    private String defaultValue; // 默认值
     private String chgType; // 可改变的属性类型
     private Map<String,String> dataMap;
     private Map<String,String> attrMap; // 属性 eg. class="xxx",width=100px,height=200px

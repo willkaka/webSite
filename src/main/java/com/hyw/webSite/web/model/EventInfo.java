@@ -15,5 +15,6 @@ public class EventInfo {
     private String relEleType;
     private String relEleChgType; //改变的类型：value-改变值
     private String selectedValue;
-    private List<Map<String,String>> recordMap;
+    private List<Map<String,Object>> recordMap;
+    private Map<String,Object> paramMap; //放置参数
 }

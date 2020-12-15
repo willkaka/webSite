@@ -3,6 +3,7 @@ package com.hyw.webSite.funbean.WebDataReqFunImpl;
 import com.hyw.webSite.funbean.WebDataReqFun;
 import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.utils.DbUtil;
+import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.model.EventInfo;
 import com.hyw.webSite.web.model.WebElement;
@@ -25,6 +26,7 @@ public class GetLibFromDb implements WebDataReqFun {
         Map<String,Object> changedEleMap = new HashMap<>();
         EventInfo eventInfo = requestDto.getEventInfo();//事件信息
 
+        if(StringUtil.isBlank(eventInfo.getSelectedValue())) return changedEleMap;
         Connection connection = DbUtil.getConnection(configDatabaseInfoService.getDatabaseConfig(eventInfo.getSelectedValue()));
         List<String> libs = DbUtil.getLibraryNames(connection);
         DbUtil.closeConnection(connection);

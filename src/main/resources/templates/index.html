@@ -4,23 +4,19 @@
     <title>hlhome</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../css/webSite.css">
-
     <script src="../jstools/jquery.min.js"></script>
-
     <script src="../js/utils.js"></script>
-
     <script src="../js/fillHtmlModal.js"></script>
     <script src="../js/fillHtmlOutputArea.js"></script>
     <script src="../js/fillHtmlInputArea.js"></script>
     <script src="../js/fillPageInfo.js"></script>
     <!-- 后加载的可以用前加载的函数 -->
-
 </head>
 <body onload="initPageInfo()">
 
 <!-- 菜单区域 -->
 <div id="menuArea" class="menu_div">
-    <div class="dropbtn" href="#home">主页</div>
+    <div class="dropbtn" href="/">主页</div>
     <div class="dropdown">
         <a class="dropbtn" href="#">下拉菜单</a>
         <div class="dropdown-content">
@@ -29,7 +25,6 @@
             <a href="#">链接 3</a>
         </div>
     </div>
-
     <div class="dropbtn" href="#about" style="float:right">关于</div>
 </div>
 
@@ -121,23 +116,22 @@
 <!--    </object>-->
 <!--</div>-->
 
-<div>
-    <object classid="clsid:E23FE9C6-778E-49D4-B537-38FCDE4887D8" codebase="http://downloads.videolan.org/pub/videolan/vlc/latest/win32/axvlc.cab"
-            width="160" height="120" events="True" id="vlc2">
-        <param name="MRL" value="http://attilax:8888/vod/uploadf/0925mem1366-768.mov"/>
-        <param name="ShowDisplay" value="True"/>
-        <param name="Loop" value="False"/>
-        <param name="AutoPlay" value="True"/>
-    </object>
-</div>
+<!--<div>-->
+<!--    <object classid="clsid:E23FE9C6-778E-49D4-B537-38FCDE4887D8" codebase="http://downloads.videolan.org/pub/videolan/vlc/latest/win32/axvlc.cab"-->
+<!--            width="160" height="120" events="True" id="vlc2">-->
+<!--        <param name="MRL" value="http://attilax:8888/vod/uploadf/0925mem1366-768.mov"/>-->
+<!--        <param name="ShowDisplay" value="True"/>-->
+<!--        <param name="Loop" value="False"/>-->
+<!--        <param name="AutoPlay" value="True"/>-->
+<!--    </object>-->
+<!--</div>-->
 
 <!-- 弹窗 -->
 <div id="swBackGround" class="subWindowBackGround" style="display:none;">
     <div id='swBorder' class="subWindow">
         <div id="swContent" class="subWidowContent">
             <div id="swHeader" class="subWidowHeader">
-
-                <div id="header-x-div" class="subWidowHeaderCloseBtn" onclick="hidder()">x</div>
+                <div id="header-x-div" class="subWidowHeaderCloseBtn" onclick="hide()">x</div>
             </div>
             <div id="swBody" class="subWidowBody"></div>
             <div id="swFooter" class="subWidowFooter"></div>

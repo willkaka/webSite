@@ -1,38 +1,17 @@
-
 /**
- * 显示modal后，将显示的字段保存在inputList中，使请求时可以一并取到modal上的字段值。
+ * 生成页面元素路由
  **/
-function putInputList(id,seq,fun,area,type){
-    //var inputMap = {"isChanged":false,"inputList":{}}; /*  */
-    let inputList = inputMap.inputList;
-    let found = false;
-    for (let i=0;i<inputList.length;i++){
-        if(inputList[i].id == id){
-            inputList[i].seq = seq;
-            inputList[i].function = fun;
-            inputList[i].area = area;
-            inputList[i].type = type;
-            inputList[i].prompt = prompt;
-
-            found = true;
-        }
-    }
-    if(!found){
-        let newElement = {"id":id,"seq":seq,"function":fun,"area":area,"type":type,"prompt":prompt};
-        inputList.push(newElement);
-    }
-}
-
-function writeWebElement(parentEle,elementInfo){
+function writeWebElementRoute(parentEle,elementInfo){
     if(elementInfo.type == "input") writeInput(parentEle,elementInfo);
     if(elementInfo.type == "dropDown") writeDropDown(parentEle,elementInfo);
+    if(elementInfo.type == "inputDataList") writeInputDataList(parentEle,elementInfo);
+    if(elementInfo.type == "selectOption") writeSelectOption(parentEle,elementInfo);
     if(elementInfo.type == "button") writeButton(parentEle,elementInfo);
 }
 
-//<div class="inputArea_div_grp">
-//    <label class="inputArea_sub_label">输入1</label>
-//    <input class="inputArea_sub_input" placeholder="输入1...">
-//</div>
+/**
+ * 在父元素插入生成的输入框 div label/input
+ **/
 function writeInput(parentEle,elementInfo){
     let groupDiv = document.createElement("div");
     groupDiv.setAttribute("class","inputArea_div_grp");
@@ -46,19 +25,81 @@ function writeInput(parentEle,elementInfo){
     input.setAttribute("id",elementInfo.id);
     input.setAttribute("class","inputArea_sub_input");
     input.setAttribute("placeholder",elementInfo.prompt);
+    if(null != elementInfo.defaultValue){
+        input.setAttribute("value",elementInfo.defaultValue);
+    }
     groupDiv.appendChild(input);
 
     parentEle.appendChild(groupDiv);
 }
 
+/**
+ * 在父元素插入生成的下拉选择框 div label input/option
+ **/
+function writeInputDataList(parentEle,elementInfo){
+    let groupDiv = document.createElement("div");
+    groupDiv.setAttribute("class","inputArea_div_grp");
 
-//<div class="inputArea_div_grp">
-//    <label class="inputArea_sub_label">选择1</label>
-//    <select class="inputArea_sub_select">
-//        <option value="1">sss1</option>
-//        <option value="2">sss3333332</option>
-//    </select>
-//</div>
+    let label = document.createElement("label");
+    label.setAttribute("class","inputArea_sub_label");
+    label.innerHTML = elementInfo.prompt;//名称
+    groupDiv.appendChild(label);
+
+    let input = document.createElement("input");
+    input.setAttribute("id",elementInfo.id);
+    input.setAttribute("list","datalist"+elementInfo.id);
+    input.setAttribute("class","inputArea_sub_select");
+    setEventListener(input,elementInfo.eventInfoList); //事件
+    let dataList = document.createElement("datalist");
+    dataList.setAttribute("id","datalist"+elementInfo.id);
+
+    let dataMap = elementInfo.dataMap;
+    for(let value in dataMap){
+        let option = document.createElement("option");
+        option.setAttribute("value",value);
+        option.innerHTML = dataMap[value];
+        dataList.appendChild(option);
+    }
+    groupDiv.appendChild(input);
+    groupDiv.appendChild(dataList);
+    parentEle.appendChild(groupDiv);
+}
+
+/**
+ * 在父元素插入生成的下拉选择框 div label select/option
+ <select>
+   <option value="1">Volvo</option>
+   <option value="2">Saab</option>
+ </select>
+ **/
+function writeSelectOption(parentEle,elementInfo){
+    let groupDiv = document.createElement("div");
+    groupDiv.setAttribute("class","inputArea_div_grp");
+
+    let label = document.createElement("label");
+    label.setAttribute("class","inputArea_sub_label");
+    label.innerHTML = elementInfo.prompt;//名称
+    groupDiv.appendChild(label);
+
+    let select = document.createElement("select");
+    select.setAttribute("id",elementInfo.id);
+    select.setAttribute("class","inputArea_sub_select");
+    setEventListener(select,elementInfo.eventInfoList); //事件
+
+    let dataMap = elementInfo.dataMap;
+    for(let value in dataMap){
+        let option = document.createElement("option");
+        option.setAttribute("value",value);
+        option.innerHTML = dataMap[value];
+        select.appendChild(option);
+    }
+    groupDiv.appendChild(select);
+    parentEle.appendChild(groupDiv);
+}
+
+/**
+ * 在父元素插入生成的下拉选择框 div label select/option
+ **/
 function writeDropDown(parentEle,elementInfo){
     let groupDiv = document.createElement("div");
     groupDiv.setAttribute("class","inputArea_div_grp");
@@ -77,7 +118,6 @@ function writeDropDown(parentEle,elementInfo){
     let dataMap = elementInfo.dataMap;
     for(let value in dataMap){
         let option = document.createElement("option");
-        //option.setValue = value;
         option.setAttribute("value",value);
         option.innerHTML = dataMap[value];
         select.appendChild(option);
@@ -86,12 +126,9 @@ function writeDropDown(parentEle,elementInfo){
     parentEle.appendChild(groupDiv);
 }
 
-//function func(){
-// //获取被选中的option标签
-// var vs = $('select  option:selected').val();
-//}
-
-//<button class="inputArea_sub_button"><span>按钮1</span></button>
+/**
+ * 在父元素插入生成的按钮
+ **/
 function writeButton(parentEle,elementInfo){
     let button = document.createElement("button");
     button.setAttribute("class","inputArea_sub_button");
@@ -125,22 +162,36 @@ function setEventListener(element,eventInfoList){
     if(eventInfoList != null && eventInfoList.length > 0 ){
         for (let i=0;i<eventInfoList.length;i++){
             let eventInfo = eventInfoList[i];
-            element.addEventListener(eventInfo.event,eventProcessMethod.bind(this,eventInfo,eventInfo.recordMap),false);
+            element.addEventListener(eventInfo.event,setEventPrcMethod.bind(this,eventInfo,eventInfo.recordMap),false);
         }
     }
 }
 
 /**
- * 点击事件处理方法
- * @param menuId
+ * 设置点击事件处理方法
+ * @param eventInfo
+ * @param recordMap
  */
-function eventProcessMethod(eventInfo,recordMap) {
-    if(eventInfo.type == "menuReq"){
-        curMenuId = eventInfo.id;
-        document.getElementById("navSpan").innerHTML= eventInfo.id;
-    } else if(eventInfo.type == "webDataReq"){
-        var selectedValue = $('select  option:selected').val();
-        eventInfo.selectedValue = selectedValue;
+function setEventPrcMethod(eventInfo,recordMap) {
+    //需要取出当前页面的所有数据传给后台：
+    //1.选择的菜单/导航
+    //2.输入信息
+    //target：触发事件的元bai素。currentTarget：事件绑定的元素。
+    var event = window.event || arguments[0];
+    var eventEle = event.currentTarget;
+    if(eventEle.tagName == "INPUT"){
+        if(eventEle.value == undefined || eventEle.value == "" || eventEle.value == null){
+            return;
+        }
+        eventInfo.selectedValue = eventEle.value;
+    }else{
+        if(eventInfo.type == "menuReq"){
+            curMenuId = eventInfo.id;
+            document.getElementById("navSpan").innerHTML= eventInfo.id;
+        } else if(eventInfo.type == "webDataReq"){
+            var selectedValue = $('select  option:selected').val();
+            eventInfo.selectedValue = selectedValue;
+        }
     }
 
     //仅页面处理即可，不需要请求主机
@@ -160,6 +211,44 @@ function eventProcessMethod(eventInfo,recordMap) {
     }
 }
 
+/**
+ * 用于自动刷新时调取的查询功能
+ */
+function callMethod(eventInfo) {
+    //target：触发事件的元bai素。currentTarget：事件绑定的元素。
+    let event = window.event || arguments[0];
+    let eventEle = event.currentTarget;
+    if(eventEle.tagName == "INPUT"){
+        if(eventEle.value == undefined || eventEle.value == "" || eventEle.value == null){
+            return;
+        }
+        eventInfo.selectedValue = eventEle.value;
+    }else{
+        if(eventInfo.type == "menuReq"){
+            curMenuId = eventInfo.id;
+            document.getElementById("navSpan").innerHTML= eventInfo.id;
+        } else if(eventInfo.type == "webDataReq"){
+            var selectedValue = $('select  option:selected').val();
+            eventInfo.selectedValue = selectedValue;
+        }
+    }
+
+    //仅页面处理即可，不需要请求主机
+    if(eventInfo.type == "webButtonShowModal"){
+        //eventInfo.recordMap = recordMap;
+        showAddModal(eventInfo);
+    }else{
+        let requestParm = '{"eventId":"","reqParm":{}}';
+        let requestObj = JSON.parse(requestParm);  //string -> obj
+        requestObj.eventId = eventInfo.id;
+        requestObj.curMenu = curMenuId;
+        let param = getCurPageInfo();
+        requestObj.reqParm = param;
+        requestObj.eventInfo = eventInfo; //事件信息
+        let requestJsonStr = JSON.stringify(requestObj); // obj -> string
+        sendJsonByAjax(eventInfo.type+'/'+eventInfo.id,requestJsonStr,sucFreshAll);//刷新输出区域
+    }
+}
 
 /**
  * 发送json报文到后台
@@ -238,40 +327,76 @@ function sucFreshAll(ReturnDto){
     if(isChanged){
         fillPageInfo();
     }
+
+    //退出弹窗
+    if(ReturnDto.webNextOpr != null){
+        let webNextOprMap = ReturnDto.webNextOpr;
+
+        if(webNextOprMap["type"] == "hide"){
+            if(webNextOprMap["alert"] == "true"){
+                if(ReturnDto.rtnCode == "0000"){
+                    alert(webNextOprMap["sucMsg"]);
+                    hide(webNextOprMap["hideEle"]); //swBackGround
+                }else{
+                    alert("处理失败，返回码:"+ReturnDto.rtnCode+",返回信息:"+ReturnDto.rtnMsg);
+                }
+            }
+        }
+        if(webNextOprMap["callEven"] != null){
+            callMethod(webNextOprMap["callEven"]); //调用某事件，实现刷新功能。
+        }
+    }
 }
 
-
+/**
+ * 取页面数值
+ * @return Map
+ **/
 function getCurPageInfo(){
     let pageInfoMap = {"curMenuId":curMenuId,"inputValue":getInputValueMap()};
     return pageInfoMap;
 }
-
 
 /**
  * 取输入区域取值
  * @return Map
  **/
 function getInputValueMap(){
-    let curInputList = inputMap.inputList;
-    let inputValue = {};
-    for (let i=0;i<curInputList.length;i++){
-        let inputEle = document.getElementById(curInputList[i].id);
-        if("dropDown"===curInputList[i].type){
-            let index = inputEle.selectedIndex; // 选中索引
-            if(index >= 0){
-                let text = inputEle.options[index].text; // 选中文本
-                let value = inputEle.options[index].value; // 选中值
-                inputValue[curInputList[i].id] = value;
-            }else{
-                inputValue[curInputList[i].id] = "";
-            }
-        }else if("input"===curInputList[i].type){
-            inputValue[curInputList[i].id] = inputEle.value;
-        }
+    let nodeValueMap = {};
+    let map = getNodeValueMap("input");
+    for(let value in map){
+        nodeValueMap[value] = map[value];
     }
-    return inputValue;
+    map = getNodeValueMap("select");
+    for(let value in map){
+        nodeValueMap[value] = map[value];
+    }
+    return nodeValueMap;
 }
 
+/**
+ * 取页面指定标签的当前值
+ **/
+function getNodeValueMap(nodeTag){
+    let nodeValueMap = {};
+    var nodeList = document.querySelectorAll(nodeTag);
+    for (let i=0;i<nodeList.length;i++){
+        let nodeEle = nodeList[i];
+        if("select"===nodeTag){
+            let index = nodeEle.selectedIndex; // 选中索引
+            if(index >= 0){
+                let text = nodeEle.options[index].text; // 选中文本
+                let value = nodeEle.options[index].value; // 选中值
+                nodeValueMap[nodeEle.id] = value;
+            }else{
+                nodeValueMap[nodeEle.id] = "";
+            }
+        }else if("input"===nodeTag){
+            nodeValueMap[nodeEle.id] = nodeEle.value;
+        }
+    }
+    return nodeValueMap;
+}
 
 /**
  * 删除传入标签ID下所有子标签
@@ -287,11 +412,19 @@ function clearChildren(parentId) {
     }
 }
 
-function hidder(eleId){
+/**
+ * 不显示指定标签
+ * @param eleId
+ */
+function hide(eleId){
     let ele = document.getElementById(eleId);
     ele.style.display="none";
 }
 
+/**
+ * 显示指定标签
+ * @param eleId
+ */
 function display(eleId){
     let ele = document.getElementById(eleId);
     ele.style.display="";

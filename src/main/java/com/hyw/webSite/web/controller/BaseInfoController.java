@@ -74,7 +74,7 @@ public class BaseInfoController {
         returnDto.getTitleInfoMap().put("webName", Constant.WEB_SITE_TITLE);
 
         //取菜单清单
-        List<WebElement> menuList = webConfigInfoService.getWebConfigElement("root", "menuArea");//返回要显示的菜单项;
+        List<WebElement> menuList = webConfigInfoService.getWebConfigElement(requestDto, "root", "menuArea");//返回要显示的菜单项;
         returnDto.getMenuMap().put("isChanged", true);
         returnDto.getMenuMap().put("menuList", menuList);
 
@@ -115,14 +115,14 @@ public class BaseInfoController {
         //取导航清单
         returnDto.getNavMap().put("isChanged", false);
 
-        //取菜单输入输出格式信息
-        List<WebElement> formatInfoList = webConfigInfoService.getWebConfigElement(eventId, "outputArea");
-        formatInfoList.addAll(webConfigInfoService.getWebConfigElement(eventId, "modalArea"));
+        //取菜单输入输出格式信息,例如：输出区域记录编辑按钮，可加在此处。
+        List<WebElement> formatInfoList = webConfigInfoService.getWebConfigElement(requestDto, eventId, "outputArea");
+        formatInfoList.addAll(webConfigInfoService.getWebConfigElement(requestDto, eventId, "modalArea"));
         returnDto.getFormatInfoMap().put("isChanged", true);
         returnDto.getFormatInfoMap().put("formatInfoList", formatInfoList);
 
         //取输入区域元素清单
-        List<WebElement> inputList = webConfigInfoService.getWebConfigElement(eventId, "inputArea");
+        List<WebElement> inputList = webConfigInfoService.getWebConfigElement(requestDto, eventId, "inputArea");
         returnDto.getInputMap().put("isChanged", true);
         returnDto.getInputMap().put("inputList", inputList);
 

@@ -311,7 +311,7 @@ public class DbUtil {
         }catch(Exception e){
             log.error("执行SQL({})出错！",sql,e);
         }finally {
-            DbUtil.closeConnection(connection);
+            //DbUtil.closeConnection(connection);
         }
         return listMap;
     }
@@ -368,7 +368,7 @@ public class DbUtil {
     }
 
     /**
-     * 查询数据表返回记录集
+     * 取数据表字段基础信息
      * @param connection 数据库连接
      * @param table 查询数据表
      */

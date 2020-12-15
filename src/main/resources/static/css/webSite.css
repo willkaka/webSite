@@ -1,5 +1,5 @@
 body{
-  position:relative;
+   position: relative;
 }
 .menu_div {
    list-style-type: none;
@@ -7,8 +7,8 @@ body{
    padding: 0;
    overflow: hidden;
    background-color: #8AB9C2; /*背景色*/
-	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-	border-radius: 8px; /*圆角*/
+   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+   border-radius: 8px; /*圆角*/
 }
 
 .dropbtn {
@@ -168,7 +168,9 @@ body{
   border-width:1px;
   border-color:#8AB9C2;
   /*overflow-style: scrollbar;*/
-  overflow-x:scroll; //溢出时显示横向滚动条
+  overflow-x:scroll; /*溢出时显示横向滚动条*/
+  height:50%;
+  overflow-y:scroll; /*溢出时显示纵向滚动条*/
 }
 /*---------table---------------*/
 .output_table{
@@ -268,6 +270,9 @@ position: fixed;
     border-style:solid;
     border-width:1px;
     border-color:#8AB9C2;
+
+    max-height: 600px;
+    overflow:auto; /* 自动增加滚动条 */
 }
 .subWidowFooter{
     margin:10px 5px 2px 5px;/*上边距，右边距，下边距，左边距*/

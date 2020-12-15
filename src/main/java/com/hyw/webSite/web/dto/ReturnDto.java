@@ -17,4 +17,5 @@ public class ReturnDto {
     private Map<String,Object> inputMap = new HashMap<>();
     private Map<String,Object> outputMap = new HashMap<>();
     private Map<String,Object> changedMap = new HashMap<>(); //key:element id,value: info
+    private Map<String,Object> webNextOpr = new HashMap<>(); //后台执行完请求后，前台的下一操作
 }

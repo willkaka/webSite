@@ -19,9 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service("updateRecord")
+@Service("addRecord")
 @Slf4j
-public class UpdateRecord implements RequestFun {
+public class AddRecord implements RequestFun {
 
     @Autowired
     private ConfigDatabaseInfoService configDatabaseInfoService;
@@ -44,56 +44,42 @@ public class UpdateRecord implements RequestFun {
             throw new BizException("表名,不允许为空值!");
         }
 
+        //生成insert语句
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO ").append(tableName).append(" (");
+        StringBuilder sqlFields = new StringBuilder();
+        StringBuilder sqlValues = new StringBuilder();
+        for(String fieldName:inputValue.keySet()){
+            if("modal".equals( fieldName.substring(0,5)) ){
+                if(StringUtil.isNotBlank(sqlFields.toString())) sqlFields.append(",");
+                sqlFields.append(fieldName.substring(5,fieldName.length()));
+                if(StringUtil.isNotBlank(sqlValues.toString())) sqlValues.append(",");
+                if(StringUtil.isBlank(inputValue.get(fieldName))){
+                    sqlValues.append("null");
+                }else {
+                    sqlValues.append("\"").append(inputValue.get(fieldName)).append("\" ");
+                }
+            }
+        }
+        sql.append(sqlFields).append(") VALUES(").append(sqlValues).append(")");
+
+        //建立数据库连接，并执行写入操作
         ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(dbName);
         configDatabaseInfo.setDatabaseLabel(libName);
         Connection connection = DbUtil.getConnection(configDatabaseInfo);
 
-        //String sql = SqlUtil.getUpdateSql(tableName,updatedRecordMap,originalRecordMap);
-        List<String> keyFields = DbUtil.getTablePrimaryKeys(connection,libName,tableName);
-        if(CollectionUtil.isEmpty(keyFields)){
-            throw new BizException("数据表"+tableName+",无主键,无法更新!");
-        }
-
-        StringBuffer sql = new StringBuffer();
-        sql.append("UPDATE").append(" ").append(tableName).append(" ").append("SET").append(" ");
-
-        int setFieldCount = 0;
-        for(String fieldName:inputValue.keySet()){
-            if("modal".equals( fieldName.substring(0,5)) ){
-                setFieldCount ++;
-                if(setFieldCount != 1) {
-                    sql.append(", ");
-                }
-                String value = inputValue.get(fieldName).replaceAll("\"","\\\\\"");
-                if("null".equals(value)){
-                    sql.append(fieldName.substring(5, fieldName.length())).append("=").append(value).append(" ");
-                }else {
-                    sql.append(fieldName.substring(5, fieldName.length())).append("=").append("\"").append(value).append("\" ");
-                }
-            }
-        }
-
-        sql.append(" WHERE ");
-        int keyFieldCount = 0;
-        for(String keyField:keyFields){
-            keyFieldCount++;
-            if(keyFieldCount != 1) {
-                sql.append(" AND ");
-            }
-            sql.append(keyField).append(" = ").append("\"").append(inputValue.get("modal" + keyField)).append("\" ");
-        }
         log.info("准备执行sql:"+sql.toString());
         DbUtil.executeSql(connection,sql.toString());
         log.info("已执行sql:"+sql.toString());
 
         DbUtil.closeConnection(connection);
 
+        //设置成功写入后的自动刷新
         Map<String,Object> webNextOprMap = new HashMap<>();
         webNextOprMap.put("type","hide");
         webNextOprMap.put("alert","true");
         webNextOprMap.put("hideEle","swBackGround"); //更新成功后关闭更新子窗口。
-        webNextOprMap.put("sucMsg","数据已更新成功！"); //更新成功后关闭更新子窗口。
-        //{"eventList":[{"event":"click","type":"buttonReq","id":"queryTableRecords"}]}
+        webNextOprMap.put("sucMsg","数据成功写入！"); //更新成功后关闭更新子窗口。
         EventInfo eventInfo = new EventInfo();
         eventInfo.setEvent("click");
         eventInfo.setType("buttonReq");

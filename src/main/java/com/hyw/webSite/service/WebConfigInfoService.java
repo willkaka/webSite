@@ -1,9 +1,12 @@
 package com.hyw.webSite.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hyw.webSite.constant.Constant;
+import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.dto.DynamicTableDto;
+import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.WebDataReqFun;
 import com.hyw.webSite.model.SpringDatabaseConfig;
 import com.hyw.webSite.utils.CollectionUtil;
@@ -13,12 +16,15 @@ import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.model.EventInfo;
 import com.hyw.webSite.web.model.WebElement;
+import com.ql.util.express.ExpressRunner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,15 +41,17 @@ public class WebConfigInfoService {
     private SpringDatabaseConfig springDatabaseConfig;
     @Autowired
     private SpringDataSourceService springDataSourceService;
+    @Autowired
+    private ConfigDatabaseInfoService configDatabaseInfoService;
 
     @Autowired
     ApplicationContext context;
 
-    public List<WebElement> getWebConfigElement(String elementParent, String elementArea) {
+    public List<WebElement> getWebConfigElement(RequestDto requestDto,String elementParent, String elementArea) {
 
         Map<String,Object> changedEleMap = new HashMap<>();
         Map<String,String> inputValue = new HashMap<>();
-        RequestDto requestDto = new RequestDto();
+        Map<String,String> curInputValue = (Map<String,String>) requestDto.getReqParm().get("inputValue");
 
         List<WebElement> webElements = new ArrayList<>();
         DynamicTableDto dynamicTableDto = new DynamicTableDto();
@@ -60,7 +68,73 @@ public class WebConfigInfoService {
             webElement.setArea((String) rtnMap.get("area"));
             webElement.setType((String) rtnMap.get("type"));
             webElement.setPrompt((String) rtnMap.get("prompt"));
-            webElement.setDataMap(getDataMap((String) rtnMap.get("data")));
+            //webElement.setDataMap(getDataMap((String) rtnMap.get("data")));
+
+            String xxx = LocalDateTime.now().plusDays(-10).format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            //解析data字段
+            String dataString = (String) rtnMap.get("data");
+            if(StringUtil.isNotBlank(dataString)) {
+                JSONObject jsonData = JSONObject.parseObject(dataString);
+                //默认值
+                JSONObject defaultValueObject = jsonData.getJSONObject("defaultValueObject");
+                if(null != defaultValueObject) {
+                    Object result = null;
+                    if ("QLExpress".equals(defaultValueObject.getString("type")) &&
+                            StringUtil.isNotBlank(defaultValueObject.getString("express"))) {
+                        try {
+                            ExpressRunner runner = new ExpressRunner(true, false);
+                            result = runner.execute(defaultValueObject.getString("express"), null, null, true, false);
+                        } catch (Exception e) {
+                            log.error("计算表达式(" + defaultValueObject.getString("express") + ")出错!",e);
+                            throw new BizException("计算表达式(" + defaultValueObject.getString("express") + ")出错!");
+                        }
+                    } else if ("value".equals(defaultValueObject.getString("type"))) {
+                        result = defaultValueObject.getString("value");
+                    }
+                    webElement.setDefaultValue((String) result);
+                }
+
+                String dataType = jsonData.getString("dataType");
+                Map<String, String> dataMap = new HashMap<>();
+                if("optionList".equals(dataType)) {
+                    JSONArray jsonArray = jsonData.getJSONArray("optionList");
+                    for (int i = 0; i < jsonArray.size(); i++) {
+                        dataMap.put((String) jsonArray.getJSONObject(i).get("value"), (String) jsonArray.getJSONObject(i).get("text"));
+                    }
+                }else if("sql".equals(dataType)) {
+                    List<Map<String, Object>> dataMaps = new ArrayList<>();
+                    String sql= jsonData.getString("sql");
+                    String dataBase = jsonData.getString("dataBase");
+                    String libName = jsonData.getString("libName");
+                    if(StringUtil.isNotBlank(dataBase)){
+                        if("#".equals(dataBase.substring(0,1))){
+                            String dataBaseNameKey = dataBase.substring(1);
+                            String dataBaseName = (String) curInputValue.get(dataBaseNameKey);
+                            String libNameKey = libName.substring(1);;
+                            String libNameN = (String) curInputValue.get(libNameKey);
+                            if(StringUtil.isNotBlank(dataBaseName) && StringUtil.isNotBlank(libNameN)){
+                                ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(dataBaseName);
+                                configDatabaseInfo.setDatabaseLabel(libNameN);
+                                Connection connection = DbUtil.getConnection(configDatabaseInfo);
+                                dataMaps = DbUtil.getSqlRecords(connection,sql);
+                            }
+                        }
+                    }else {
+                        dataMaps = DbUtil.getSqlRecords(springDataSourceService.getSpringDatabaseConnection(), sql);
+                    }
+                    dataMap = DataUtil.getValueMap(dataMaps);
+                }else if("fun".equals(dataType)) {
+                    String funBean = jsonData.getString("funBean");
+                    Map<String,Object> dataMapObject = ((WebDataReqFun) context.getBean(funBean)).execute(null);
+                    for(String key:dataMapObject.keySet()){
+                        dataMap.put(key,(String)dataMapObject.get(key));
+                    }
+                }else if("cod".equals(dataType)) {
+                    String code = dataString.substring(4,dataString.length());
+                    dataMap = getWebConfigEnum(code);
+                }
+                webElement.setDataMap(dataMap);
+            }
 
             if(CollectionUtil.isEmpty(webElement.getDataMap())){
                 WebElement tempWebElement = (WebElement)changedEleMap.get(webElement.getId());
@@ -89,6 +163,7 @@ public class WebConfigInfoService {
                     eventInfo.setRelEleType(event.getString("relEleType"));
                     eventInfo.setRelEleChgType(event.getString("relEleChgType"));
                     eventInfo.setSelectedValue(CollectionUtil.getMapFirstOrNull(webElement.getDataMap()));
+                    eventInfo.setParamMap(event.getJSONObject("paramMap"));
                     eventInfos.add(eventInfo);
 
                     inputValue.put(webElement.getId(),CollectionUtil.getMapFirstOrNull(webElement.getDataMap()));
@@ -101,15 +176,12 @@ public class WebConfigInfoService {
                             && StringUtil.isNotBlank(eventInfo.getId())) {
                         changedEleMap.putAll(((WebDataReqFun) context.getBean(eventInfo.getId())).execute(requestDto));
                     }
-
                 }
             }
             webElement.setEventInfoList(eventInfos);
-            webElement.setSubElements(getWebConfigElement(webElement.getId(),elementArea));
-
+            webElement.setSubElements(getWebConfigElement(requestDto,webElement.getId(),elementArea));
             webElements.add(webElement);
         }
-
         return webElements;
     }
 
@@ -152,8 +224,11 @@ public class WebConfigInfoService {
                 dataMap = DataUtil.getValueMap(dataMaps);
                 break;
             case "fun:":
-//                String fun= dataString.substring(4,dataString.length());
-//                dataMap = getDataWithFun(fun);
+                String fun= dataString.substring(4,dataString.length());
+                Map<String,Object> dataMapObject = ((WebDataReqFun) context.getBean(fun)).execute(null);
+                for(String key:dataMapObject.keySet()){
+                    dataMap.put(key,(String)dataMapObject.get(key));
+                }
                 break;
             case "cod:":
                 String code = dataString.substring(4,dataString.length());

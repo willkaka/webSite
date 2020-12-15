@@ -2,6 +2,37 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hyw.webSite.mapper.DynamicTableMapper">
 
+<!--  查询  -->
+    <select id="query" parameterType="com.hyw.webSite.dto.DynamicTableDto" resultType="java.util.Map">
+        select
+        <choose>
+            <when test="ew.selectFields != null and ew.selectFields != ''">
+                ${ew.selectFields}
+            </when>
+            <otherwise>
+                *
+            </otherwise>
+        </choose>
+        from ${ew.tableName}
+        <if test="ew.selectWhere != null and ew.selectWhere != ''">
+            WHERE ${ew.selectWhere}
+        </if>
+
+        <if test="ew.selectGroupby != null and ew.selectGroupby !=''">
+            GROUP BY ${ew.selectGroupby}
+        </if>
+
+        <if test="ew.selectOrderby != null and ew.selectOrderby !=''">
+            ORDER BY ${ew.selectOrderby}
+        </if>
+
+        <if test="ew.limitBegNum != null and ew.limitBegNum >=0 and ew.limitCountNum !=null and ew.limitCountNum >0 ">
+            LIMIT ${ew.limitBegNum},${ew.limitCountNum}
+        </if>
+
+    </select>
+
+<!--    -->
     <select id="selectAll" parameterType="com.hyw.webSite.dto.DynamicTableDto" resultType="java.util.Map">
         select ${ew.selectFields}
         from ${ew.tableName}
@@ -20,15 +51,7 @@
     </select>
 
     <insert id="insert" parameterType="com.hyw.webSite.dto.DynamicTableDto">
-        insert into ${tableName}
-        <if test="fieldValueMap != null">
-            <foreach collection="fieldValueMap.entrySet()" index="field" item="value" open="(" separator="," close=")">
-                ${field}
-            </foreach>
-            <foreach collection="fieldValueMap.entrySet()" index="field" item="value" open=" values(" separator="," close=")">
-                <trim>'${value}'</trim>
-            </foreach>
-        </if>
+        insert into ${tableName} ( ${fieldNames} ) VALUES ( ${fieldValues} )
     </insert>
 
     <update id="update" parameterType="com.hyw.webSite.dto.DynamicTableDto">

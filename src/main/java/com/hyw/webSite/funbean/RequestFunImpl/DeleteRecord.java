@@ -19,9 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service("updateRecord")
+@Service("deleteRecord")
 @Slf4j
-public class UpdateRecord implements RequestFun {
+public class DeleteRecord implements RequestFun {
 
     @Autowired
     private ConfigDatabaseInfoService configDatabaseInfoService;
@@ -55,24 +55,7 @@ public class UpdateRecord implements RequestFun {
         }
 
         StringBuffer sql = new StringBuffer();
-        sql.append("UPDATE").append(" ").append(tableName).append(" ").append("SET").append(" ");
-
-        int setFieldCount = 0;
-        for(String fieldName:inputValue.keySet()){
-            if("modal".equals( fieldName.substring(0,5)) ){
-                setFieldCount ++;
-                if(setFieldCount != 1) {
-                    sql.append(", ");
-                }
-                String value = inputValue.get(fieldName).replaceAll("\"","\\\\\"");
-                if("null".equals(value)){
-                    sql.append(fieldName.substring(5, fieldName.length())).append("=").append(value).append(" ");
-                }else {
-                    sql.append(fieldName.substring(5, fieldName.length())).append("=").append("\"").append(value).append("\" ");
-                }
-            }
-        }
-
+        sql.append("DELETE").append(" ").append("FROM").append(" ").append(tableName).append(" ");
         sql.append(" WHERE ");
         int keyFieldCount = 0;
         for(String keyField:keyFields){
@@ -92,7 +75,7 @@ public class UpdateRecord implements RequestFun {
         webNextOprMap.put("type","hide");
         webNextOprMap.put("alert","true");
         webNextOprMap.put("hideEle","swBackGround"); //更新成功后关闭更新子窗口。
-        webNextOprMap.put("sucMsg","数据已更新成功！"); //更新成功后关闭更新子窗口。
+        webNextOprMap.put("sucMsg","数据已删除成功！"); //更新成功后关闭更新子窗口。
         //{"eventList":[{"event":"click","type":"buttonReq","id":"queryTableRecords"}]}
         EventInfo eventInfo = new EventInfo();
         eventInfo.setEvent("click");

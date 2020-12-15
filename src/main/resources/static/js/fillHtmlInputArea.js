@@ -10,7 +10,7 @@ function fillInputArea() {
     if(inputList==null) return;
     let parentEle = document.getElementById(inputArea);
     for (let i=0;i<inputList.length;i++){
-        writeWebElement(parentEle,inputList[i]);
+        writeWebElementRoute(parentEle,inputList[i]);
     }
 }
 
@@ -66,6 +66,18 @@ function fillChangedEle(){
                     for(let value in eleInfo.dataMap){
                         let option = document.createElement("option");
                         option.setAttribute("value",value);
+                        dataList.appendChild(option);
+                    }
+                }
+            }else if(eleInfo.chgType == "selectOption"){
+                ele.value = "";
+                clearChildren(eleId); //清空已有的内容
+                var dataList = document.getElementById(eleId);
+                if (JSON.stringify(eleInfo.dataMap) != JSON.stringify({})){
+                    for(let value in eleInfo.dataMap){
+                        let option = document.createElement("option");
+                        option.setAttribute("value",value);
+                        option.innerHTML = eleInfo.dataMap[value];
                         dataList.appendChild(option);
                     }
                 }

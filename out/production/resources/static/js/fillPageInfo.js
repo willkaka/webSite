@@ -10,21 +10,21 @@
 // 所有事件都把当前页面信息、请求类型发送到后台，后台输出内容更新到 pageInfo
 // 由单一的方法处理改变的 pageInfo，并显示在页面上
 
-
-
 //全局变量，保存页面信息
-var titleInfoMap = {"isChanged":false,"webName":""}; /*  */
-var menuMap = {"isChanged":false,"menuList":{}}; /*  */
-var navMap = {"isChanged":false,"navList":{}}; /*  */
-var formatInfoMap = {"isChanged":false,"formatInfoList":{}}; /* 菜单输入输出格式信息 */
-var inputMap = {"isChanged":false,"inputList":{}}; /*  */
-var outputMap = {"isChanged":false,"outputList":{}}; /* 输出区域内容 */
-var changedMap ={"isChanged":false,"changedEleMap":{}}; /* 部分刷新内容 */
+var titleInfoMap = {"isChanged":false,"webName":""}; /* 网点名称 */
+var menuMap = {"isChanged":false,"menuList":{}}; /* 菜单 */
+var navMap = {"isChanged":false,"navList":{}}; /* 导航内容 */
+var formatInfoMap = {"isChanged":false,"formatInfoList":{}}; /* 菜单输入输出格式信息，eg.输出区域记录编辑按钮，可加在此处*/
+var inputMap = {"isChanged":false,"inputList":{}}; /* 输入区域内容，eg.查询条件及查询按钮 */
+var outputMap = {"isChanged":false,"outputList":{}}; /* 输出区域内容，eg.查询返回的信息显示在表格 */
+var changedMap ={"isChanged":false,"changedEleMap":{}}; /* 部分刷新内容，eg.刷新下拉菜单内容等 */
+var nextOprMap ={}; /* 请求完成后，页面的操作内容，eg.自动刷新/提示操作成功等 */
 
-var menuArea = "menuArea";
-var navArea = "navArea";
-var inputArea = "inputArea";
-var outputArea = "outputArea";
+var menuArea = "menuArea";      //菜单
+var navArea = "navArea";        //导航
+var inputArea = "inputArea";    //输入
+var outputArea = "outputArea";  //输出
+var modalArea = "swBackGround"; //弹窗
 
 var curMenuId = "";
 
@@ -69,7 +69,7 @@ function fillPageInfo() {
 }
 
 /**
- * 填充菜单项
+ * 填充站点名称
  * @param rtnMap
  */
 function fillWebTitle() {
@@ -105,7 +105,6 @@ function fillMenuArea() {
             element_a.setAttribute("class","dropbtn");
             element_a.setAttribute("id",menuList[i].id);
             element_a.innerHTML = menuList[i].prompt;//菜单名称
-
             setAttr(element_a,menuList[i].attrMap); // 属性配置
             setEventListener(element_a,menuList[i].eventInfoList); //事件
             element_div.appendChild(element_a);
@@ -119,10 +118,8 @@ function fillMenuArea() {
                     let element_a = document.createElement("a");
                     element_a.setAttribute("id",subElements[j].id);
                     element_a.innerHTML = subElements[j].prompt;//菜单名称
-
                     setAttr(element_a,subElements[j].attrMap); // 属性配置
                     setEventListener(element_a,subElements[j].eventInfoList); //事件
-
                     element_sub_div.appendChild(element_a);
                 }
                 element_div.appendChild(element_sub_div);
