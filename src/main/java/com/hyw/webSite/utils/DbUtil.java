@@ -3,14 +3,18 @@ package com.hyw.webSite.utils;
 import com.hyw.webSite.constant.Constant;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
+import com.hyw.webSite.model.FieldAttr;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.Map.Entry.comparingByKey;
+import static java.util.Map.Entry.comparingByValue;
+import static java.util.stream.Collectors.toMap;
 
 @Slf4j
 public class DbUtil {
@@ -60,6 +64,42 @@ public class DbUtil {
             throw new BizException("取数据库的所有表格名称出错！");
         }
         return tableList;
+    }
+
+    public static List<FieldAttr> getFieldAttr(Connection connection,String dbName, String libName,String tableName) {
+        String   catalog           = libName;  //表所在的编目
+        String   schemaPattern     = dbName;  //表所在的模式
+        String   tableNamePattern  = tableName; //匹配表名
+        String   columnNamePattern = null; //
+
+        List<FieldAttr> fieldsMap = new ArrayList<>();
+        try{
+            DatabaseMetaData databaseMetaData = connection.getMetaData();
+            ResultSet result = databaseMetaData.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
+            fieldsMap = getFieldAttrFromResultSet(result);
+        }catch(SQLException e){
+            log.error("取数据表结构失败！",e);
+            throw new BizException("取数据表结构失败！");
+        }
+        return fieldsMap;
+    }
+
+    public static Map<String,FieldAttr> getFieldAttrMap(Connection connection,String dbName, String libName,String tableName) {
+        String   catalog           = libName;  //表所在的编目
+        String   schemaPattern     = dbName;  //表所在的模式
+        String   tableNamePattern  = tableName; //匹配表名
+        String   columnNamePattern = null; //
+
+        Map<String,FieldAttr> fieldsMap = new HashMap<>();
+        try{
+            DatabaseMetaData databaseMetaData = connection.getMetaData();
+            ResultSet result = databaseMetaData.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
+            fieldsMap = getFieldAttrMapFromResultSet(result);
+        }catch(SQLException e){
+            log.error("取数据表结构失败！",e);
+            throw new BizException("取数据表结构失败！");
+        }
+        return fieldsMap;
     }
 
     public static List<Map<String,Object>> getFieldInfo(Connection connection,String dbName, String libName,String tableName) {
@@ -367,6 +407,164 @@ public class DbUtil {
         return listMap;
     }
 
+
+    /**
+     * 查询数据表返回记录集
+     * @param connection 数据库连接
+     * @param table 查询数据表
+     * @return 记录集
+     */
+    public static List<Map<String,FieldAttr>> getTableRecords(Connection connection,String db,String lib,String table){
+        if(connection == null){
+            log.error("数据库连接不允许为null！");
+            return null;
+        }
+        if(StringUtil.isBlank(table)){
+            log.error("查询数据表不允为空！");
+            return null;
+        }
+
+        List<String> keyList = DbUtil.getTablePrimaryKeys(connection,db,table);
+        Map<String,FieldAttr> fieldsMap = DbUtil.getFieldAttrMap(connection,db,lib,table);
+        for(String keyFieldName:keyList){
+            fieldsMap.get(keyFieldName).setKeyField(true);
+        }
+
+        List<Map<String,FieldAttr>> listMap = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet set = statement.executeQuery("select * from " + table);
+            if(set != null) {
+                //取记录
+                while(set.next()) {
+                    ResultSetMetaData metaData = set.getMetaData();
+                    Map<String, FieldAttr> map = getFieldAttrMapClone(fieldsMap);
+                    //fieldsMap.forEach((key,obj) -> map.put(key,fieldsMap.get(key).clone()));
+                    for (int fieldNum = 1; fieldNum <= metaData.getColumnCount(); fieldNum++) {
+                        if (metaData.getColumnName(fieldNum) != null && !"".equals(metaData.getColumnName(fieldNum))) {
+                            String fieldName;
+                            if (StringUtils.isNotBlank(metaData.getColumnLabel(fieldNum))) {
+                                fieldName = metaData.getColumnLabel(fieldNum);
+                            } else {
+                                fieldName = metaData.getColumnName(fieldNum);
+                            }
+                            Object fieldValue = set.getObject(fieldName);
+                            map.get(fieldName).setValue(fieldValue);
+                        }
+                    }
+                    listMap.add(map);
+                }
+            }
+            if(set != null) set.close();
+            statement.close();
+        }catch(Exception e){
+            log.error("查询数据表({})出错！",table,e);
+        }finally {
+            DbUtil.closeConnection(connection);
+        }
+        return listMap;
+    }
+
+    /**
+     * 查询数据表返回记录集
+     * @param connection 数据库连接
+     * @param sql sql
+     * @return 记录集
+     */
+    public static List<Map<String,FieldAttr>> getSqlRecordsWithFieldAttr(Connection connection,String sql){
+        if(connection == null){
+            log.error("数据库连接不允许为null！");
+            return null;
+        }
+
+        List<Map<String,FieldAttr>> listMap = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet set = statement.executeQuery(sql);
+            Map<String,FieldAttr> fieldsMap = getSqlFieldAttrMapFromResultSet(connection,set);
+            //取记录
+            while(set != null && set.next()) {
+                ResultSetMetaData metaData = set.getMetaData();
+                Map<String, FieldAttr> map = getFieldAttrMapClone(fieldsMap);
+                //fieldsMap.forEach((key,obj) -> map.put(key,obj.clone()));
+                for (int fieldNum = 1; fieldNum <= metaData.getColumnCount(); fieldNum++) {
+                    if (metaData.getColumnName(fieldNum) != null && !"".equals(metaData.getColumnName(fieldNum))) {
+                        Object fieldValue = set.getObject(metaData.getColumnLabel(fieldNum));
+                        map.get(metaData.getColumnName(fieldNum)).setValue(fieldValue);
+                    }
+                }
+                listMap.add(map);
+            }
+            if(set != null) set.close();
+            statement.close();
+        }catch(Exception e){
+            log.error("查询sql({})出错！",sql,e);
+        }finally {
+            //DbUtil.closeConnection(connection);
+        }
+        return listMap;
+    }
+
+    private static Map<String,FieldAttr> getFieldAttrMapClone(Map<String,FieldAttr> mapA){
+        Map<String,FieldAttr> mapB = new LinkedHashMap<>();
+        for(String fieldName:mapA.keySet()){
+            mapB.put(fieldName,mapA.get(fieldName).clone());
+        }
+        return mapB;
+    }
+
+    /**
+     * 取数据表字段基础信息
+     * @param connection 数据库连接
+     * @param table 查询数据表
+     */
+    public static Map<String,FieldAttr> getTableFieldsMap(Connection connection,String table){
+        if(connection == null){
+            log.error("数据库连接不允许为null！");
+            return null;
+        }
+        if(StringUtil.isBlank(table)){
+            log.error("查询数据表不允为空！");
+            return null;
+        }
+
+        String sqlSelect = "";
+        if(Constant.DB_TYPE_ORACLE.equals(getConnectionType(connection).toLowerCase())){
+            sqlSelect = "SELECT * FROM " + table + " WHERE rownum=1";
+        }else{
+            sqlSelect = "SELECT * FROM " + table + " limit 1";
+        }
+
+        Map<String,FieldAttr> fieldMap = new LinkedHashMap<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet set = statement.executeQuery(sqlSelect);
+            if(set != null) {
+                //取字段名
+                ResultSetMetaData metaData1 = set.getMetaData();
+                for (int fieldNum = 1; fieldNum <= metaData1.getColumnCount(); fieldNum++) {
+//                    Map<String,Object> field = new HashMap<>();
+                    FieldAttr fieldAttr = new FieldAttr();
+                    fieldAttr.setColumnName(metaData1.getColumnLabel(fieldNum));
+                    fieldAttr.setTypeName(metaData1.getColumnTypeName(fieldNum));
+                    fieldAttr.setBufferLength(metaData1.getPrecision(fieldNum));
+//                    field.put("name",metaData1.getColumnLabel(fieldNum));
+//                    field.put("type",metaData1.getColumnTypeName(fieldNum));
+//                    //field.put("length",metaData1.getColumnDisplaySize(fieldNum));
+//                    field.put("length",metaData1.getPrecision(fieldNum));
+                    fieldMap.put(metaData1.getColumnLabel(fieldNum),fieldAttr);
+                }
+            }
+            if(set != null) set.close();
+            statement.close();
+        }catch(Exception e){
+            log.error("查询数据表({})出错！",table,e);
+        }finally {
+            //DbUtil.closeConnection(connection);
+        }
+        return fieldMap;
+    }
+
     /**
      * 取数据表字段基础信息
      * @param connection 数据库连接
@@ -477,6 +675,166 @@ public class DbUtil {
                     }
                 }
                 listMap.add(map);
+            }
+        }catch (SQLException e){
+            log.error("读取resultset出错！",e);
+            throw new BizException("读取resultset出错！");
+        }
+        return listMap;
+    }
+
+
+    /**
+     * 取字段信息
+     * @param set ResultSet
+     * @return Map<String-字段名,FieldAttr-字段属性>
+     */
+    private static Map<String,FieldAttr> getFieldAttrMapFromResultSet(ResultSet set){
+        Map<String,FieldAttr> fieldAttrMap = new LinkedHashMap<>();
+        if(set == null) return fieldAttrMap;
+        //取记录
+        try {
+            while (set.next()) {
+                ResultSetMetaData metaData = set.getMetaData();
+                FieldAttr fieldAttr = new FieldAttr();
+                for (int fieldNum = 1; fieldNum <= metaData.getColumnCount(); fieldNum++) {
+                    if (metaData.getColumnName(fieldNum) != null && !"".equals(metaData.getColumnName(fieldNum))) {
+                        String fieldName;
+                        if (StringUtils.isNotBlank(metaData.getColumnLabel(fieldNum))) {
+                            fieldName = metaData.getColumnLabel(fieldNum);
+                        } else {
+                            fieldName = metaData.getColumnName(fieldNum);
+                        }
+                        Object fieldValue = set.getObject(fieldName);
+                        switch (fieldName) {
+                            case "SCOPE_TABLE": {fieldAttr.setScopeTable(String.valueOf(fieldValue)); break;}
+                            case "TABLE_CAT": {fieldAttr.setTableCat(String.valueOf(fieldValue)); break;}
+                            case "BUFFER_LENGTH": {fieldAttr.setBufferLength(null==fieldValue?0:(int)fieldValue); break;}
+                            case "IS_NULLABLE": {fieldAttr.setIsNullable(String.valueOf(fieldValue)); break;}
+                            case "TABLE_NAME": {fieldAttr.setTableName(String.valueOf(fieldValue)); break;}
+                            case "COLUMN_DEF": {fieldAttr.setColumnDef(String.valueOf(fieldValue)); break;}
+                            case "SCOPE_CATALOG": {fieldAttr.setScopeCatalog(String.valueOf(fieldValue)); break;}
+                            case "TABLE_SCHEM": {fieldAttr.setTableSchem(String.valueOf(fieldValue)); break;}
+                            case "COLUMN_NAME": {fieldAttr.setColumnName(String.valueOf(fieldValue)); break;}
+                            case "NULLABLE": {fieldAttr.setNullable(null==fieldValue?0:(int)fieldValue); break;}
+                            case "REMARKS": {fieldAttr.setRemarks(String.valueOf(fieldValue)); break;}
+                            case "DECIMAL_DIGITS": {fieldAttr.setDecimalDigits(String.valueOf(fieldValue)); break;}
+                            case "NUM_PREC_RADIX": {fieldAttr.setNumPrecRadix(null==fieldValue?0:(int)fieldValue); break;}
+                            case "SQL_DATETIME_SUB": {fieldAttr.setSqlDatetimeSub(null==fieldValue?0:(int)fieldValue); break;}
+                            case "IS_GENERATEDCOLUMN": {fieldAttr.setIsGeneratedcolumn(String.valueOf(fieldValue)); break;}
+                            case "IS_AUTOINCREMENT": {fieldAttr.setIsAutoincrement(String.valueOf(fieldValue)); break;}
+                            case "SQL_DATA_TYPE": {fieldAttr.setSqlDataType(null==fieldValue?0:(int)fieldValue); break;}
+                            case "CHAR_OCTET_LENGTH": {fieldAttr.setCharOctetLength(null==fieldValue?0:(int)fieldValue); break;}
+                            case "ORDINAL_POSITION": {fieldAttr.setOrdinalPosition(null==fieldValue?0:(int)fieldValue); break;}
+                            case "SCOPE_SCHEMA": {fieldAttr.setScopeSchema(String.valueOf(fieldValue)); break;}
+                            case "SOURCE_DATA_TYPE": {fieldAttr.setSourceDataType(String.valueOf(fieldValue)); break;}
+                            case "DATA_TYPE": {fieldAttr.setDataType(String.valueOf(fieldValue)); break;}
+                            case "TYPE_NAME": {fieldAttr.setTypeName(String.valueOf(fieldValue)); break;}
+                            case "COLUMN_SIZE": {fieldAttr.setColumnSize(null==fieldValue?0:(int)fieldValue); break;}
+                        }
+                    }
+                }
+                fieldAttrMap.put(fieldAttr.getColumnName(),fieldAttr);
+            }
+        }catch (SQLException e){
+            log.error("读取resultset出错！",e);
+            throw new BizException("读取resultset出错！");
+        }
+        //排序
+
+
+        return fieldAttrMap;
+    }
+
+
+    /**
+     * 取sql字段信息
+     * @param set ResultSet
+     * @return Map<String-字段名,FieldAttr-字段属性>
+     */
+    private static Map<String,FieldAttr> getSqlFieldAttrMapFromResultSet(Connection connection,ResultSet set){
+        Map<String,FieldAttr> fieldAttrMap = new LinkedHashMap<>();
+
+        Map<String,Map<String,FieldAttr>> tableFieldsMap = new HashMap<>();
+        if(set == null) return fieldAttrMap;
+        //取记录
+        try {
+            ResultSetMetaData metaData = set.getMetaData();
+            for (int fieldNum = 1; fieldNum <= metaData.getColumnCount(); fieldNum++) {
+                Map<String,FieldAttr> fieldAttrs = new HashMap<>();
+                if(tableFieldsMap.containsKey(metaData.getTableName(fieldNum))){
+                    fieldAttrs = tableFieldsMap.get(metaData.getTableName(fieldNum));
+                }else{
+                    fieldAttrs = getFieldAttrMap(connection,null,metaData.getCatalogName(fieldNum),metaData.getTableName(fieldNum));
+                    tableFieldsMap.put(metaData.getTableName(fieldNum),fieldAttrs);
+                }
+                if (metaData.getColumnName(fieldNum) != null && !"".equals(metaData.getColumnName(fieldNum))) {
+                    String fieldName;
+//                    if (StringUtils.isNotBlank(metaData.getColumnLabel(fieldNum))) {
+//                        fieldName = metaData.getColumnLabel(fieldNum);
+//                    } else {
+                        fieldName = metaData.getColumnName(fieldNum);
+//                    }
+                    FieldAttr fieldAttr = fieldAttrs.get(fieldName);
+                    fieldAttrMap.put(fieldName,fieldAttr);
+                }
+            }
+        }catch (SQLException e){
+            log.error("读取resultset出错！",e);
+            throw new BizException("读取resultset出错！");
+        }
+        return fieldAttrMap;
+    }
+
+    private static List<FieldAttr> getFieldAttrFromResultSet(ResultSet set){
+        List<FieldAttr> listMap = new ArrayList<>();
+
+        if(set == null) return listMap;
+
+        //取记录
+        try {
+            while (set.next()) {
+                ResultSetMetaData metaData = set.getMetaData();
+                FieldAttr fieldAttr = new FieldAttr();
+                for (int fieldNum = 1; fieldNum <= metaData.getColumnCount(); fieldNum++) {
+                    if (metaData.getColumnName(fieldNum) != null && !"".equals(metaData.getColumnName(fieldNum))) {
+                        String fieldName;
+                        if (StringUtils.isNotBlank(metaData.getColumnLabel(fieldNum))) {
+                            fieldName = metaData.getColumnLabel(fieldNum);
+                        } else {
+                            fieldName = metaData.getColumnName(fieldNum);
+                        }
+                        Object fieldValue = set.getObject(fieldName);
+                        if(null == fieldValue) continue;
+                        switch (fieldName) {
+                            case "SCOPE_TABLE": {fieldAttr.setScopeTable(String.valueOf(fieldValue)); break;}
+                            case "TABLE_CAT": {fieldAttr.setTableCat(String.valueOf(fieldValue)); break;}
+                            case "BUFFER_LENGTH": {fieldAttr.setBufferLength((int)fieldValue); break;}
+                            case "IS_NULLABLE": {fieldAttr.setIsNullable(String.valueOf(fieldValue)); break;}
+                            case "TABLE_NAME": {fieldAttr.setTableName(String.valueOf(fieldValue)); break;}
+                            case "COLUMN_DEF": {fieldAttr.setColumnDef(String.valueOf(fieldValue)); break;}
+                            case "SCOPE_CATALOG": {fieldAttr.setScopeCatalog(String.valueOf(fieldValue)); break;}
+                            case "TABLE_SCHEM": {fieldAttr.setTableSchem(String.valueOf(fieldValue)); break;}
+                            case "COLUMN_NAME": {fieldAttr.setColumnName(String.valueOf(fieldValue)); break;}
+                            case "NULLABLE": {fieldAttr.setNullable((int)fieldValue); break;}
+                            case "REMARKS": {fieldAttr.setRemarks(String.valueOf(fieldValue)); break;}
+                            case "DECIMAL_DIGITS": {fieldAttr.setDecimalDigits(String.valueOf(fieldValue)); break;}
+                            case "NUM_PREC_RADIX": {fieldAttr.setNumPrecRadix((int)fieldValue); break;}
+                            case "SQL_DATETIME_SUB": {fieldAttr.setSqlDatetimeSub((int)fieldValue); break;}
+                            case "IS_GENERATEDCOLUMN": {fieldAttr.setIsGeneratedcolumn(String.valueOf(fieldValue)); break;}
+                            case "IS_AUTOINCREMENT": {fieldAttr.setIsAutoincrement(String.valueOf(fieldValue)); break;}
+                            case "SQL_DATA_TYPE": {fieldAttr.setSqlDataType((int)fieldValue); break;}
+                            case "CHAR_OCTET_LENGTH": {fieldAttr.setCharOctetLength((int)fieldValue); break;}
+                            case "ORDINAL_POSITION": {fieldAttr.setOrdinalPosition((int)fieldValue); break;}
+                            case "SCOPE_SCHEMA": {fieldAttr.setScopeSchema(String.valueOf(fieldValue)); break;}
+                            case "SOURCE_DATA_TYPE": {fieldAttr.setSourceDataType(String.valueOf(fieldValue)); break;}
+                            case "DATA_TYPE": {fieldAttr.setDataType(String.valueOf(fieldValue)); break;}
+                            case "TYPE_NAME": {fieldAttr.setTypeName(String.valueOf(fieldValue)); break;}
+                            case "COLUMN_SIZE": {fieldAttr.setColumnSize((int)fieldValue); break;}
+                        }
+                    }
+                }
+                listMap.add(fieldAttr);
             }
         }catch (SQLException e){
             log.error("读取resultset出错！",e);

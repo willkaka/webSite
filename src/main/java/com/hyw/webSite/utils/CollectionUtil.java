@@ -1,8 +1,10 @@
 package com.hyw.webSite.utils;
 
+import com.hyw.webSite.model.FieldAttr;
 import org.springframework.lang.Nullable;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 
 public class CollectionUtil {
@@ -49,6 +51,43 @@ public class CollectionUtil {
             break;
         }
         return obj;
+    }
+
+    /**
+     * 复制独立的map
+     * @param mapA
+     * @param clazz
+     * @param <T>
+     * @return
+     * @throws Exception
+     */
+    public static <T> Map<Object,T> cloneMap(Map<Object,T> mapA, Class<T> clazz) throws Exception {
+        Map<Object,T> mapB = new HashMap<>();
+        for(Object key:mapA.keySet()){
+            T b = clazz.newInstance();
+            T a = mapA.get(key);
+            Field[] fields = clazz.getDeclaredFields();        //获取实体类的所有属性，返回Field数组
+            for (Field field : fields) {     //遍历所有属性
+                String fieldName = field.getName();    //获取属性的名字
+                Field declaredField = clazz.getDeclaredField(fieldName);
+
+                String getFieldName = "get" + fieldName.substring(0,1).toUpperCase()+fieldName.substring(1); //将属性的首字符大写，方便构造get，set方法
+                String type = field.getGenericType().toString();    //获取属性的类型
+                Method m;
+                if("class java.lang.Boolean".equals(type) || "boolean".equals(type)){
+                    m = clazz.getMethod(fieldName);
+                }else{
+                    m = clazz.getMethod(getFieldName);
+                }
+
+                //设置可见性为true
+                declaredField.setAccessible(true);
+                //setter
+                declaredField.set(b, m.invoke(a));
+            }
+            mapB.put(key,b);
+        }
+        return mapB;
     }
 
     /**

@@ -22,6 +22,7 @@ public class ExceptionHandle {
 
         // 未按要求发送报文
         } else if(exception instanceof HttpMessageNotReadableException){
+            log.error("Required request body is missing!",exception);
             returnDto.setRtnCode("9998");
             returnDto.setRtnMsg("Required request body is missing!");
 

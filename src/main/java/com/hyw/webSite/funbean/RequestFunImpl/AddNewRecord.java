@@ -3,6 +3,7 @@ package com.hyw.webSite.funbean.RequestFunImpl;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
+import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.utils.DbUtil;
@@ -47,7 +48,7 @@ public class AddNewRecord implements RequestFun {
         ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(dbName);
         configDatabaseInfo.setDatabaseLabel(libName);
         Connection connection = DbUtil.getConnection(configDatabaseInfo);
-        List<Map<String,Object>> recordMap = DbUtil.getTableFieldsMapList(connection,tableName);
+        Map<String, FieldAttr> recordMap = DbUtil.getTableFieldsMap(connection,tableName);
         DbUtil.closeConnection(connection);
 
         Map<String,Object> webNextOprMap = new HashMap<>();

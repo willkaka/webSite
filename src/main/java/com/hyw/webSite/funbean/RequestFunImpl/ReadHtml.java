@@ -2,6 +2,7 @@ package com.hyw.webSite.funbean.RequestFunImpl;
 
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
+import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.utils.HttpUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
@@ -10,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +30,11 @@ public class ReadHtml implements RequestFun {
         if(StringUtil.isBlank(httpAddress)){
             throw new BizException("http地址,不允许为空值!");
         }
+        if(!httpAddress.startsWith("http://") && !httpAddress.startsWith("https://")){
+            httpAddress = "http://" + httpAddress;
+        }
+
+        // (<td( [^="]*="[^="]*")*>(.*?)</td>)  匹配所有<td xxx> xxx </td>
         String httpAddressSuffixBeg = (String) inputValue.get("httpAddressSuffixBeg");//后缀起始
         String httpAddressSuffixEnd = (String) inputValue.get("httpAddressSuffixEnd");//后缀起始
         String webCharset = (String) inputValue.get("webCharset");//网页编码
@@ -38,17 +43,17 @@ public class ReadHtml implements RequestFun {
             throw new BizException("请输入 正则表达式 !");
         }
 
-        List<String> tableColList = new ArrayList<>();
-        tableColList.add("data");
-
         log.info("执行readHtml,regex:"+regexString);
         List<Map<String,String>> resultListMap = new ArrayList<>();
-        List<String> rstList = HttpUtil.search(regexString,HttpUtil.getHttpRequestData(httpAddress,webCharset));
-        for(String key:rstList){
-            Map<String,String> map = new HashMap<>();
-            map.put("data",key.trim());
-            resultListMap.add(map);
+        resultListMap = HttpUtil.searchAllGroup(regexString,HttpUtil.getHttpRequestData(httpAddress,webCharset));
+        if(CollectionUtil.isEmpty(resultListMap)){
+            returnDto.setRtnCode("9990");
+            returnDto.setRtnMsg("无匹配数据！");
+            return returnDto;
         }
+
+        Map<String,String> tempMap = resultListMap.get(0);
+        List<String> tableColList = new ArrayList<>(tempMap.keySet());
 
         returnDto.getOutputMap().put("tableColList", tableColList);
         returnDto.getOutputMap().put("tableRecordList", resultListMap);

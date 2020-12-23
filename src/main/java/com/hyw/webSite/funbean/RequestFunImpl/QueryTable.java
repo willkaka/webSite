@@ -3,6 +3,7 @@ package com.hyw.webSite.funbean.RequestFunImpl;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
+import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
@@ -56,7 +57,21 @@ public class QueryTable implements RequestFun {
         List<Map<String,Object>> fields = DbUtil.getFieldInfo(connection,dbName,libName,tableName);
         DbUtil.closeConnection(connection);
         delNeedlessRecords(fields);
-        returnDto.getOutputMap().put("tableRecordList", fields);
+        //returnDto.getOutputMap().put("tableRecordList", fields);
+
+        List<Map<String, FieldAttr>> records = new ArrayList<>();
+        for(Map<String,Object> field:fields){
+            Map<String, FieldAttr> record = new HashMap<>();
+            for(String fieldName:field.keySet()){
+                FieldAttr fieldAttr = new FieldAttr();
+                fieldAttr.setRemarks(fieldName);
+                fieldAttr.setColumnName(fieldName);
+                fieldAttr.setValue(field.get(fieldName));
+                record.put(fieldName,fieldAttr);
+            }
+            records.add(record);
+        }
+        returnDto.getOutputMap().put("tableRecordList", records);
 
         return returnDto;
     }

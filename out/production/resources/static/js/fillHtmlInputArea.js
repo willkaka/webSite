@@ -59,7 +59,7 @@ function fillChangedEle(){
                     }
                 }
             }else if(eleInfo.chgType == "inputDataList"){
-                ele.value = "";
+                //ele.value = "";
                 clearChildren("datalist"+eleId); //清空已有的内容
                 var dataList = document.getElementById("datalist"+eleId);
                 if (JSON.stringify(eleInfo.dataMap) != JSON.stringify({})){
@@ -70,7 +70,7 @@ function fillChangedEle(){
                     }
                 }
             }else if(eleInfo.chgType == "selectOption"){
-                ele.value = "";
+                //ele.value = "";
                 clearChildren(eleId); //清空已有的内容
                 var dataList = document.getElementById(eleId);
                 if (JSON.stringify(eleInfo.dataMap) != JSON.stringify({})){

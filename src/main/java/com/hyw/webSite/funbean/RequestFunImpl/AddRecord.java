@@ -3,9 +3,11 @@ package com.hyw.webSite.funbean.RequestFunImpl;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
+import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.utils.DbUtil;
+import com.hyw.webSite.utils.SqlUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.ReturnDto;
@@ -44,33 +46,26 @@ public class AddRecord implements RequestFun {
             throw new BizException("表名,不允许为空值!");
         }
 
-        //生成insert语句
-        StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO ").append(tableName).append(" (");
-        StringBuilder sqlFields = new StringBuilder();
-        StringBuilder sqlValues = new StringBuilder();
-        for(String fieldName:inputValue.keySet()){
-            if("modal".equals( fieldName.substring(0,5)) ){
-                if(StringUtil.isNotBlank(sqlFields.toString())) sqlFields.append(",");
-                sqlFields.append(fieldName.substring(5,fieldName.length()));
-                if(StringUtil.isNotBlank(sqlValues.toString())) sqlValues.append(",");
-                if(StringUtil.isBlank(inputValue.get(fieldName))){
-                    sqlValues.append("null");
-                }else {
-                    sqlValues.append("\"").append(inputValue.get(fieldName)).append("\" ");
-                }
-            }
-        }
-        sql.append(sqlFields).append(") VALUES(").append(sqlValues).append(")");
-
         //建立数据库连接，并执行写入操作
         ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(dbName);
         configDatabaseInfo.setDatabaseLabel(libName);
         Connection connection = DbUtil.getConnection(configDatabaseInfo);
 
-        log.info("准备执行sql:"+sql.toString());
-        DbUtil.executeSql(connection,sql.toString());
-        log.info("已执行sql:"+sql.toString());
+        //取数据表字段定义信息
+        Map<String,FieldAttr> fieldAttrMap = DbUtil.getFieldAttrMap(connection,dbName,libName,tableName);
+        for(String alterFieldName:inputValue.keySet()){
+            if("modal".equals( alterFieldName.substring(0,5)) ){
+                String fieldName = alterFieldName.substring(5,alterFieldName.length());
+                FieldAttr fieldAttr = fieldAttrMap.get(fieldName);
+                if(null!=fieldAttr) fieldAttr.setValue(inputValue.get(alterFieldName));
+            }
+        }
+        //生成insert语句
+        String sql = SqlUtil.getInsertSql(connection,libName,tableName,fieldAttrMap);
+
+        log.info("准备执行sql:"+sql);
+        DbUtil.executeSql(connection,sql);
+        log.info("已执行sql:"+sql);
 
         DbUtil.closeConnection(connection);
 

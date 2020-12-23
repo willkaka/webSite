@@ -3,6 +3,7 @@ package com.hyw.webSite.funbean.RequestFunImpl.caes;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
+import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.service.DynamicTableService;
 import com.hyw.webSite.utils.DbUtil;
@@ -50,7 +51,8 @@ public class QueryCodeLibrary implements RequestFun {
         if(StringUtil.isNotBlank(codeNo)){
             sql = sql + " AND code_no='"+codeNo+"'";
         }
-        List<Map<String,Object>> records = DbUtil.getSqlRecords(connection,sql);
+        //List<Map<String,Object>> records = DbUtil.getSqlRecords(connection,sql);
+        List<Map<String, FieldAttr>> records = DbUtil.getSqlRecordsWithFieldAttr(connection,sql);
         DbUtil.closeConnection(connection);
 
         List<String> tableColList = new ArrayList<>();
@@ -64,7 +66,7 @@ public class QueryCodeLibrary implements RequestFun {
         tableColList.add("created_by");
         tableColList.add("created_date");
 
-        returnDto.getOutputMap().put("tableColList", tableColList);
+        //returnDto.getOutputMap().put("tableColList", tableColList);
         returnDto.getOutputMap().put("tableRecordList", records);
 
         return returnDto;

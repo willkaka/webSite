@@ -31,7 +31,7 @@ function showEditModal(eventInfo){
         let input = document.createElement("input");
         input.setAttribute("id","modal"+field);
         input.setAttribute("class","inputArea_sub_input");
-        input.setAttribute("value",recordMap[field]);
+        input.setAttribute("value",recordMap[field].value);
         groupDiv.appendChild(input);
 
         body.appendChild(groupDiv);
@@ -48,7 +48,12 @@ function showEditModal(eventInfo){
         let formatInfoList = formatInfoMap.formatInfoList;
         for (let i=0;i<formatInfoList.length;i++){
             if(formatInfoList[i].area == "modalArea"){
-                writeWebElementRoute(footerDiv,formatInfoList[i]);
+                let elementInfo = formatInfoList[i];
+                let eventInfoList = elementInfo["eventInfoList"];
+                for(let j=0;j<eventInfoList.length;j++){
+                    eventInfoList[j].recordMap = recordMap;
+                }
+                writeWebElementRoute(footerDiv,elementInfo);
             }
         }
     }
@@ -77,25 +82,25 @@ function showAddModal(eventInfo){
     clearChildren("swBody");
     let body = document.getElementById("swBody");
     let index = 0;
-    //for(let field in recordMap){
-    for (let i=0;i<recordMap.length;i++){
+    for(let field in recordMap){
+    //for (let i=0;i<recordMap.length;i++){
         let groupDiv = document.createElement("div");
         groupDiv.setAttribute("class","inputArea_div_grp_inline");
 
         let label = document.createElement("label");
         label.setAttribute("class","inputArea_sub_label");
-        label.innerHTML = recordMap[i].name;//名称
+        label.innerHTML = recordMap[field].columnName;//名称
         groupDiv.appendChild(label);
 
         let input = document.createElement("input");
-        input.setAttribute("id","modal"+recordMap[i].name);
+        input.setAttribute("id","modal"+recordMap[field].columnName);
         input.setAttribute("class","inputArea_sub_input");
         //input.setAttribute("value",recordMap[field]);
         groupDiv.appendChild(input);
 
         let labelType = document.createElement("label");
         labelType.setAttribute("class","inputArea_sub_label");
-        labelType.innerHTML = recordMap[i].type + "(" + recordMap[i].length + ")";
+        labelType.innerHTML = recordMap[field].typeName + "(" + recordMap[field].bufferLength + ")";
         groupDiv.appendChild(labelType);
 
         body.appendChild(groupDiv);
@@ -112,7 +117,12 @@ function showAddModal(eventInfo){
         let formatInfoList = formatInfoMap.formatInfoList;
         for (let i=0;i<formatInfoList.length;i++){
             if(formatInfoList[i].area == "modalArea"){
-                writeWebElementRoute(footerDiv,formatInfoList[i]);
+                let elementInfo = formatInfoList[i];
+                let eventInfoList = elementInfo["eventInfoList"];
+                for(let j=0;j<eventInfoList.length;j++){
+                    eventInfoList[j].recordMap = recordMap;
+                }
+                writeWebElementRoute(footerDiv,elementInfo);
             }
         }
     }

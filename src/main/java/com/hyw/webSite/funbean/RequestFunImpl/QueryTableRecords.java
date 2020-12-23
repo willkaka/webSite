@@ -3,6 +3,7 @@ package com.hyw.webSite.funbean.RequestFunImpl;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
+import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.service.DynamicTableService;
 import com.hyw.webSite.utils.DbUtil;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -51,11 +54,18 @@ public class QueryTableRecords implements RequestFun {
         Connection connection = DbUtil.getConnection(configDatabaseInfo);
 
         List<String> tableColList = DbUtil.getFieldNameList(connection,libName,tableName);
-        List<Map<String,Object>> records = DbUtil.getTableRecords(connection,tableName);
+        //List<Map<String,Object>> records = DbUtil.getTableRecords(connection,tableName);
+        List<Map<String,FieldAttr>> records = DbUtil.getTableRecords(connection,dbName,libName,tableName);
 
         DbUtil.closeConnection(connection);
 
-        returnDto.getOutputMap().put("tableColList", tableColList);
+        //returnDto.getOutputMap().put("tableColList", tableColList);
+//        for(Map<String,FieldAttr> record:records){
+//            List<Map.Entry<String, FieldAttr>> list2 = new ArrayList<>();
+//            list2.addAll(record.entrySet());
+//            Collections.sort(list2, (o1, o2) -> o1.getValue().getOrdinalPosition()-o2.getValue().getOrdinalPosition());
+//        }
+
         returnDto.getOutputMap().put("tableRecordList", records);
 
         return returnDto;

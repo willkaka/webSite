@@ -1,10 +1,13 @@
 package com.hyw.webSite.utils;
 
+import com.hyw.webSite.exception.BizException;
+import com.hyw.webSite.model.FieldAttr;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -80,94 +83,116 @@ public class SqlUtil {
                 "SELECT " + selectFieldsString + " FROM " + tableName;
     }
 
-
     /**
      * 拼接单表新增单记录sql语句
      * @param tableName 表名
-     * @param fieldValueMap 记录字段及值map
+     * @param fieldAttrMap 字段信息map 包含value值
      * @return sql字符串
      */
-    public static String getInsertSql(String tableName, Map<String,Object> fieldValueMap){
+    public static String getInsertSql(Connection connection,String libName, String tableName, Map<String, FieldAttr> fieldAttrMap){
         if(StringUtil.isBlank(tableName)) return null;
-        if(CollectionUtils.isEmpty(fieldValueMap)) return null;
+        if(CollectionUtils.isEmpty(fieldAttrMap)) return null;
 
-        StringBuilder insertString = new StringBuilder();
-        insertString.append("INSERT INTO ").append(tableName).append(" (");
-
-        boolean firstKey = true;
-        for (String field : fieldValueMap.keySet()) {
-            if(!firstKey) {
-                insertString.append(",");
-            }else{
-                firstKey=false;
-            }
-            insertString.append(field);
+        List<String> keyFields = DbUtil.getTablePrimaryKeys(connection,libName,tableName);
+        if(CollectionUtil.isEmpty(keyFields)){
+            throw new BizException("数据表"+tableName+",无主键,无法更新!");
         }
-        insertString.append(") VALUES(");
 
-        firstKey = true;
-        for (String field : fieldValueMap.keySet()) {
-            if(!firstKey) {
-                insertString.append(",");
-            }else{
-                firstKey=false;
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO ").append(tableName).append(" (");
+        StringBuilder sqlFields = new StringBuilder();
+        StringBuilder sqlValues = new StringBuilder();
+        for(String fieldName:fieldAttrMap.keySet()){
+            FieldAttr fieldAttr = fieldAttrMap.get(fieldName);
+            if(null==fieldAttr) continue;
+            if(CollectionUtil.isNotEmpty(keyFields) && keyFields.contains(fieldName) && (StringUtil.isBlank((String)fieldAttr.getValue()))){
+                throw new BizException("数据表"+tableName+",主键("+fieldName+")写入时不允许为空!");
             }
-            insertString.append(ObjectUtil.isString(fieldValueMap.get(field))?"'"+fieldValueMap.get(field)+"'":fieldValueMap.get(field));
-        }
-        insertString.append(")");
 
-        return insertString.toString();
+            if(StringUtil.isNotBlank(sqlFields.toString())) sqlFields.append(",");
+            sqlFields.append(fieldName);
+            if(StringUtil.isNotBlank(sqlValues.toString())) sqlValues.append(",");
+
+            if(null == fieldAttr.getValue()){
+                sqlValues.append("null");
+            }else if("DECIMAL".equals(fieldAttr.getTypeName()) || "INT".equals(fieldAttr.getTypeName())){
+                if(StringUtil.isBlank((String)fieldAttr.getValue())){
+                    sqlValues.append(0);
+                }else {
+                    sqlValues.append(fieldAttr.getValue());
+                }
+            }else if("DATE".equals(fieldAttr.getTypeName()) || "DATETIME".equals(fieldAttr.getTypeName()) ||
+                     "VARCHAR".equals(fieldAttr.getTypeName()) || "CHAR".equals(fieldAttr.getTypeName())) {
+                if(StringUtil.isBlank((String)fieldAttr.getValue())){
+                    sqlValues.append("null");
+                }else {
+                    sqlValues.append("'").append(fieldAttr.getValue()).append("' ");
+                }
+            }else{
+                sqlValues.append("'").append(fieldAttr.getValue()).append("' ");
+            }
+        }
+        sql.append(sqlFields).append(") VALUES(").append(sqlValues).append(")");
+        return sql.toString();
     }
 
     /**
      * 拼接单表单记录更新sql语句
      * @param tableName 表名
-     * @param fieldValueMap 更新字段及值map
-     * @param whereFieldValueMap 条件map
+     * @param fieldAttrMap 字段及值map
      * @return sql字符串
      */
-    public static String getUpdateSql(String tableName, Map<String,Object> fieldValueMap, Map<String,Object> whereFieldValueMap){
-        StringBuilder setFieldsString = new StringBuilder();
-        StringBuilder whereConditionString = new StringBuilder();
+    public static String getUpdateSql(Connection connection, String libName,String tableName, Map<String, FieldAttr> fieldAttrMap){
+        StringBuilder sql = new StringBuilder();
 
         if(StringUtil.isBlank(tableName)) return null;
-        if(CollectionUtils.isEmpty(fieldValueMap)) return null;
+        if(CollectionUtils.isEmpty(fieldAttrMap)) return null;
 
-        //set fields
-        for (String field : fieldValueMap.keySet()) {
-            if(setFieldsString.length()>0)
-                setFieldsString.append(" , ");
-            setFieldsString.append(field).append("=");
-
-            if(ObjectUtil.isString(fieldValueMap.get(field)))
-                setFieldsString.append("'").append(fieldValueMap.get(field)).append("'");
-            if(ObjectUtil.isInteger(fieldValueMap.get(field)))
-                setFieldsString.append(fieldValueMap.get(field));
-            if(ObjectUtil.isBigDecimal(fieldValueMap.get(field)))
-                setFieldsString.append(fieldValueMap.get(field));
-        }
-
-        //where conditions
-        if(!CollectionUtils.isEmpty(whereFieldValueMap)){
-            for (String field : whereFieldValueMap.keySet()) {
-                if(whereConditionString.length()>0)
-                    whereConditionString.append(" AND ");
-                whereConditionString.append(field).append("=");
-
-                if(ObjectUtil.isString(whereFieldValueMap.get(field)))
-                    whereConditionString.append("'").append(whereFieldValueMap.get(field)).append("'");
-                if(ObjectUtil.isInteger(whereFieldValueMap.get(field)))
-                    whereConditionString.append(whereFieldValueMap.get(field));
-                if(ObjectUtil.isBigDecimal(whereFieldValueMap.get(field)))
-                    whereConditionString.append(whereFieldValueMap.get(field));
+        sql.append("UPDATE").append(" ").append(tableName).append(" ").append("SET").append(" ");
+        int setFieldCount = 0;
+        for(String fieldName:fieldAttrMap.keySet()){
+            FieldAttr fieldAttr = fieldAttrMap.get(fieldName);
+            if(null==fieldAttr.getValue() && null==fieldAttr.getCurValue() ||
+                    null!=fieldAttr.getValue() && fieldAttr.getValue().equals(fieldAttr.getCurValue())){
+            }else{
+                setFieldCount ++;
+                if(setFieldCount != 1) {
+                    sql.append(", ");
+                }
+                if("null".equals(fieldAttr.getCurValue()) ||
+                   "INTEGER".equals(fieldAttr.getTypeName()) ||
+                   "DECIMAL".equals(fieldAttr.getTypeName()) ||
+                   "INT".equals(fieldAttr.getTypeName())){
+                    sql.append(fieldName).append("=").append(fieldAttr.getCurValue());
+                }else {
+                    sql.append(fieldName).append("=").append("'").append(fieldAttr.getCurValue()).append("'");
+                }
             }
         }
+        List<String> keyFields = DbUtil.getTablePrimaryKeys(connection,libName,tableName);
+        if(CollectionUtil.isEmpty(keyFields)){
+            throw new BizException("数据表"+tableName+",无主键,无法更新!");
+        }
 
-        return whereConditionString.length()>0?
-                "UPDATE " + tableName + " SET " + setFieldsString + " WHERE (" + whereConditionString + ")":
-                "UPDATE " + tableName + " SET " + setFieldsString;
+        sql.append(" WHERE ");
+        int keyFieldCount = 0;
+        for(String keyField:keyFields){
+            keyFieldCount++;
+            if(keyFieldCount != 1) {
+                sql.append(" AND ");
+            }
+            FieldAttr fieldAttr = fieldAttrMap.get(keyField);
+            if("null".equals(fieldAttr.getCurValue()) ||
+               "INTEGER".equals(fieldAttr.getTypeName()) ||
+               "DECIMAL".equals(fieldAttr.getTypeName()) ||
+               "INT".equals(fieldAttr.getTypeName())){
+                sql.append(keyField).append("=").append(fieldAttr.getValue());//取原值
+            }else {
+                sql.append(keyField).append("=").append("'").append(fieldAttr.getValue()).append("'");//取原值
+            }
+        }
+        return sql.toString();
     }
-
 
     /**
      * 拼接单表记录删除sql语句

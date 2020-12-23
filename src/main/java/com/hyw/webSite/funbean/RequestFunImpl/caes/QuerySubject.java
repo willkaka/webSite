@@ -3,6 +3,7 @@ package com.hyw.webSite.funbean.RequestFunImpl.caes;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
+import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.service.DynamicTableService;
 import com.hyw.webSite.utils.DbUtil;
@@ -59,10 +60,12 @@ public class QuerySubject implements RequestFun {
             sql = sql + " AND trans_id='" + transId + "'";
         }
         sql = sql +  "order by trans_id,sort_id";
-        List<Map<String,Object>> transEntryList = DbUtil.getSqlRecords(connection,sql);
+        List<Map<String,FieldAttr>> transEntryList = DbUtil.getSqlRecordsWithFieldAttr(connection,sql);
         //取subject_map_eas
         sql = "select subject_no,business_channel,line_id,org_id,company_num,account_num,asstact_first_num,tax_type from subject_map_eas WHERE record_ind='A'";
-        List<Map<String,Object>> subjectMapList = DbUtil.getSqlRecords(connection,sql);
+        //List<Map<String,Object>> subjectMapList = DbUtil.getSqlRecords(connection,sql);
+
+        List<Map<String, FieldAttr>> subjectMapList = DbUtil.getSqlRecordsWithFieldAttr(connection,sql);
         DbUtil.closeConnection(connection);
 
         String company;
@@ -75,16 +78,16 @@ public class QuerySubject implements RequestFun {
         else company = "01";
 
 
-        for(Map<String,Object> transEntry:transEntryList){
-            String subjectNo = (String) transEntry.get("核算科目");
+        for(Map<String,FieldAttr> transEntry:transEntryList){
+            String subjectNo = (String) transEntry.get("subject_no").getValue();
 
-            List<Map<String,Object>> subjectMapList2 = new ArrayList<>();
-            for(Map<String,Object> subjectMap:subjectMapList){
-                if(subjectNo.equals(subjectMap.get("subject_no"))){
+            List<Map<String,FieldAttr>> subjectMapList2 = new ArrayList<>();
+            for(Map<String,FieldAttr> subjectMap:subjectMapList){
+                if(subjectNo.equals(subjectMap.get("subject_no").getValue())){
                     subjectMapList2.add(subjectMap);
                 }
             }
-            Map<String,Object> subjectMap = getMatchModel(subjectMapList2,channel,modelId,orgId,company);
+            Map<String,FieldAttr> subjectMap = getMatchModel(subjectMapList2,channel,modelId,orgId,company);
             transEntry.put("金蝶科目号",subjectMap.get("account_num"));
             transEntry.put("金蝶辅助科目",subjectMap.get("asstact_first_num"));
         }
@@ -98,7 +101,7 @@ public class QuerySubject implements RequestFun {
         tableColList.add("金蝶辅助科目");
         tableColList.add("表达式");
 
-        returnDto.getOutputMap().put("tableColList", tableColList);
+        //returnDto.getOutputMap().put("tableColList", tableColList);
         returnDto.getOutputMap().put("tableRecordList", transEntryList);
 
         return returnDto;
@@ -109,17 +112,17 @@ public class QuerySubject implements RequestFun {
     public static final double WEIGH_THIRD = 0.125;
     public static final double WEIGH_FOURTH = 0.0625;
     public static final double WEIGH_FIFTH = 0.03125;
-    private static Map<String,Object> getMatchModel(List<Map<String,Object>> list,
+    private static Map<String,FieldAttr> getMatchModel(List<Map<String,FieldAttr>> list,
                                                     String businessChannel, String lineId, String orgId, String companyNum) {
         double max = 0;
         int index = 0;
         for (int i=0;i<list.size();i++){
             double temp = 0;
-            Map<String,Object> result = list.get(i);
-            if(result.get("business_channel").equals(businessChannel)) temp = temp + WEIGH_FIRST;
-            if(result.get("line_id").equals(lineId)) temp = temp + WEIGH_SECOND;
-            if(result.get("org_id").equals(orgId)) temp = temp + WEIGH_THIRD;
-            if(result.get("company_num").equals(companyNum)) temp = temp + WEIGH_FOURTH;
+            Map<String,FieldAttr> result = list.get(i);
+            if(result.get("business_channel").getValue().equals(businessChannel)) temp = temp + WEIGH_FIRST;
+            if(result.get("line_id").getValue().equals(lineId)) temp = temp + WEIGH_SECOND;
+            if(result.get("org_id").getValue().equals(orgId)) temp = temp + WEIGH_THIRD;
+            if(result.get("company_num").getValue().equals(companyNum)) temp = temp + WEIGH_FOURTH;
             if(max<temp) {
                 max = temp;
                 index = i;

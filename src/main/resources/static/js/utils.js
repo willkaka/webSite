@@ -57,7 +57,8 @@ function writeInputDataList(parentEle,elementInfo){
     for(let value in dataMap){
         let option = document.createElement("option");
         option.setAttribute("value",value);
-        option.innerHTML = dataMap[value];
+        option.setAttribute("name",dataMap[value]);
+        //option.innerHTML = dataMap[value];
         dataList.appendChild(option);
     }
     groupDiv.appendChild(input);
@@ -205,10 +206,25 @@ function setEventPrcMethod(eventInfo,recordMap) {
         requestObj.curMenu = curMenuId;
         let param = getCurPageInfo();
         requestObj.reqParm = param;
+        eventInfo = putChangeValue(param,eventInfo);
         requestObj.eventInfo = eventInfo; //事件信息
         let requestJsonStr = JSON.stringify(requestObj); // obj -> string
         sendJsonByAjax(eventInfo.type+'/'+eventInfo.id,requestJsonStr,sucFreshAll);//刷新输出区域
     }
+}
+
+function putChangeValue(param,eventInfo){
+    let inputValueMap = param["inputValue"];
+    let recordMap = eventInfo.recordMap;  //recordMap[field].value
+    if(inputValueMap != null && recordMap != null){
+        for(let modalFieldName in inputValueMap){ //key:attrName,value:attrMap[attrName]
+            if("modal" === modalFieldName.substring(0,5) ) {
+                let fieldName = modalFieldName.substring(5);
+                recordMap[fieldName].curValue = inputValueMap[modalFieldName];
+            }
+        }
+    }
+    return eventInfo;
 }
 
 /**

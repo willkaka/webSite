@@ -3,9 +3,11 @@ package com.hyw.webSite.funbean.RequestFunImpl;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
+import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.utils.DbUtil;
+import com.hyw.webSite.utils.SqlUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.ReturnDto;
@@ -43,48 +45,17 @@ public class UpdateRecord implements RequestFun {
         if(StringUtil.isBlank(tableName)){
             throw new BizException("表名,不允许为空值!");
         }
-
         ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(dbName);
         configDatabaseInfo.setDatabaseLabel(libName);
         Connection connection = DbUtil.getConnection(configDatabaseInfo);
 
-        //String sql = SqlUtil.getUpdateSql(tableName,updatedRecordMap,originalRecordMap);
-        List<String> keyFields = DbUtil.getTablePrimaryKeys(connection,libName,tableName);
-        if(CollectionUtil.isEmpty(keyFields)){
-            throw new BizException("数据表"+tableName+",无主键,无法更新!");
-        }
+        EventInfo eventInfo = requestDto.getEventInfo();
+        Map<String, FieldAttr> recordMap = eventInfo.getRecordMap();
+        String updateSql = SqlUtil.getUpdateSql(connection,libName,tableName,recordMap);
 
-        StringBuffer sql = new StringBuffer();
-        sql.append("UPDATE").append(" ").append(tableName).append(" ").append("SET").append(" ");
-
-        int setFieldCount = 0;
-        for(String fieldName:inputValue.keySet()){
-            if("modal".equals( fieldName.substring(0,5)) ){
-                setFieldCount ++;
-                if(setFieldCount != 1) {
-                    sql.append(", ");
-                }
-                String value = inputValue.get(fieldName).replaceAll("\"","\\\\\"");
-                if("null".equals(value)){
-                    sql.append(fieldName.substring(5, fieldName.length())).append("=").append(value).append(" ");
-                }else {
-                    sql.append(fieldName.substring(5, fieldName.length())).append("=").append("\"").append(value).append("\" ");
-                }
-            }
-        }
-
-        sql.append(" WHERE ");
-        int keyFieldCount = 0;
-        for(String keyField:keyFields){
-            keyFieldCount++;
-            if(keyFieldCount != 1) {
-                sql.append(" AND ");
-            }
-            sql.append(keyField).append(" = ").append("\"").append(inputValue.get("modal" + keyField)).append("\" ");
-        }
-        log.info("准备执行sql:"+sql.toString());
-        DbUtil.executeSql(connection,sql.toString());
-        log.info("已执行sql:"+sql.toString());
+        log.info("准备执行sql:"+updateSql);
+        DbUtil.executeSql(connection,updateSql);
+        log.info("已执行sql:"+updateSql);
 
         DbUtil.closeConnection(connection);
 
@@ -94,11 +65,11 @@ public class UpdateRecord implements RequestFun {
         webNextOprMap.put("hideEle","swBackGround"); //更新成功后关闭更新子窗口。
         webNextOprMap.put("sucMsg","数据已更新成功！"); //更新成功后关闭更新子窗口。
         //{"eventList":[{"event":"click","type":"buttonReq","id":"queryTableRecords"}]}
-        EventInfo eventInfo = new EventInfo();
-        eventInfo.setEvent("click");
-        eventInfo.setType("buttonReq");
-        eventInfo.setId("queryTableRecords");
-        webNextOprMap.put("callEven",eventInfo);
+        EventInfo eventInfo2 = new EventInfo();
+        eventInfo2.setEvent("click");
+        eventInfo2.setType("buttonReq");
+        eventInfo2.setId("queryTableRecords");
+        webNextOprMap.put("callEven",eventInfo2);
         returnDto.setWebNextOpr(webNextOprMap);
         return returnDto;
     }
