@@ -70,6 +70,58 @@ function fillOutPutAreaWithTable() {
     if(tableRecordList==null) return;
 
     let parent_ele = document.getElementById("outputArea");  //<table class="table" id="dataTable">
+    //分页按钮
+    let page_div = document.createElement("div");
+    page_div.setAttribute("class","page-box");
+
+    let totalPage = parseInt((outputMap.totalCount-1)/outputMap.pageSize)+1;
+    let pageNow = outputMap.pageNow;
+    let page_pre_a = document.createElement("a");
+    page_pre_a.setAttribute("class","page-button");
+    page_pre_a.innerHTML = "上一页";
+    page_div.appendChild(page_pre_a);
+    if(totalPage-pageNow > 5){
+        for (let i=pageNow-1>0?pageNow-1:1;i<=5;i++){
+            if(i==pageNow){
+                let page_strong = document.createElement("strong");
+                page_strong.setAttribute("class","page-button-strong");
+                page_strong.innerHTML = String(i);
+                page_div.appendChild(page_strong);
+            }else{
+                let page_a = document.createElement("a");
+                page_a.setAttribute("class","page-button");
+                page_a.innerHTML = String(i);
+                page_div.appendChild(page_a);
+            }
+        }
+        let page_span = document.createElement("span");
+        page_span.innerHTML = "...";
+        page_div.appendChild(page_span);
+        let page_a = document.createElement("a");
+        page_a.setAttribute("class","page-button");
+        page_a.innerHTML = totalPage;
+        page_div.appendChild(page_a);
+    }else{
+        for(let i=1;i<=5;i++){
+            if(i==pageNow){
+                let page_strong = document.createElement("strong");
+                page_strong.setAttribute("class","page-button-strong");
+                page_strong.innerHTML = String(i);
+                page_div.appendChild(page_strong);
+            }else{
+                let page_a = document.createElement("a");
+                page_a.setAttribute("class","page-button");
+                page_a.innerHTML = String(i);
+                page_div.appendChild(page_a);
+            }
+        }
+    }
+    let page_next_a = document.createElement("a");
+    page_next_a.setAttribute("class","page-button");
+    page_next_a.innerHTML = "下一页";
+    page_div.appendChild(page_next_a);
+    parent_ele.appendChild(page_div);
+
     let element_table = document.createElement("table");
     element_table.setAttribute("class","output_table");
     parent_ele.appendChild(element_table);

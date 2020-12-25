@@ -382,5 +382,20 @@ public class SqlUtil {
         return s.toString();
     }
 
+    public static String getSelectPageSql(String sql,int begNum,int pageSize){
+        if(begNum >= 0 && pageSize > 0){
+            return sql + " LIMIT " + begNum + "," + pageSize;
+        }else{
+            return sql;
+        }
+    }
 
+    public static String getSelectCountSql(String sql){
+        int selectPos = sql.toUpperCase().indexOf("SELECT "); //第一个select
+        int fromPos = sql.toUpperCase().lastIndexOf("FROM "); //最后一个from
+        int orderPos = sql.toUpperCase().lastIndexOf("ORDER BY "); //最后一个order by
+        int groupPos = sql.toUpperCase().lastIndexOf("GROUP BY "); //最后一个group by
+
+        return "SELECT COUNT(1) FROM " + sql.substring(fromPos+5);
+    }
 }

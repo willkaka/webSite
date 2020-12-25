@@ -3,6 +3,7 @@ package com.hyw.webSite.funbean.RequestFunImpl;
 import com.hyw.webSite.dto.GitCommitInfoDto;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
+import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.service.JGitService;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
@@ -47,21 +48,9 @@ public class QueryGitHistory implements RequestFun {
         LocalDateTime endTime = StringUtil.isBlank(sEndTime)?null:LocalDateTime.parse(sEndTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         Map<String,List<GitCommitInfoDto>> fileCommitList = jGitService.getFileCommintInfo(path,user,begTime,endTime);
-        Map<String, List<GitCommitInfoDto>> map = new TreeMap<String, List<GitCommitInfoDto>>(
-                new Comparator<String>() {
-                    public int compare(String obj1, String obj2) {
-                        // 降序排序
-                        return obj2.compareTo(obj1);
-                    }
-                });
-        map.putAll(fileCommitList);
+        Map<String, List<GitCommitInfoDto>> map = new TreeMap<>(fileCommitList);
 
-        List<String> tableColList = new ArrayList<>();
-        tableColList.add("程序");
-        tableColList.add("提交时间");
-        tableColList.add("提交用户");
-        tableColList.add("提交备注信息");
-        List<Map<String,Object>> records = new ArrayList<>();
+        List<Map<String, FieldAttr>> records = new ArrayList<>();
         for(String fileName:map.keySet()){
             int i=0;
             for(GitCommitInfoDto gitCommitInfoDto:map.get(fileName)){
@@ -69,19 +58,16 @@ public class QueryGitHistory implements RequestFun {
                 if("Y".equals(ignoreMerge) && "Merge ".equals(message)){
                     continue;
                 }
-                Map<String,Object> record = new HashMap<>();
-                record.put("程序",(i==0?fileName:""));
-                record.put("提交时间",gitCommitInfoDto.getCommitDateTime());
-                record.put("提交用户",gitCommitInfoDto.getCommitterIdent().getName());
-                record.put("提交备注信息",gitCommitInfoDto.getShortMessage());
+                Map<String,FieldAttr> record = new LinkedHashMap<>();
+                record.put("程序",new FieldAttr().setValue(i==0?fileName:"").setRemarks("程序"));
+                record.put("提交时间",new FieldAttr().setValue(gitCommitInfoDto.getCommitDateTime()).setRemarks("提交时间"));
+                record.put("提交用户",new FieldAttr().setValue(gitCommitInfoDto.getCommitterIdent().getName()).setRemarks("提交用户"));
+                record.put("提交备注信息",new FieldAttr().setValue(gitCommitInfoDto.getShortMessage()).setRemarks("提交备注信息"));
                 records.add(record);
                 i++;
             }
         }
-
-        returnDto.getOutputMap().put("tableColList", tableColList);
         returnDto.getOutputMap().put("tableRecordList", records);
-
         return returnDto;
     }
 }

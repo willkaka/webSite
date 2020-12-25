@@ -1,7 +1,9 @@
 package com.hyw.webSite.funbean.RequestFunImpl;
 
+import com.hyw.webSite.dto.GitCommitInfoDto;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
+import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.utils.HttpUtil;
 import com.hyw.webSite.utils.StringUtil;
@@ -10,9 +12,7 @@ import com.hyw.webSite.web.dto.ReturnDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("readHtml")
 @Slf4j
@@ -52,11 +52,15 @@ public class ReadHtml implements RequestFun {
             return returnDto;
         }
 
-        Map<String,String> tempMap = resultListMap.get(0);
-        List<String> tableColList = new ArrayList<>(tempMap.keySet());
-
-        returnDto.getOutputMap().put("tableColList", tableColList);
-        returnDto.getOutputMap().put("tableRecordList", resultListMap);
+        List<Map<String, FieldAttr>> records = new ArrayList<>();
+        for(Map<String,String> map:resultListMap){
+            Map<String, FieldAttr> record = new LinkedHashMap<>();
+            for(String fileName:map.keySet()){
+                record.put(fileName,new FieldAttr().setValue(map.get(fileName)).setRemarks(fileName));
+            }
+            records.add(record);
+        }
+        returnDto.getOutputMap().put("tableRecordList", records);
 
         return returnDto;
     }

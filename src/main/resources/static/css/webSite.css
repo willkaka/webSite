@@ -169,7 +169,8 @@ body{
   border-color:#8AB9C2;
   /*overflow-style: scrollbar;*/
   overflow-x:scroll; /*溢出时显示横向滚动条*/
-  height:50%;
+  /*height:50%;*/
+  max-height:600px;
   overflow-y:scroll; /*溢出时显示纵向滚动条*/
 }
 /*---------table---------------*/
@@ -209,6 +210,38 @@ body{
   border:1px solid #98bf21;
 }
 
+
+/* ----------- page box ------------------------ */
+.page-box{
+  text-align:center;
+  color:#aaa;
+  margin: 10px;
+  float: left;
+  display: contents;
+}
+
+.page-button {
+  color:#666;
+  border:1px solid #ddd;
+  background:#fcfcfc;
+  padding:4px 12px;
+  margin:0 3px;
+  text-decoration:none;
+}
+.page-button:hover {
+  background:#8AB9C2;;
+  border:1px solid #8AB9C2;;
+  color:#fff;
+}
+.page-button-strong {
+  background:#666;
+  border:1px solid #666 ;
+  color:#fff;
+  padding:4px 12px;
+  margin:0 3px;
+}
+
+/* ----------- bottom css ------------------------ */
 .bottomContent{
   margin:10px 5px 2px 5px;/*上边距，右边距，下边距，左边距*/
   border-style:solid;

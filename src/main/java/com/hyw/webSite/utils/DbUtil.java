@@ -4,17 +4,11 @@ import com.hyw.webSite.constant.Constant;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.model.FieldAttr;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.sql.*;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static java.util.Map.Entry.comparingByKey;
-import static java.util.Map.Entry.comparingByValue;
-import static java.util.stream.Collectors.toMap;
 
 @Slf4j
 public class DbUtil {
@@ -208,35 +202,16 @@ public class DbUtil {
         return primaryKeys;
     }
 
-
-
-    public static void main(String[] args) throws SQLException {
-        //'com.mysql.cj.jdbc.Driver','jdbc:mysql://localhost:3306/hlhome?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC',
-        // 'hlhome', 'root', 'Root#98e'),
-        String driver="com.mysql.cj.jdbc.Driver";
-        String url="jdbc:mysql://10.21.16.49:7004";
-        String user="caesopr";
-        String password="Dfs@3K3#r3";
-        Connection connection = DbUtil.getConnection("mysql",driver,url,null,null,user,password);
-        String type = getConnectionType(connection);
-        List<String> libs = DbUtil.getLibraryNames(connection);
-        List<String> tables = DbUtil.getTableNames(connection,"caes");
-        List<Map<String,Object>> fields = getTableFieldsMapList(connection,"test1");
-        fields = getFieldInfo(connection,"caes","caes","test1");
-        DbUtil.closeConnection(connection);
-
-        driver="org.sqlite.JDBC";
-        url="jdbc:sqlite::resource:sqlitedb/hlhome.db";
-        user="";
-        password="";
-        connection = DbUtil.getConnection("sqlite",driver,url,null,null,user,password);
-        List<String> keyFields = DbUtil.getTablePrimaryKeys(connection,null,"web_element");
-        type = getConnectionType(connection);
-        DbUtil.getLibraryNames(connection);
-        fields = getTableFieldsMapList(connection,"web_config_element");
-        DbUtil.closeConnection(connection);
+    /**
+     * 取DB数据库连接
+     * @param configDatabaseInfo
+     * @param libName
+     * @return Connection
+     */
+    public static Connection getConnection(ConfigDatabaseInfo configDatabaseInfo,String libName) {
+        configDatabaseInfo.setDatabaseLabel(libName);
+        return getConnection(configDatabaseInfo);
     }
-
 
     /**
      * 取DB数据库连接
@@ -414,7 +389,43 @@ public class DbUtil {
      * @param table 查询数据表
      * @return 记录集
      */
-    public static List<Map<String,FieldAttr>> getTableRecords(Connection connection,String db,String lib,String table){
+    public static int getTableRecordCount(Connection connection,String db,String lib,String table){
+        if(connection == null){
+            log.error("数据库连接不允许为null！");
+            return 0;
+        }
+        if(StringUtil.isBlank(table)){
+            log.error("查询数据表不允为空！");
+            return 0;
+        }
+
+        int count = 0;
+        try {
+            Statement statement = connection.createStatement();
+            String sql = SqlUtil.getSelectCountSql("select * from " + table);
+            ResultSet set = statement.executeQuery(sql);
+            if(set != null) {
+                //取记录
+                if(set.next()) {
+                    count = set.getInt(1);
+                }
+            }
+            if(set != null) set.close();
+            statement.close();
+        }catch(Exception e){
+            DbUtil.closeConnection(connection);
+            log.error("查询数据表({})出错！",table,e);
+        }
+        return count;
+    }
+
+    /**
+     * 查询数据表返回记录集
+     * @param connection 数据库连接
+     * @param table 查询数据表
+     * @return 记录集
+     */
+    public static List<Map<String,FieldAttr>> getTableRecords(Connection connection,String db,String lib,String table,int begNum,int pageSize){
         if(connection == null){
             log.error("数据库连接不允许为null！");
             return null;
@@ -433,7 +444,8 @@ public class DbUtil {
         List<Map<String,FieldAttr>> listMap = new ArrayList<>();
         try {
             Statement statement = connection.createStatement();
-            ResultSet set = statement.executeQuery("select * from " + table);
+            String sql = SqlUtil.getSelectPageSql("select * from " + table,begNum,pageSize);
+            ResultSet set = statement.executeQuery(sql);
             if(set != null) {
                 //取记录
                 while(set.next()) {
@@ -458,9 +470,8 @@ public class DbUtil {
             if(set != null) set.close();
             statement.close();
         }catch(Exception e){
-            log.error("查询数据表({})出错！",table,e);
-        }finally {
             DbUtil.closeConnection(connection);
+            log.error("查询数据表({})出错！",table,e);
         }
         return listMap;
     }
@@ -563,54 +574,6 @@ public class DbUtil {
             //DbUtil.closeConnection(connection);
         }
         return fieldMap;
-    }
-
-    /**
-     * 取数据表字段基础信息
-     * @param connection 数据库连接
-     * @param table 查询数据表
-     */
-    public static List<Map<String,Object>> getTableFieldsMapList(Connection connection,String table){
-        if(connection == null){
-            log.error("数据库连接不允许为null！");
-            return null;
-        }
-        if(StringUtil.isBlank(table)){
-            log.error("查询数据表不允为空！");
-            return null;
-        }
-
-        String sqlSelect = "";
-        if(Constant.DB_TYPE_ORACLE.equals(getConnectionType(connection).toLowerCase())){
-            sqlSelect = "SELECT * FROM " + table + " WHERE rownum=1";
-        }else{
-            sqlSelect = "SELECT * FROM " + table + " limit 1";
-        }
-
-        List<Map<String,Object>> fieldList = new ArrayList<>();
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet set = statement.executeQuery(sqlSelect);
-            if(set != null) {
-                //取字段名
-                ResultSetMetaData metaData1 = set.getMetaData();
-                for (int fieldNum = 1; fieldNum <= metaData1.getColumnCount(); fieldNum++) {
-                    Map<String,Object> field = new HashMap<>();
-                    field.put("name",metaData1.getColumnLabel(fieldNum));
-                    field.put("type",metaData1.getColumnTypeName(fieldNum));
-                    //field.put("length",metaData1.getColumnDisplaySize(fieldNum));
-                    field.put("length",metaData1.getPrecision(fieldNum));
-                    fieldList.add(field);
-                }
-            }
-            if(set != null) set.close();
-            statement.close();
-        }catch(Exception e){
-            log.error("查询数据表({})出错！",table,e);
-        }finally {
-            //DbUtil.closeConnection(connection);
-        }
-        return fieldList;
     }
 
     /**
