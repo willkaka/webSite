@@ -24,6 +24,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web-services'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.1'
 	implementation 'junit:junit:4.12'
+	implementation("log4j:log4j:1.2.17")
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'mysql:mysql-connector-java'
@@ -57,6 +58,11 @@ dependencies {
 	// https://mvnrepository.com/artifact/com.baomidou/mybatis-plus
 	// QueryWrapper
 	compile group: 'com.baomidou', name: 'mybatis-plus', version: '3.3.1'
+
+	// https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-generator
+	compile group: 'com.baomidou', name: 'mybatis-plus-generator', version: '3.4.1'
+
+
 	//JGIT
 	compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.5.1.201910021850-r'
 	// QLExpress 表达式计算

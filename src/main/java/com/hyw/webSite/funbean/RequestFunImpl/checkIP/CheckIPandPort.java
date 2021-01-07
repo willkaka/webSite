@@ -1,4 +1,4 @@
-package com.hyw.webSite.temp;
+package com.hyw.webSite.funbean.RequestFunImpl.checkIP;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,6 +19,7 @@ public class CheckIPandPort extends Thread {
 		add(checkIPdtos,"113.116.90.0", "113.116.90.255", port, timeount);
 		add(checkIPdtos,"113.116.91.0", "113.116.91.255", port, timeount);
 		add(checkIPdtos,"113.116.92.0", "113.116.92.255", port, timeount);
+		add(checkIPdtos,"113.90.179.0", "113.90.179.255", port, timeount);
 		add(checkIPdtos,"183.15.87.0", "183.15.87.255", port, timeount);
 		add(checkIPdtos,"183.15.88.0", "183.15.88.255", port, timeount);
 		add(checkIPdtos,"183.15.89.0", "183.15.89.255", port, timeount);
@@ -41,8 +42,9 @@ public class CheckIPandPort extends Thread {
 				e.printStackTrace();
 			}
 		}
+		System.out.println("ip："+CheckIPandPortThread.getIp());
 		System.out.println("线程数："+threadCount+",结束时间："+LocalDateTime.now());
-		
+
 	}
 	
 	public static void add(List<CheckIPDto> checkIPdtos,String ipBeg, String ipEnd, int port, int timeout) {

@@ -200,17 +200,22 @@ body{
 .output_table_td_0{
   background-color:white;
   border:none;
+  white-space: pre-line; /*识别换行符\n*/
   padding:8px 5px 2px 5px;
   border:1px solid #98bf21;
 }
 .output_table_td_1{
   background-color:#F8F8FF;
   border:none;
+  white-space: pre-line; /*识别换行符\n*/
   padding:8px 5px 2px 5px;
   border:1px solid #98bf21;
 }
 
-
+.output_textArea{
+  width:100%;
+  height: -webkit-fill-available;
+}
 /* ----------- page box ------------------------ */
 .page-box{
   text-align:center;

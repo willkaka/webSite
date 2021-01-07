@@ -3,7 +3,6 @@ package com.hyw.webSite.funbean.RequestFunImpl;
 import com.hyw.webSite.constant.WebConstant;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
-import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
@@ -11,15 +10,15 @@ import com.hyw.webSite.web.dto.RequestDto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
-import java.util.List;
-import java.util.Map;
 
-@Service("queryTableRecords")
-public class QueryTableRecords extends RequestFunUnit<List<Map<String,FieldAttr>>, QueryTableRecords.QueryVariable> {
+@Service("getTableCreateDdl")
+@Slf4j
+public class GetTableCreateDdl extends RequestFunUnit<String, GetTableCreateDdl.QueryVariable> {
 
     @Autowired
     private ConfigDatabaseInfoService configDatabaseInfoService;
@@ -29,7 +28,7 @@ public class QueryTableRecords extends RequestFunUnit<List<Map<String,FieldAttr>
      * @param variable 参数
      */
     @Override
-    public void checkVariable(QueryVariable variable){
+    public void checkVariable(GetTableCreateDdl.QueryVariable variable){
         //输入检查
         if(StringUtil.isBlank(variable.getDbName())){
             throw new BizException("DB不允许为空值!");
@@ -49,26 +48,16 @@ public class QueryTableRecords extends RequestFunUnit<List<Map<String,FieldAttr>
      * @return D
      */
     @Override
-    public List<Map<String,FieldAttr>> execLogic(RequestDto requestDto, QueryVariable variable){
-        //取数逻辑
-        int pageNow = 0;         //当前的页码
-        int pageSize = 10;
-        int totalCount;      //表中记录的总行数
+    public String execLogic(RequestDto requestDto, GetTableCreateDdl.QueryVariable variable){
 
         //连接数据库，查询数据，关闭数据库
         Connection connection = DbUtil.getConnection(configDatabaseInfoService.getDatabaseConfig(variable.getDbName()), variable.getLibName());
-        totalCount = DbUtil.getTableRecordCount(connection,variable.getDbName(),variable.getLibName(),variable.getTableName());
-        List<Map<String,FieldAttr>> records = DbUtil.getTableRecords(connection,variable.getDbName(),variable.getLibName(),variable.getTableName(),pageNow*pageSize,pageSize);
+        String tableCreatedDdl = DbUtil.getTableCreatedDdl(connection,variable.getTableName());
         DbUtil.closeConnection(connection);
 
         //参数配置
-        variable.setOutputShowType(WebConstant.OUTPUT_SHOW_TYPE_TABLE); //以表格形式显示
-        variable.setWithPage(true);//表格内容分页显示
-        variable.setTotalCount(totalCount);
-        variable.setPageNow(pageNow+1);
-        variable.setPageSize(pageSize); //每页中显示多少条记录
-
-        return records;
+        variable.setOutputShowType(WebConstant.OUTPUT_SHOW_TYPE_TEXT); //以表格形式显示
+        return tableCreatedDdl;
     }
 
     /**

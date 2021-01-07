@@ -1,4 +1,6 @@
-package com.hyw.webSite.temp;
+package com.hyw.webSite.funbean.RequestFunImpl.checkIP;
+
+import com.hyw.webSite.utils.StringUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -98,9 +100,9 @@ public class CheckIPConnect {
 			
 			if(preIpCount <= begNum && begNum <= ipCount ||
 			   preIpCount <= endNum && endNum <= ipCount ){
-				
-				prcIp(checkIPDto.getBegIP(), checkIPDto.getEndIP(), checkIPDto.getPort(), checkIPDto.getTimeout(),begNum,endNum,preIpCount,threadNum);
-				
+
+				prcIp(checkIPDto.getBegIP(), checkIPDto.getEndIP(), checkIPDto.getPort(), checkIPDto.getTimeout(),
+							begNum, endNum, preIpCount, threadNum);
 			}
 			preIpCount = ipCount;
 		}
@@ -141,6 +143,9 @@ public class CheckIPConnect {
 			for (int ipNum2 = ipNum2Min; ipNum2 <= ipNum2Max; ipNum2++) {
 				for (int ipNum3 = ipNum3Min; ipNum3 <= ipNum3Max; ipNum3++) {
 					for (int ipNum4 = ipNum4Min; ipNum4 <= ipNum4Max; ipNum4++) {
+						if(StringUtil.isNotBlank(CheckIPandPortThread.getIp())){
+							return;
+						}
 						String ip = ipNum1 + "." + ipNum2 + "." + ipNum3 + "." + ipNum4;
 						if(begNum <= ipCount && ipCount <= endNum){
 							if(port == 3389){
@@ -153,8 +158,10 @@ public class CheckIPConnect {
 							}else{								
 								if(isHttpConnectable("http://" + ip+":"+port+"/hyw.html")){
 									System.out.println(ip+"\t********TRUE********");
+									CheckIPandPortThread.setIp(ip);
+									return;
 								}else{
-									//System.out.println(ip+"\t FALSE");
+									//System.out.println("threadNum:"+threadNum+","+ip+"\t FALSE");
 								}
 							}
 						}else{

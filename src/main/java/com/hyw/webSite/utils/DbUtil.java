@@ -176,14 +176,75 @@ public class DbUtil {
     }
 
     /**
-     * 返回表结构显示的内容
+     * 返回表createTableDDL
      * @param connection
-     * @param dbName
      * @param tableName
      * @return
      */
-    public static List<String> getTablePrimaryKeys(Connection connection,String dbName, String tableName) {
-        String   catalog           = dbName;  //表所在的编目
+    public static String getTableCreatedDdl(Connection connection,String tableName) {
+        String createDDL = null;
+        try{
+            Statement  stmt = (Statement) connection.createStatement();
+            String sql = null;
+            if(connection.getMetaData().getDriverName().toLowerCase().contains("sqlite")){
+                sql = "SELECT '1' temp1,sql FROM sqlite_master WHERE type='table' AND name ='" + tableName +"'";
+            }else if(connection.getMetaData().getDriverName().toLowerCase().contains("mysql")){
+                sql = "SHOW CREATE TABLE " + tableName;
+            }else{
+                throw new BizException("暂不支持该数据库("+connection.getMetaData().getDriverName()+")");
+            }
+            ResultSet rs = stmt.executeQuery(sql);
+            if (rs != null && rs.next()) {
+                createDDL = rs.getString(2);
+            }
+            assert rs != null;
+            rs.close();
+            stmt.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return createDDL;
+    }
+
+    /**
+     * 返回表注释
+     * @param connection
+     * @param tableName
+     * @return
+     */
+    public static String getTableComment(Connection connection,String tableName) {
+        String tableComment = null;
+        try{
+            Statement  stmt = (Statement) connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SHOW CREATE TABLE " + tableName);
+            if (rs != null && rs.next()) {
+                String createDDL = rs.getString(2);
+                int index = createDDL.indexOf("COMMENT='");
+                if (index < 0) {
+                    return "";
+                }
+                tableComment = createDDL.substring(index + 9);
+                tableComment = tableComment.substring(0, tableComment.length() - 1);
+
+            }
+            assert rs != null;
+            rs.close();
+            stmt.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return tableComment;
+    }
+
+    /**
+     * 返回表结构显示的内容
+     * @param connection
+     * @param libName
+     * @param tableName
+     * @return
+     */
+    public static List<String> getTablePrimaryKeys(Connection connection,String libName, String tableName) {
+        String   catalog           = libName;  //表所在的编目
         String   schemaPattern     = null;  //表所在的模式
         String   tableNamePattern  = tableName; //匹配表名
 

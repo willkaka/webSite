@@ -1,13 +1,16 @@
 package com.hyw.webSite.funbean.RequestFunImpl;
 
+import com.hyw.webSite.constant.WebConstant;
 import com.hyw.webSite.dto.GitCommitInfoDto;
 import com.hyw.webSite.exception.BizException;
-import com.hyw.webSite.funbean.RequestFun;
+import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.service.JGitService;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
-import com.hyw.webSite.web.dto.ReturnDto;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,44 +21,48 @@ import java.util.*;
 
 @Service("queryGitHistory")
 @Slf4j
-public class QueryGitHistory implements RequestFun {
+public class QueryGitHistory extends RequestFunUnit<List<Map<String, FieldAttr>>, QueryGitHistory.QueryVariable> {
     @Autowired
     private JGitService jGitService;
 
+    /**
+     * 输入参数检查
+     * @param variable 参数
+     */
     @Override
-    public ReturnDto execute(RequestDto requestDto){
-        ReturnDto returnDto = new ReturnDto();
-        returnDto.getOutputMap().put("showType","table");//以表格形式显示
-        returnDto.getOutputMap().put("isChanged",true); //标识输出区域已改变需要刷新
-        returnDto.getOutputMap().put("isClear",true);//清除原有输出内容
-
-        Map<String,String> inputValue = (Map<String,String>) requestDto.getReqParm().get("inputValue");
-        String path = (String) inputValue.get("dir");
-        if(StringUtil.isBlank(path)){
+    public void checkVariable(QueryGitHistory.QueryVariable variable){
+        //输入检查
+        if(StringUtil.isBlank(variable.getDir())){
             throw new BizException("git路径不允许为空值!");
         }
-        String ignoreMerge = (String) inputValue.get("ignoreMerge");
-        String user = (String) inputValue.get("user");
-        String sBegTime = (String) inputValue.get("begTime");
-        if(StringUtil.isBlank(sBegTime)){
+        if(StringUtil.isBlank(variable.getBegTime())){
             throw new BizException("筛选时间不允许为空值!");
         }
-        String sEndTime = (String) inputValue.get("endTime");
-        if(StringUtil.isBlank(sEndTime)){
+        if(StringUtil.isBlank(variable.getEndTime())){
             throw new BizException("筛选时间不允许为空值!");
         }
-        LocalDateTime begTime = StringUtil.isBlank(sBegTime)?null:LocalDateTime.parse(sBegTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        LocalDateTime endTime = StringUtil.isBlank(sEndTime)?null:LocalDateTime.parse(sEndTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
 
-        Map<String,List<GitCommitInfoDto>> fileCommitList = jGitService.getFileCommintInfo(path,user,begTime,endTime);
+    /**
+     * 执行自定义逻辑
+     * @param requestDto 请求dto
+     * @param variable 参数
+     * @return D
+     */
+    @Override
+    public List<Map<String, FieldAttr>> execLogic(RequestDto requestDto, QueryGitHistory.QueryVariable variable){
+
+        LocalDateTime begTime = StringUtil.isBlank(variable.getBegTime())?null:LocalDateTime.parse(variable.getBegTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime endTime = StringUtil.isBlank(variable.getEndTime())?null:LocalDateTime.parse(variable.getEndTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        Map<String,List<GitCommitInfoDto>> fileCommitList = jGitService.getFileCommintInfo(variable.getDir(),variable.getUser(),begTime,endTime);
         Map<String, List<GitCommitInfoDto>> map = new TreeMap<>(fileCommitList);
 
         List<Map<String, FieldAttr>> records = new ArrayList<>();
         for(String fileName:map.keySet()){
             int i=0;
             for(GitCommitInfoDto gitCommitInfoDto:map.get(fileName)){
-                String message = gitCommitInfoDto.getShortMessage().substring(0,6);
-                if("Y".equals(ignoreMerge) && "Merge ".equals(message)){
+                if("Y".equals(variable.getIgnoreMerge()) && gitCommitInfoDto.getShortMessage().startsWith("Merge ")){
                     continue;
                 }
                 Map<String,FieldAttr> record = new LinkedHashMap<>();
@@ -67,7 +74,24 @@ public class QueryGitHistory implements RequestFun {
                 i++;
             }
         }
-        returnDto.getOutputMap().put("tableRecordList", records);
-        return returnDto;
+
+        //参数配置
+        variable.setOutputShowType(WebConstant.OUTPUT_SHOW_TYPE_TABLE); //以表格形式显示
+        variable.setWithPage(false);//表格内容分页显示
+        return records;
+    }
+
+    /**
+     * 输入输出参数
+     */
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    public static class QueryVariable extends RequestFunUnit.Variable {
+        private String dir;
+        private String ignoreMerge;
+        private String user;
+        private String begTime;
+        private String endTime;
     }
 }

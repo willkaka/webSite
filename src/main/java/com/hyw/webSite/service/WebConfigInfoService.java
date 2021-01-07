@@ -74,7 +74,7 @@ public class WebConfigInfoService {
             //解析data字段
             String dataString = (String) rtnMap.get("data");
             if(StringUtil.isNotBlank(dataString)) {
-                JSONObject jsonData = JSONObject.parseObject(StringUtil.String2JsonString(dataString));
+                JSONObject jsonData = JSONObject.parseObject(dataString);
                 //默认值
                 JSONObject defaultValueObject = jsonData.getJSONObject("defaultValueObject");
                 if(null != defaultValueObject) {

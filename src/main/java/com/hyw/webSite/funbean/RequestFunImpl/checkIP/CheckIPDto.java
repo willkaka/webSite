@@ -1,4 +1,4 @@
-package com.hyw.webSite.temp;
+package com.hyw.webSite.funbean.RequestFunImpl.checkIP;
 
 public class CheckIPDto {
 	String begIP;

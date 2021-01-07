@@ -54,7 +54,7 @@ public class DeleteRecord implements RequestFun {
             throw new BizException("数据表"+tableName+",无主键,无法更新!");
         }
 
-        StringBuffer sql = new StringBuffer();
+        StringBuilder sql = new StringBuilder();
         sql.append("DELETE").append(" ").append("FROM").append(" ").append(tableName).append(" ");
         sql.append(" WHERE ");
         int keyFieldCount = 0;
@@ -72,16 +72,16 @@ public class DeleteRecord implements RequestFun {
         DbUtil.closeConnection(connection);
 
         Map<String,Object> webNextOprMap = new HashMap<>();
-        webNextOprMap.put("type","hide");
-        webNextOprMap.put("alert","true");
+        webNextOprMap.put("alert","true");//是否提示成功
+        webNextOprMap.put("sucMsg","数据已删除成功！"); //提示信息
+        webNextOprMap.put("type","hide");//执行任务类型
         webNextOprMap.put("hideEle","swBackGround"); //更新成功后关闭更新子窗口。
-        webNextOprMap.put("sucMsg","数据已删除成功！"); //更新成功后关闭更新子窗口。
         //{"eventList":[{"event":"click","type":"buttonReq","id":"queryTableRecords"}]}
         EventInfo eventInfo = new EventInfo();
         eventInfo.setEvent("click");
         eventInfo.setType("buttonReq");
         eventInfo.setId("queryTableRecords");
-        webNextOprMap.put("callEven",eventInfo);
+        webNextOprMap.put("callEven",eventInfo);//
         returnDto.setWebNextOpr(webNextOprMap);
         return returnDto;
     }

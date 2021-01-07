@@ -1,14 +1,30 @@
-package com.hyw.webSite.temp;
+package com.hyw.webSite.funbean.RequestFunImpl.checkIP;
+
+import com.hyw.webSite.utils.StringUtil;
+import lombok.Synchronized;
 
 import java.util.List;
 
-class CheckIPandPortThread implements Runnable {
+public class CheckIPandPortThread implements Runnable {
 	private Thread t;
 	private int threadCnt;
 	private int threadNum;
 	private List<CheckIPDto> checkIPdtos;
 
-	CheckIPandPortThread(List<CheckIPDto> checkIPdtos,int threadCount, int threadNum) {
+	private static String ip;
+
+	@Synchronized
+	public static void setIp(String s){
+		ip = s;
+	}
+	public static boolean isFound(){
+		return StringUtil.isNotBlank(ip);
+	}
+	public static String getIp(){
+		return ip;
+	}
+
+	public CheckIPandPortThread(List<CheckIPDto> checkIPdtos, int threadCount, int threadNum) {
 		//CheckIPandPortThread(String name,CheckIPdto ipdto) {
 		this.threadCnt = threadCount;
 		this.threadNum = threadNum;

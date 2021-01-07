@@ -19,7 +19,25 @@ function fillOutputArea() {
         if("div_image"===showType){
             fillOutPutAreaWithImgDiv();
         }
+        if("textArea"===showType){
+            fillOutPutAreaWithText();
+        }
     }
+}
+
+/**
+ * 填充输出区域_平铺
+ * @param rtnMap
+ */
+function fillOutPutAreaWithText() {
+    let text = outputMap.textAreaValue;
+    let parent_ele = document.getElementById("outputArea");
+
+    let textArea = document.createElement("textarea");
+    textArea.setAttribute("class","output_textArea");
+    textArea.innerHTML = text;
+
+    parent_ele.appendChild(textArea);
 }
 
 /**
