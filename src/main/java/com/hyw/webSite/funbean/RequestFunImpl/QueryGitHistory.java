@@ -51,27 +51,41 @@ public class QueryGitHistory extends RequestFunUnit<List<Map<String, FieldAttr>>
      */
     @Override
     public List<Map<String, FieldAttr>> execLogic(RequestDto requestDto, QueryGitHistory.QueryVariable variable){
+        List<Map<String, FieldAttr>> records = new ArrayList<>();
 
         LocalDateTime begTime = StringUtil.isBlank(variable.getBegTime())?null:LocalDateTime.parse(variable.getBegTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         LocalDateTime endTime = StringUtil.isBlank(variable.getEndTime())?null:LocalDateTime.parse(variable.getEndTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        Map<String,List<GitCommitInfoDto>> fileCommitList = jGitService.getFileCommintInfo(variable.getDir(),variable.getUser(),begTime,endTime);
-        Map<String, List<GitCommitInfoDto>> map = new TreeMap<>(fileCommitList);
-
-        List<Map<String, FieldAttr>> records = new ArrayList<>();
-        for(String fileName:map.keySet()){
-            int i=0;
-            for(GitCommitInfoDto gitCommitInfoDto:map.get(fileName)){
+        if("commitList".equals(variable.getGroupBy())){
+            List<GitCommitInfoDto> commitList = jGitService.getCommitList(variable.getDir(),variable.getUser(),begTime,endTime);
+            for(GitCommitInfoDto gitCommitInfoDto:commitList){
                 if("Y".equals(variable.getIgnoreMerge()) && gitCommitInfoDto.getShortMessage().startsWith("Merge ")){
                     continue;
                 }
                 Map<String,FieldAttr> record = new LinkedHashMap<>();
-                record.put("程序",new FieldAttr().setValue(i==0?fileName:"").setRemarks("程序"));
+                record.put("CommitID",new FieldAttr().setValue(gitCommitInfoDto.getCommitId()).setRemarks("CommitID"));
                 record.put("提交时间",new FieldAttr().setValue(gitCommitInfoDto.getCommitDateTime()).setRemarks("提交时间"));
                 record.put("提交用户",new FieldAttr().setValue(gitCommitInfoDto.getCommitterIdent().getName()).setRemarks("提交用户"));
                 record.put("提交备注信息",new FieldAttr().setValue(gitCommitInfoDto.getShortMessage()).setRemarks("提交备注信息"));
                 records.add(record);
-                i++;
+            }
+        }else if("fileList".equals(variable.getGroupBy())) {
+            Map<String, List<GitCommitInfoDto>> fileCommitList = jGitService.getFileCommintInfo(variable.getDir(), variable.getUser(), begTime, endTime);
+            Map<String, List<GitCommitInfoDto>> map = new TreeMap<>(fileCommitList);
+            for (String fileName : map.keySet()) {
+                int i = 0;
+                for (GitCommitInfoDto gitCommitInfoDto : map.get(fileName)) {
+                    if ("Y".equals(variable.getIgnoreMerge()) && gitCommitInfoDto.getShortMessage().startsWith("Merge ")) {
+                        continue;
+                    }
+                    Map<String, FieldAttr> record = new LinkedHashMap<>();
+                    record.put("程序", new FieldAttr().setValue(i == 0 ? fileName : "").setRemarks("程序"));
+                    record.put("提交时间", new FieldAttr().setValue(gitCommitInfoDto.getCommitDateTime()).setRemarks("提交时间"));
+                    record.put("提交用户", new FieldAttr().setValue(gitCommitInfoDto.getCommitterIdent().getName()).setRemarks("提交用户"));
+                    record.put("提交备注信息", new FieldAttr().setValue(gitCommitInfoDto.getShortMessage()).setRemarks("提交备注信息"));
+                    records.add(record);
+                    i++;
+                }
             }
         }
 
@@ -93,5 +107,6 @@ public class QueryGitHistory extends RequestFunUnit<List<Map<String, FieldAttr>>
         private String user;
         private String begTime;
         private String endTime;
+        private String groupBy; //commitList-提交的事务,fileList-以文件统计
     }
 }

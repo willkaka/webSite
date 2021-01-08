@@ -81,7 +81,7 @@ public class DeleteRecord implements RequestFun {
         eventInfo.setEvent("click");
         eventInfo.setType("buttonReq");
         eventInfo.setId("queryTableRecords");
-        webNextOprMap.put("callEven",eventInfo);//
+        webNextOprMap.put("callEven",eventInfo);//重新查询数据，实现自动刷新功能
         returnDto.setWebNextOpr(webNextOprMap);
         return returnDto;
     }
