@@ -16,6 +16,8 @@ public class EventInfo {
     private String relEleType;
     private String relEleChgType; //改变的类型：value-改变值
     private String selectedValue;
+    private boolean withPage; //是否为分页按钮的请求事件
+    private int reqPage; //请求页码
     private Map<String, FieldAttr> recordMap;
     private Map<String,Object> paramMap; //放置参数
 }

@@ -1,4 +1,4 @@
-package com.hyw.webSite.funbean.RequestFunImpl;
+package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
 import com.hyw.webSite.funbean.RequestFun;
 import com.hyw.webSite.service.ConfigDatabaseInfoService;

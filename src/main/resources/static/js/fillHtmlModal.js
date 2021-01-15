@@ -25,7 +25,12 @@ function showEditModal(eventInfo){
 
         let label = document.createElement("label");
         label.setAttribute("class","inputArea_sub_label");
-        label.innerHTML = field;//名称
+        //label.innerHTML = field;//名称
+        let fieldName = recordMap[field].columnName;//名称
+        if(recordMap[field].remarks != null && recordMap[field].remarks != ''){
+            fieldName = fieldName + '(' +recordMap[field].remarks + ')';
+        }
+        label.innerHTML = fieldName;//名称
         groupDiv.appendChild(label);
 
         let input = document.createElement("input");
@@ -33,6 +38,19 @@ function showEditModal(eventInfo){
         input.setAttribute("class","inputArea_sub_input");
         input.setAttribute("value",recordMap[field].value);
         groupDiv.appendChild(input);
+
+        let labelType = document.createElement("label");
+        labelType.setAttribute("class","inputArea_sub_label");
+        let typeStr = recordMap[field].typeName + "(" + recordMap[field].columnSize;
+        if('DECIMAL' == recordMap[field].typeName){
+            typeStr = typeStr + "," + recordMap[field].decimalDigits;
+        }
+        typeStr = typeStr + ")";
+        if('NO' == recordMap[field].isNullable){ typeStr = typeStr + ',' + 'is not null'}
+        if(true == recordMap[field].keyField){ typeStr = typeStr + ',' + 'is key'}
+        if('YES'== recordMap[field].isAutoincrement){typeStr = typeStr + ',' + 'isAutoincrement'}
+        labelType.innerHTML = typeStr;
+        groupDiv.appendChild(labelType);
 
         body.appendChild(groupDiv);
 
@@ -47,7 +65,7 @@ function showEditModal(eventInfo){
     if(formatInfoMap.formatInfoList != null){
         let formatInfoList = formatInfoMap.formatInfoList;
         for (let i=0;i<formatInfoList.length;i++){
-            if(formatInfoList[i].area == "modalArea"){
+            if(formatInfoList[i].area == "modalArea" && formatInfoList[i].window == "editWindow"){
                 let elementInfo = formatInfoList[i];
                 let eventInfoList = elementInfo["eventInfoList"];
                 for(let j=0;j<eventInfoList.length;j++){
@@ -89,7 +107,11 @@ function showAddModal(eventInfo){
 
         let label = document.createElement("label");
         label.setAttribute("class","inputArea_sub_label");
-        label.innerHTML = recordMap[field].columnName;//名称
+        let fieldName = recordMap[field].columnName;//名称
+        if(recordMap[field].remarks != null && recordMap[field].remarks != ''){
+            fieldName = fieldName + '(' +recordMap[field].remarks + ')';
+        }
+        label.innerHTML = fieldName;//名称
         groupDiv.appendChild(label);
 
         let input = document.createElement("input");
@@ -100,7 +122,15 @@ function showAddModal(eventInfo){
 
         let labelType = document.createElement("label");
         labelType.setAttribute("class","inputArea_sub_label");
-        labelType.innerHTML = recordMap[field].typeName + "(" + recordMap[field].bufferLength + ")";
+        let typeStr = recordMap[field].typeName + "(" + recordMap[field].columnSize;
+        if('DECIMAL' == recordMap[field].typeName){
+            typeStr = typeStr + "," + recordMap[field].decimalDigits;
+        }
+        typeStr = typeStr + ")";
+        if('NO' == recordMap[field].isNullable){ typeStr = typeStr + ' ' + 'is not null.'}
+        if(true == recordMap[field].keyField){ typeStr = typeStr + ' ' + 'is key.'}
+        if('YES'== recordMap[field].isAutoincrement){typeStr = typeStr + ',' + 'isAutoincrement'}
+        labelType.innerHTML = typeStr;
         groupDiv.appendChild(labelType);
 
         body.appendChild(groupDiv);
@@ -116,7 +146,7 @@ function showAddModal(eventInfo){
     if(formatInfoMap.formatInfoList != null){
         let formatInfoList = formatInfoMap.formatInfoList;
         for (let i=0;i<formatInfoList.length;i++){
-            if(formatInfoList[i].area == "modalArea"){
+            if(formatInfoList[i].area == "modalArea" && formatInfoList[i].window == "addWindow"){
                 let elementInfo = formatInfoList[i];
                 let eventInfoList = elementInfo["eventInfoList"];
                 for(let j=0;j<eventInfoList.length;j++){

@@ -89,6 +89,11 @@ public class DbUtil {
             DatabaseMetaData databaseMetaData = connection.getMetaData();
             ResultSet result = databaseMetaData.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
             fieldsMap = getFieldAttrMapFromResultSet(result);
+
+            List<String> keyList = DbUtil.getTablePrimaryKeys(connection,libName,tableName);
+            for(String keyFieldName:keyList){
+                fieldsMap.get(keyFieldName).setKeyField(true);
+            }
         }catch(SQLException e){
             log.error("取数据表结构失败！",e);
             throw new BizException("取数据表结构失败！");
@@ -619,7 +624,8 @@ public class DbUtil {
                     FieldAttr fieldAttr = new FieldAttr();
                     fieldAttr.setColumnName(metaData1.getColumnLabel(fieldNum));
                     fieldAttr.setTypeName(metaData1.getColumnTypeName(fieldNum));
-                    fieldAttr.setBufferLength(metaData1.getPrecision(fieldNum));
+                    fieldAttr.setColumnSize(metaData1.getPrecision(fieldNum));
+                    fieldAttr.setDecimalDigits(String.valueOf(metaData1.getScale(fieldNum)));
 //                    field.put("name",metaData1.getColumnLabel(fieldNum));
 //                    field.put("type",metaData1.getColumnTypeName(fieldNum));
 //                    //field.put("length",metaData1.getColumnDisplaySize(fieldNum));

@@ -1,13 +1,11 @@
-package com.hyw.webSite.funbean.RequestFunImpl;
+package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
-import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.utils.DbUtil;
-import com.hyw.webSite.utils.SqlUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.ReturnDto;
@@ -21,9 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service("addRecord")
+@Service("deleteRecord")
 @Slf4j
-public class AddRecord implements RequestFun {
+public class DeleteRecord implements RequestFun {
 
     @Autowired
     private ConfigDatabaseInfoService configDatabaseInfoService;
@@ -46,40 +44,44 @@ public class AddRecord implements RequestFun {
             throw new BizException("表名,不允许为空值!");
         }
 
-        //建立数据库连接，并执行写入操作
         ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(dbName);
         configDatabaseInfo.setDatabaseLabel(libName);
         Connection connection = DbUtil.getConnection(configDatabaseInfo);
 
-        //取数据表字段定义信息
-        Map<String,FieldAttr> fieldAttrMap = DbUtil.getFieldAttrMap(connection,dbName,libName,tableName);
-        for(String alterFieldName:inputValue.keySet()){
-            if("modal".equals( alterFieldName.substring(0,5)) ){
-                String fieldName = alterFieldName.substring(5,alterFieldName.length());
-                FieldAttr fieldAttr = fieldAttrMap.get(fieldName);
-                if(null!=fieldAttr) fieldAttr.setValue(inputValue.get(alterFieldName));
-            }
+        //String sql = SqlUtil.getUpdateSql(tableName,updatedRecordMap,originalRecordMap);
+        List<String> keyFields = DbUtil.getTablePrimaryKeys(connection,libName,tableName);
+        if(CollectionUtil.isEmpty(keyFields)){
+            throw new BizException("数据表"+tableName+",无主键,无法更新!");
         }
-        //生成insert语句
-        String sql = SqlUtil.getInsertSql(connection,libName,tableName,fieldAttrMap);
 
-        log.info("准备执行sql:"+sql);
-        DbUtil.executeSql(connection,sql);
-        log.info("已执行sql:"+sql);
+        StringBuilder sql = new StringBuilder();
+        sql.append("DELETE").append(" ").append("FROM").append(" ").append(tableName).append(" ");
+        sql.append(" WHERE ");
+        int keyFieldCount = 0;
+        for(String keyField:keyFields){
+            keyFieldCount++;
+            if(keyFieldCount != 1) {
+                sql.append(" AND ");
+            }
+            sql.append(keyField).append(" = ").append("\"").append(inputValue.get("modal" + keyField)).append("\" ");
+        }
+        log.info("准备执行sql:"+sql.toString());
+        DbUtil.executeSql(connection,sql.toString());
+        log.info("已执行sql:"+sql.toString());
 
         DbUtil.closeConnection(connection);
 
-        //设置成功写入后的自动刷新
         Map<String,Object> webNextOprMap = new HashMap<>();
-        webNextOprMap.put("type","hide");
-        webNextOprMap.put("alert","true");
+        webNextOprMap.put("alert","true");//是否提示成功
+        webNextOprMap.put("sucMsg","数据已删除成功！"); //提示信息
+        webNextOprMap.put("type","hide");//执行任务类型
         webNextOprMap.put("hideEle","swBackGround"); //更新成功后关闭更新子窗口。
-        webNextOprMap.put("sucMsg","数据成功写入！"); //更新成功后关闭更新子窗口。
+        //{"eventList":[{"event":"click","type":"buttonReq","id":"queryTableRecords"}]}
         EventInfo eventInfo = new EventInfo();
         eventInfo.setEvent("click");
         eventInfo.setType("buttonReq");
         eventInfo.setId("queryTableRecords");
-        webNextOprMap.put("callEven",eventInfo);
+        webNextOprMap.put("callEven",eventInfo);//重新查询数据，实现自动刷新功能
         returnDto.setWebNextOpr(webNextOprMap);
         return returnDto;
     }

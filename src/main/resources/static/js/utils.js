@@ -180,11 +180,21 @@ function setEventPrcMethod(eventInfo,recordMap) {
     //target：触发事件的元bai素。currentTarget：事件绑定的元素。
     var event = window.event || arguments[0];
     var eventEle = event.currentTarget;
+    eventInfo.reqPage = 0;
     if(eventEle.tagName == "INPUT"){
         if(eventEle.value == undefined || eventEle.value == "" || eventEle.value == null){
             return;
         }
         eventInfo.selectedValue = eventEle.value;
+    }else if(eventEle.tagName == "A" && eventInfo.withPage){ //分页按钮请求
+        if("上一页" == eventEle.innerHTML){
+            eventInfo.reqPage = outputMap.pageNow - 1 < 0?0:outputMap.pageNow - 1;
+        }else if("下一页" == eventEle.innerHTML){
+            let totalPage = parseInt((outputMap.totalCount-1)/outputMap.pageSize)+1;
+            eventInfo.reqPage = outputMap.pageNow + 1 > totalPage?totalPage:outputMap.pageNow + 1;
+        }else{
+            eventInfo.reqPage = eventEle.innerHTML;
+        }
     }else{
         if(eventInfo.type == "menuReq"){
             curMenuId = eventInfo.id;

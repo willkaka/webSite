@@ -1,4 +1,4 @@
-package com.hyw.webSite.funbean.RequestFunImpl;
+package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
@@ -7,7 +7,6 @@ import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.utils.DbUtil;
-import com.hyw.webSite.utils.SqlUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.ReturnDto;
@@ -21,9 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service("updateRecord")
+@Service("addNewRecord")
 @Slf4j
-public class UpdateRecord implements RequestFun {
+public class AddNewRecord implements RequestFun {
 
     @Autowired
     private ConfigDatabaseInfoService configDatabaseInfoService;
@@ -45,31 +44,19 @@ public class UpdateRecord implements RequestFun {
         if(StringUtil.isBlank(tableName)){
             throw new BizException("表名,不允许为空值!");
         }
+
         ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(dbName);
         configDatabaseInfo.setDatabaseLabel(libName);
         Connection connection = DbUtil.getConnection(configDatabaseInfo);
-
-        EventInfo eventInfo = requestDto.getEventInfo();
-        Map<String, FieldAttr> recordMap = eventInfo.getRecordMap();
-        String updateSql = SqlUtil.getUpdateSql(connection,libName,tableName,recordMap);
-
-        log.info("准备执行sql:"+updateSql);
-        DbUtil.executeSql(connection,updateSql);
-        log.info("已执行sql:"+updateSql);
-
+        //Map<String, FieldAttr> recordMap = DbUtil.getTableFieldsMap(connection,tableName);
+        Map<String,FieldAttr> recordMap = DbUtil.getFieldAttrMap(connection,dbName,libName,tableName);
         DbUtil.closeConnection(connection);
 
         Map<String,Object> webNextOprMap = new HashMap<>();
-        webNextOprMap.put("type","hide");
-        webNextOprMap.put("alert","true");
-        webNextOprMap.put("hideEle","swBackGround"); //更新成功后关闭更新子窗口。
-        webNextOprMap.put("sucMsg","数据已更新成功！"); //更新成功后关闭更新子窗口。
-        //{"eventList":[{"event":"click","type":"buttonReq","id":"queryTableRecords"}]}
-        EventInfo eventInfo2 = new EventInfo();
-        eventInfo2.setEvent("click");
-        eventInfo2.setType("buttonReq");
-        eventInfo2.setId("queryTableRecords");
-        webNextOprMap.put("callEven",eventInfo2);
+        EventInfo eventInfo = new EventInfo();
+        eventInfo.setType("webButtonShowModal");
+        eventInfo.setRecordMap(recordMap);
+        webNextOprMap.put("callEven",eventInfo);
         returnDto.setWebNextOpr(webNextOprMap);
         return returnDto;
     }

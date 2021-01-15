@@ -88,57 +88,18 @@ function fillOutPutAreaWithTable() {
     if(tableRecordList==null) return;
 
     let parent_ele = document.getElementById("outputArea");  //<table class="table" id="dataTable">
-    //分页按钮
-    let page_div = document.createElement("div");
-    page_div.setAttribute("class","page-box");
 
-    let totalPage = parseInt((outputMap.totalCount-1)/outputMap.pageSize)+1;
-    let pageNow = outputMap.pageNow;
-    let page_pre_a = document.createElement("a");
-    page_pre_a.setAttribute("class","page-button");
-    page_pre_a.innerHTML = "上一页";
-    page_div.appendChild(page_pre_a);
-    if(totalPage-pageNow > 5){
-        for (let i=pageNow-1>0?pageNow-1:1;i<=5;i++){
-            if(i==pageNow){
-                let page_strong = document.createElement("strong");
-                page_strong.setAttribute("class","page-button-strong");
-                page_strong.innerHTML = String(i);
-                page_div.appendChild(page_strong);
-            }else{
-                let page_a = document.createElement("a");
-                page_a.setAttribute("class","page-button");
-                page_a.innerHTML = String(i);
-                page_div.appendChild(page_a);
-            }
-        }
-        let page_span = document.createElement("span");
-        page_span.innerHTML = "...";
-        page_div.appendChild(page_span);
-        let page_a = document.createElement("a");
-        page_a.setAttribute("class","page-button");
-        page_a.innerHTML = totalPage;
-        page_div.appendChild(page_a);
-    }else{
-        for(let i=1;i<=5;i++){
-            if(i==pageNow){
-                let page_strong = document.createElement("strong");
-                page_strong.setAttribute("class","page-button-strong");
-                page_strong.innerHTML = String(i);
-                page_div.appendChild(page_strong);
-            }else{
-                let page_a = document.createElement("a");
-                page_a.setAttribute("class","page-button");
-                page_a.innerHTML = String(i);
-                page_div.appendChild(page_a);
+    //分页按钮
+    if(outputMap.withPage){
+        for (let i=0;i<inputMap.inputList.length;i++){
+            let events = inputMap.inputList[i].eventInfoList;
+            for(let j=0;j<events.length;j++){
+                if(events[j].withPage){
+                    writePageButton(parent_ele,events[j],outputMap);//分页按钮
+                }
             }
         }
     }
-    let page_next_a = document.createElement("a");
-    page_next_a.setAttribute("class","page-button");
-    page_next_a.innerHTML = "下一页";
-    page_div.appendChild(page_next_a);
-    parent_ele.appendChild(page_div);
 
     let element_table = document.createElement("table");
     element_table.setAttribute("class","output_table");
@@ -234,6 +195,55 @@ function fillOutPutAreaWithTable() {
     }
 }
 
+//分页按钮
+function writePageButton(parent_ele,eventInfo,outputMap){
+    let events =new Array();
+    events[0] = eventInfo;
+    let page_div = document.createElement("div");
+    page_div.setAttribute("class","page-box");
+
+    let totalPage = parseInt((outputMap.totalCount-1)/outputMap.pageSize)+1;
+    let pageNow = outputMap.pageNow;
+    let page_pre_a = document.createElement("a");
+    page_pre_a.setAttribute("class","page-button");
+    page_pre_a.innerHTML = "上一页";
+    setEventListener(page_pre_a,events); //事件
+    page_div.appendChild(page_pre_a);
+
+	let lrSize = 3;
+    for(let i = 1; i <= totalPage; i++) {
+        if(i == 2 && pageNow - lrSize > 1) {
+            i = pageNow - lrSize;
+			writePageA(page_div,"...",pageNow,null);
+        }else if(i == pageNow + lrSize && pageNow + lrSize < totalPage) {
+            i = totalPage - 1;
+			writePageA(page_div,"...",pageNow,null);
+        }else{
+            writePageA(page_div,i,pageNow,events);
+        }
+    }
+    let page_next_a = document.createElement("a");
+    page_next_a.setAttribute("class","page-button");
+    page_next_a.innerHTML = "下一页";
+    setEventListener(page_next_a,events); //事件
+    page_div.appendChild(page_next_a);
+    parent_ele.appendChild(page_div);
+}
+
+function writePageA(page_div,pageNum,pageNow,events){
+    if(pageNum==pageNow){
+        let page_strong = document.createElement("strong");
+        page_strong.setAttribute("class","page-button-strong");
+        page_strong.innerHTML = String(pageNum);
+        page_div.appendChild(page_strong);
+    }else{
+        let page_a = document.createElement("a");
+        page_a.setAttribute("class","page-button");
+        page_a.innerHTML = String(pageNum);
+        setEventListener(page_a,events); //事件
+        page_div.appendChild(page_a);
+    }
+}
 
 function playVideo(element,pageInfoMap){
 

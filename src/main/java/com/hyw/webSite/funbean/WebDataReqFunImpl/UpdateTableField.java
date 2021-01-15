@@ -1,4 +1,4 @@
-package com.hyw.webSite.funbean.RequestFunImpl;
+package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;

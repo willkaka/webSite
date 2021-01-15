@@ -178,12 +178,14 @@ body{
   font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
   border-collapse:collapse;/*为表格设置合并边框*/
   margin:2px 5px 2px 5px;/*上边距，右边距，下边距，左边距*/
+  float:left;
 }
 /*表格-表头行*/
 .output_table_thead{
-    position: -webkit-sticky; /*粘性定位*/
-    position: sticky;
-    top:0;
+    /*position: -webkit-sticky; /*粘性定位*/
+    /*position: sticky;*/
+    /*top:0;*/
+    /*margin:2px 5px 2px 5px;/*上边距，右边距，下边距，左边距*/
 }
 .output_table_th{
   background-color:#8AB9C2;
@@ -222,7 +224,6 @@ body{
   color:#aaa;
   margin: 10px;
   float: left;
-  display: contents;
 }
 
 .page-button {
@@ -318,6 +319,7 @@ position: fixed;
     border-style:solid;
     border-width:1px;
     border-color:#8AB9C2;
+    text-align: center; /* 居中 */
 }
 /*********************元素样式定义*********************************/
 .button {

@@ -1,6 +1,5 @@
 package com.hyw.webSite.service;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hyw.webSite.constant.Constant;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +54,7 @@ public class WebConfigInfoService {
         List<WebElement> webElements = new ArrayList<>();
         DynamicTableDto dynamicTableDto = new DynamicTableDto();
         dynamicTableDto.setTableName("web_element");
-        dynamicTableDto.setSelectFields("id,seq,function,area,type,prompt,data,attr,event");
+        dynamicTableDto.setSelectFields("id,seq,function,area,window,type,prompt,data,attr,event");
         dynamicTableDto.setSelectWhere("area = '" + elementArea + "' AND function='" + elementParent + "' ");
         dynamicTableDto.setSelectOrderby("seq");
         List<Map<String, Object>> rtnListMap = dynamicTableService.selectAll(dynamicTableDto);
@@ -66,11 +64,11 @@ public class WebConfigInfoService {
             webElement.setSeq((String) rtnMap.get("seq"));
             webElement.setFunction((String) rtnMap.get("function"));
             webElement.setArea((String) rtnMap.get("area"));
+            webElement.setWindow((String) rtnMap.get("window"));
             webElement.setType((String) rtnMap.get("type"));
             webElement.setPrompt((String) rtnMap.get("prompt"));
             //webElement.setDataMap(getDataMap((String) rtnMap.get("data")));
 
-            String xxx = LocalDateTime.now().plusDays(-10).format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             //解析data字段
             String dataString = (String) rtnMap.get("data");
             if(StringUtil.isNotBlank(dataString)) {
@@ -130,7 +128,7 @@ public class WebConfigInfoService {
                         dataMap.put(key,(String)dataMapObject.get(key));
                     }
                 }else if("cod".equals(dataType)) {
-                    String code = dataString.substring(4,dataString.length());
+                    String code = dataString.substring(4);
                     dataMap = getWebConfigEnum(code);
                 }
                 webElement.setDataMap(dataMap);
@@ -164,6 +162,7 @@ public class WebConfigInfoService {
                     eventInfo.setRelEleChgType(event.getString("relEleChgType"));
                     eventInfo.setSelectedValue(CollectionUtil.getMapFirstOrNull(webElement.getDataMap()));
                     eventInfo.setParamMap(event.getJSONObject("paramMap"));
+                    eventInfo.setWithPage(null==event.getBoolean("withPage")?false:event.getBoolean("withPage"));
                     eventInfos.add(eventInfo);
 
                     inputValue.put(webElement.getId(),CollectionUtil.getMapFirstOrNull(webElement.getDataMap()));

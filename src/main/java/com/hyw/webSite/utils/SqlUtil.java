@@ -105,8 +105,18 @@ public class SqlUtil {
         for(String fieldName:fieldAttrMap.keySet()){
             FieldAttr fieldAttr = fieldAttrMap.get(fieldName);
             if(null==fieldAttr) continue;
-            if(CollectionUtil.isNotEmpty(keyFields) && keyFields.contains(fieldName) && (StringUtil.isBlank((String)fieldAttr.getValue()))){
+            if(CollectionUtil.isNotEmpty(keyFields) &&
+               keyFields.contains(fieldName) &&
+               !"YES".equals(fieldAttrMap.get(fieldName).getIsAutoincrement()) &&
+               (StringUtil.isBlank((String)fieldAttr.getValue()))){
                 throw new BizException("数据表"+tableName+",主键("+fieldName+")写入时不允许为空!");
+            }
+            //自动递增的主键，没有赋值时，写入时不指定数值，由数据库自动赋值。
+            if(CollectionUtil.isNotEmpty(keyFields) &&
+                    keyFields.contains(fieldName) &&
+                    "YES".equals(fieldAttrMap.get(fieldName).getIsAutoincrement()) &&
+                    (StringUtil.isBlank((String)fieldAttr.getValue()))){
+                continue;
             }
 
             if(StringUtil.isNotBlank(sqlFields.toString())) sqlFields.append(",");

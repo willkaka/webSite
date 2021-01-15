@@ -51,21 +51,21 @@ public class QueryTableRecords extends RequestFunUnit<List<Map<String,FieldAttr>
     @Override
     public List<Map<String,FieldAttr>> execLogic(RequestDto requestDto, QueryVariable variable){
         //取数逻辑
-        int pageNow = 0;         //当前的页码
+        int pageNow = requestDto.getEventInfo().getReqPage()==0?1:requestDto.getEventInfo().getReqPage();         //当前的页码
         int pageSize = 10;
         int totalCount;      //表中记录的总行数
 
         //连接数据库，查询数据，关闭数据库
         Connection connection = DbUtil.getConnection(configDatabaseInfoService.getDatabaseConfig(variable.getDbName()), variable.getLibName());
         totalCount = DbUtil.getTableRecordCount(connection,variable.getDbName(),variable.getLibName(),variable.getTableName());
-        List<Map<String,FieldAttr>> records = DbUtil.getTableRecords(connection,variable.getDbName(),variable.getLibName(),variable.getTableName(),pageNow*pageSize,pageSize);
+        List<Map<String,FieldAttr>> records = DbUtil.getTableRecords(connection,variable.getDbName(),variable.getLibName(),variable.getTableName(),(pageNow-1)*pageSize,pageSize);
         DbUtil.closeConnection(connection);
 
         //参数配置
         variable.setOutputShowType(WebConstant.OUTPUT_SHOW_TYPE_TABLE); //以表格形式显示
         variable.setWithPage(true);//表格内容分页显示
         variable.setTotalCount(totalCount);
-        variable.setPageNow(pageNow+1);
+        variable.setPageNow(pageNow);
         variable.setPageSize(pageSize); //每页中显示多少条记录
 
         return records;
