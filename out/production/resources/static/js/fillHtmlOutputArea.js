@@ -146,6 +146,10 @@ function fillOutPutAreaWithTable() {
     element_table.appendChild(element_tbody);
 
     //遍历返回的表记录
+    let begSeq = 0;
+    if(outputMap.withPage){
+        begSeq = outputMap.pageSize * (outputMap.pageNow - 1);
+    }
     for (let i=0;i<tableRecordList.length;i++){
         let recordMap = tableRecordList[i];//记录
         let element_table_tr = document.createElement("tr");
@@ -154,7 +158,7 @@ function fillOutPutAreaWithTable() {
         //第1列，固定为”序号“
         let element_table_td = document.createElement("td");
         element_table_td.setAttribute("class","output_table_td_0");
-        element_table_td.innerHTML = i+1;//字段名
+        element_table_td.innerHTML = begSeq+i+1;//字段名
         element_table_tr.appendChild(element_table_td);
         for(let fieldName in recordMap){
             let fieldAttr = recordMap[fieldName];
@@ -210,16 +214,39 @@ function writePageButton(parent_ele,eventInfo,outputMap){
     setEventListener(page_pre_a,events); //事件
     page_div.appendChild(page_pre_a);
 
-	let lrSize = 3;
-    for(let i = 1; i <= totalPage; i++) {
-        if(i == 2 && pageNow - lrSize > 1) {
-            i = pageNow - lrSize;
-			writePageA(page_div,"...",pageNow,null);
-        }else if(i == pageNow + lrSize && pageNow + lrSize < totalPage) {
-            i = totalPage - 1;
-			writePageA(page_div,"...",pageNow,null);
+    let totalShowNum = 9;//必须为大于4的整奇数
+    let lrShowNum = Math.floor((totalShowNum - 4) / 2); //向下取整数 2
+
+    let pageList = new Array();
+    pageList[0] = 1;
+    if(totalPage <= totalShowNum){
+        for(let i=0,page=1;page <= totalPage;page++,i++){
+            pageList[i] = page;
+        }
+    }else if(pageNow <= totalShowNum-2-lrShowNum){
+        for(let i=1,page=2;page<=totalShowNum-2;page++,i++){
+            pageList[i] = page;
+        }
+        pageList[totalShowNum-2]="...";
+        pageList[totalShowNum-1]=totalPage;
+    }else if(pageNow <= totalPage - (totalShowNum-4)){
+        pageList[1]="...";
+        for(let i=2,page=pageNow-lrShowNum;page<=pageNow+lrShowNum;page++,i++){
+            pageList[i] = page;
+        }
+        pageList[totalShowNum-2]="...";
+        pageList[totalShowNum-1]=totalPage;
+    }else if(pageNow > totalPage - (totalShowNum-4)){
+        pageList[1]="...";
+        for(let i=2,page=totalPage - (totalShowNum-4)-1;page<=totalPage;page++,i++){
+            pageList[i] = page;
+        }
+    }
+    for(let i = 0; i < pageList.length; i++) {
+        if(pageList[i]=="..."){
+            writePageA(page_div,"...",pageNow,null);
         }else{
-            writePageA(page_div,i,pageNow,events);
+            writePageA(page_div,pageList[i],pageNow,events);
         }
     }
     let page_next_a = document.createElement("a");
