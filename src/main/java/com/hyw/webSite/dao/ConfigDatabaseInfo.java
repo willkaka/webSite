@@ -1,8 +1,10 @@
 package com.hyw.webSite.dao;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 @Data
+@TableName("config_database_info")
 public class ConfigDatabaseInfo {
     private int configDatabaseInfoId;
     private String databaseName;

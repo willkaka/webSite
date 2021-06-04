@@ -40,8 +40,8 @@ public class QuerySubject implements RequestFun {
             throw new BizException("DB不允许为空值!");
         }
         String modelId = (String) inputValue.get("modelId");
-        String orgId = (String) inputValue.get("orgId");
-        String owner = (String) inputValue.get("owner");
+        String orgId   = (String) inputValue.get("orgId");
+        String owner   = (String) inputValue.get("owner");
         String channel = (String) inputValue.get("channel");
         String freeTax = (String) inputValue.get("freeTax");
         String transId = (String) inputValue.get("transId");
@@ -52,19 +52,17 @@ public class QuerySubject implements RequestFun {
         Connection connection = DbUtil.getConnection(configDatabaseInfo);
 
         //取trans_entry
-        String sql = "select trans_id 交易码,sort_id 序号,direction 方向,subject_no 核算科目,expression 表达式,digest 科目名称 from trans_entry WHERE record_ind='A'";
+        String sql = "select trans_id 交易码,sort_id 序号,direction 方向,subject_no 核算科目,'' 金蝶科目号,'' 金蝶辅助科目,group_cd 分组,digest 摘要,expression 表达式 from trans_entry WHERE record_ind='A'";
         if(StringUtil.isNotBlank(modelId)){
             sql = sql + " AND model_id='"+modelId+"'";
         }
         if(StringUtil.isNotBlank(transId) && !"all".equals(transId)){
             sql = sql + " AND trans_id='" + transId + "'";
         }
-        sql = sql +  "order by trans_id,sort_id";
+        sql = sql +  "order by trans_id,group_cd asc,expression,direction desc";
         List<Map<String,FieldAttr>> transEntryList = DbUtil.getSqlRecordsWithFieldAttr(connection,sql);
         //取subject_map_eas
         sql = "select subject_no,business_channel,line_id,org_id,company_num,account_num,asstact_first_num,tax_type from subject_map_eas WHERE record_ind='A'";
-        //List<Map<String,Object>> subjectMapList = DbUtil.getSqlRecords(connection,sql);
-
         List<Map<String, FieldAttr>> subjectMapList = DbUtil.getSqlRecordsWithFieldAttr(connection,sql);
         DbUtil.closeConnection(connection);
 
@@ -76,7 +74,6 @@ public class QuerySubject implements RequestFun {
         else if("100300".equals(orgId)) company = "03.003";
         else if("100600".equals(orgId)) company = "03.004";
         else company = "01";
-
 
         for(Map<String,FieldAttr> transEntry:transEntryList){
             String subjectNo = (String) transEntry.get("subject_no").getValue();
@@ -91,17 +88,6 @@ public class QuerySubject implements RequestFun {
             transEntry.put("金蝶科目号",subjectMap.get("account_num"));
             transEntry.put("金蝶辅助科目",subjectMap.get("asstact_first_num"));
         }
-        List<String> tableColList = new ArrayList<>();
-        tableColList.add("交易码");
-        tableColList.add("序号");
-        tableColList.add("方向");
-        tableColList.add("核算科目");
-        tableColList.add("科目名称");
-        tableColList.add("金蝶科目号");
-        tableColList.add("金蝶辅助科目");
-        tableColList.add("表达式");
-
-        //returnDto.getOutputMap().put("tableColList", tableColList);
         returnDto.getOutputMap().put("tableRecordList", transEntryList);
 
         return returnDto;

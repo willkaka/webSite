@@ -7,10 +7,17 @@ package com.hyw.webSite.exception;
  */
 public class BizException extends FastRuntimeException {
 
+    public BizException(String message) { super("9998", message); }
+
     public BizException(String code, String message) {
         super(code, message);
     }
 
-    public BizException(String message) { super("9998", message); }
+    public BizException(String message, Exception e) {
+        super(message, e);
+    }
 
+    public BizException(String code, String message, Exception e) {
+        super(code, message, e);
+    }
 }

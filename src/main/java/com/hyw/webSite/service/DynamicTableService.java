@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.hyw.webSite.dto.DynamicTableDto;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.mapper.DynamicTableMapper;
 import com.hyw.webSite.utils.ClassUtil;
+import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.utils.SqlUtil;
 import com.hyw.webSite.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +24,7 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class DynamicTableService
-{
+public class DynamicTableService{
     @Autowired
     DynamicTableMapper dynamicTableMapper;
 
@@ -37,6 +38,10 @@ public class DynamicTableService
 
     public int insert(DynamicTableDto dynamicTableDto) {
         return dynamicTableMapper.insert(dynamicTableDto);
+    }
+
+    public int insert(String sql) {
+        return dynamicTableMapper.saveBySql(sql);
     }
 
     public int update(DynamicTableDto dynamicTableDto) {
@@ -58,7 +63,6 @@ public class DynamicTableService
         }
         return rtnList;
     }
-
 
     /**
      * 读取多条记录
@@ -93,7 +97,7 @@ public class DynamicTableService
         for(Map<String, Object> map:list){
             rtnList.add(ClassUtil.map2Object(map,tableObj.getClass()));
         }
-        return rtnList==null?null:(T)rtnList.get(0);
+        return CollectionUtil.isEmpty(rtnList)?null:(T)rtnList.get(0);
     }
 
     public int insert(Object tableObj){

@@ -1,7 +1,9 @@
 package com.hyw.webSite.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.model.FieldAttr;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Field;
@@ -11,76 +13,100 @@ import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class SqlUtil {
 
+
     /**
-     * 拼接单表查询sql语句
-     * @param tableName 表名
-     * @param selectFields 选择字段
-     * @param selectWhere 条件
-     * @param selectGroupby 集合
-     * @param selectOrderby 排序
-     * @return sql字符串
+     * 生成多笔记录的Insert语句
+     * @param objectList 对象list
+     * @param <T> 对象
+     * @return sql
      */
-    public static String getSelectSql(String tableName, String selectFields,String selectWhere,String selectGroupby,String selectOrderby){
-        return "SELECT " +
-                (StringUtil.isNotBlank(selectFields) ? selectFields : "* ") +
-                " FROM " + tableName +
-                (StringUtil.isNotBlank(selectWhere) ? " WHERE " + selectWhere : "") +
-                (StringUtil.isNotBlank(selectGroupby) ? " GROUP BY " + selectGroupby : "") +
-                (StringUtil.isNotBlank(selectOrderby) ? " ORDER BY " + selectOrderby : "");
+    public static <T> String getInsertSqlWithList(List<T> objectList){
+        if(CollectionUtil.isEmpty(objectList)) return null;
+        List<Field> fieldList = ObjectUtil.getAllFieldList(objectList.get(0).getClass());
+        StringBuilder sql = new StringBuilder();
+        String tableName = StringUtil.camelCaseToUnderline(objectList.get(0).getClass().getSimpleName());
+
+        sql.append("INSERT INTO ").append(tableName).append(" (");
+        StringBuilder sqlFields = new StringBuilder();
+        for(Field field:fieldList){
+            String fieldName = field.getName();
+            String fieldType = field.getType().getTypeName();
+            //拼接字段名称
+            if(StringUtils.isNotBlank(sqlFields.toString())) sqlFields.append(",");
+            sqlFields.append(fieldName);
+        }
+
+        StringBuilder sqlValues = new StringBuilder();
+        for(Object object:objectList){
+            JSONObject jsonObject = (JSONObject) JSONObject.toJSON(object);
+            int index=0;
+            for(Field field:fieldList) {
+                if(index==0) sqlValues.append(StringUtil.isBlank(sqlValues.toString())?"(":",(");
+                String fieldName = field.getName();
+                String fieldType = field.getType().getTypeName();
+                //拼接字段值
+                if(index >0) sqlValues.append(",");
+                sqlValues.append(getFieldValue(fieldType, jsonObject.get(fieldName)));
+                index++;
+            }
+            sqlValues.append(")");
+        }
+
+        sql.append(sqlFields).append(") VALUES").append(sqlValues);
+        return sql.toString();
     }
 
     /**
-     * 拼接单表查询sql语句
-     * @param tableName 表名
-     * @param selectFields 选择字段list
-     * @param whereFieldValueMap 条件map
-     * @return sql字符串
+     * 生成单笔记录的Insert语句
+     * @param object 对象
+     * @return sql
      */
-    public static String getSelectSql(String tableName, List<String> selectFields, Map<String,Object> whereFieldValueMap){
-        StringBuilder selectFieldsString = new StringBuilder();
-        StringBuilder whereConditionString = new StringBuilder();
+    public static String getInsertSql(Object object){
+        if(null == object) return null;
+        List<Field> fieldList = ObjectUtil.getAllFieldList(object.getClass());
+        StringBuilder sql = new StringBuilder();
+        String tableName = StringUtil.camelCaseToUnderline(object.getClass().getSimpleName());
+        JSONObject jsonObject = (JSONObject) JSONObject.toJSON(object);
 
-        if(StringUtil.isBlank(tableName)) return null;
+        sql.append("INSERT INTO ").append(tableName).append(" (");
+        StringBuilder sqlFields = new StringBuilder();
+        StringBuilder sqlValues = new StringBuilder();
+        for(Field field:fieldList){
+            String fieldName = field.getName();
+            String fieldType = field.getType().getTypeName();
+            //拼接字段名称
+            if(StringUtils.isNotBlank(sqlFields.toString())) sqlFields.append(",");
+            sqlFields.append(fieldName);
+            //拼接字段值
+            if(StringUtils.isNotBlank(sqlValues.toString())) sqlValues.append(",");
+            sqlValues.append(getFieldValue(fieldType,jsonObject.get(fieldName)));
+        }
+        sql.append(sqlFields).append(") VALUES(").append(sqlValues).append(")");
+        return sql.toString();
+    }
 
-        //select fields
-        if(!CollectionUtils.isEmpty(selectFields)) {
-            boolean firstField = true;
-            for (String fieldName : selectFields) {
-                if (firstField) {
-                    selectFieldsString.append(fieldName);
-                    firstField = false;
-                } else {
-                    selectFieldsString.append(",").append(fieldName);
-                }
-            }
+    public static String getFieldValue(String type,Object value){
+        if("int".equalsIgnoreCase(type)){
+            return null==value?"0":value.toString();
+        }else if("boolean".equalsIgnoreCase(type)){
+            return null==value?"null":value.toString();
+        }else if("char".equalsIgnoreCase(type)){
+            return null==value?"null":"'"+value.toString()+"'";
+        }else if("java.math.BigDecimal".equalsIgnoreCase(type)){
+            return null==value?"0":value.toString();
+        }else if("java.time.LocalDate".equalsIgnoreCase(type)){
+            return null==value?"null":"'"+value.toString()+"'";
+        }else if("java.time.LocalDateTime".equalsIgnoreCase(type)){
+            return null==value?"null":"'"+value.toString()+"'";
         }else{
-            selectFieldsString.append("*");
+            return "'" + value + "'";
         }
-
-        //where conditions
-        if(whereFieldValueMap != null && whereFieldValueMap.size()>0){
-            for (String field : whereFieldValueMap.keySet()) {
-                if(whereConditionString.length()>0)
-                    whereConditionString.append(" AND ");
-                whereConditionString.append(field).append("=");
-
-                if(ObjectUtil.isString(whereFieldValueMap.get(field)))
-                    whereConditionString.append("'").append(whereFieldValueMap.get(field)).append("'");
-                if(ObjectUtil.isInteger(whereFieldValueMap.get(field)))
-                    whereConditionString.append(whereFieldValueMap.get(field));
-                if(ObjectUtil.isBigDecimal(whereFieldValueMap.get(field)))
-                    whereConditionString.append(whereFieldValueMap.get(field));
-            }
-        }
-
-        return whereConditionString.length()>0?
-                "SELECT " + selectFieldsString + " FROM " + tableName + " WHERE (" + whereConditionString + ")":
-                "SELECT " + selectFieldsString + " FROM " + tableName;
     }
 
     /**
@@ -202,6 +228,136 @@ public class SqlUtil {
             }
         }
         return sql.toString();
+    }
+
+    /**
+     * 拼接单表单记录更新sql语句
+     * @param object 表名
+     * @param keyFieldName 字段及值map
+     * @return sql字符串
+     */
+    public static <T> String getUpdateSql(T object,String keyFieldName){
+        if(object==null) return null;
+        List<Field> fieldList = ObjectUtil.getAllFieldList(object.getClass());
+        String tableName = StringUtil.camelCaseToUnderline(object.getClass().getSimpleName());
+
+        StringBuilder sql = new StringBuilder().append("UPDATE ").append(tableName).append(" SET ");
+        JSONObject jsonObject = (JSONObject) JSONObject.toJSON(object);
+        int index=0;
+        Field keyField = null;
+        for(Field field:fieldList) {
+            String fieldName = field.getName();
+            String fieldType = field.getType().getTypeName();
+            if(fieldName.equalsIgnoreCase(keyFieldName)) {
+                keyField = field;
+            }
+            if(index>0) sql.append(StringUtil.isBlank(sql.toString())?"":", ");
+            //拼接字段值
+            sql.append(fieldName).append("=").append(getFieldValue(fieldType, jsonObject.get(fieldName)));
+            index++;
+        }
+        if(null==keyField) return null;
+        sql.append(" WHERE ").append(keyFieldName).append("=")
+                .append(getFieldValue(keyField.getType().getTypeName(), jsonObject.get(keyFieldName)));
+        return sql.toString();
+    }
+
+    /**
+     * 拼接单表单记录更新sql语句
+     * @param objectList 表名
+     * @param keyFieldName 字段及值map
+     * @return sql字符串
+     */
+    public static <T> List<String> getUpdateSql(List<T> objectList,String keyFieldName){
+        if(CollectionUtil.isEmpty(objectList)) return null;
+        List<String> sqlList = new ArrayList<>();
+        List<Field> fieldList = ObjectUtil.getAllFieldList(objectList.get(0).getClass());
+        String tableName = StringUtil.camelCaseToUnderline(objectList.get(0).getClass().getSimpleName());
+
+        for(Object object:objectList){
+            StringBuilder sql = new StringBuilder().append("UPDATE ").append(tableName).append(" SET ");
+            JSONObject jsonObject = (JSONObject) JSONObject.toJSON(object);
+            int index=0;
+            Field keyField = null;
+            for(Field field:fieldList) {
+                String fieldName = field.getName();
+                String fieldType = field.getType().getTypeName();
+                if(fieldName.equalsIgnoreCase(keyFieldName)) {
+                    keyField = field;
+                }
+                if(index>0) sql.append(StringUtil.isBlank(sql.toString())?"":", ");
+                //拼接字段值
+                sql.append(fieldName).append("=").append(getFieldValue(fieldType, jsonObject.get(fieldName)));
+                index++;
+            }
+            if(null==keyField) return null;
+            sql.append(" WHERE ").append(keyFieldName).append("=")
+                    .append(getFieldValue(keyField.getType().getTypeName(), jsonObject.get(keyFieldName)));
+            sqlList.add(sql.toString());
+        }
+        return sqlList;
+    }
+
+    /**
+     * 拼接单表单记录更新sql语句
+     * @param object 表名
+     * @param keyFieldName 字段及值map
+     * @return sql字符串
+     */
+    public static <T> String getDeleteSql(T object,String keyFieldName){
+        if(object==null) return null;
+        List<Field> fieldList = ObjectUtil.getAllFieldList(object.getClass());
+        String tableName = StringUtil.camelCaseToUnderline(object.getClass().getSimpleName());
+
+        StringBuilder sql = new StringBuilder().append("DELETE FROM ").append(tableName).append(" WHERE ");
+        JSONObject jsonObject = (JSONObject) JSONObject.toJSON(object);
+        int index=0;
+        Field keyField = null;
+        for(Field field:fieldList) {
+            String fieldName = field.getName();
+            String fieldType = field.getType().getTypeName();
+            if(fieldName.equalsIgnoreCase(keyFieldName)) {
+                keyField = field;
+                //拼接字段值
+                sql.append(fieldName).append("=").append(getFieldValue(fieldType, jsonObject.get(fieldName)));
+            }
+            index++;
+        }
+        if(null==keyField) return null;
+        return sql.toString();
+    }
+
+    /**
+     * 拼接单表单记录更新sql语句
+     * @param objectList 表名
+     * @param keyFieldName 字段及值map
+     * @return sql字符串
+     */
+    public static <T> List<String> getDeleteSql(List<T> objectList,String keyFieldName){
+        if(CollectionUtil.isEmpty(objectList)) return null;
+        List<String> sqlList = new ArrayList<>();
+        List<Field> fieldList = ObjectUtil.getAllFieldList(objectList.get(0).getClass());
+        String tableName = StringUtil.camelCaseToUnderline(objectList.get(0).getClass().getSimpleName());
+
+        for(Object object:objectList){
+            StringBuilder sql = new StringBuilder().append("DELETE FROM ").append(tableName).append(" WHERE ");
+            JSONObject jsonObject = (JSONObject) JSONObject.toJSON(object);
+            int index=0;
+            Field keyField = null;
+            for(Field field:fieldList) {
+                String fieldName = field.getName();
+                String fieldType = field.getType().getTypeName();
+                if(fieldName.equalsIgnoreCase(keyFieldName)) {
+                    keyField = field;
+                    //拼接字段值
+                    sql.append(fieldName).append("=").append(getFieldValue(fieldType, jsonObject.get(fieldName)));
+                }
+                index++;
+            }
+            if(null==keyField) return null;
+            sqlList.add(sql.toString());
+        }
+        return sqlList;
     }
 
     /**
@@ -407,5 +563,16 @@ public class SqlUtil {
         int groupPos = sql.toUpperCase().lastIndexOf("GROUP BY "); //最后一个group by
 
         return "SELECT COUNT(1) FROM " + sql.substring(fromPos+5);
+    }
+
+    public static String convertToExpression(String value,String type){
+        if("DECIMAL".equals(type) || "INT".equals(type)){
+            return value;
+        }else if("DATE".equals(type) || "DATETIME".equals(type) ||
+                "VARCHAR".equals(type) || "CHAR".equals(type)) {
+            return "'"+value+"'";
+        }else{
+            return "'"+value+"'";
+        }
     }
 }

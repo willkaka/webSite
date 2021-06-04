@@ -11,9 +11,6 @@
         <module name="webSite.main" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="homesite.main" target="1.8" />
-      <module name="homesite.test" target="1.8" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="8" />
   </component>
 </project>

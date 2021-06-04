@@ -27,6 +27,7 @@ var outputArea = "outputArea";  //输出
 var modalArea = "swBackGround"; //弹窗
 
 var curMenuId = "";
+var userNameKey="userName";
 
 /**
  * 初始化页面内容
@@ -38,7 +39,6 @@ function initPageInfo(){
     let requestJsonStr = JSON.stringify(requestObj); // obj -> string
     sendJsonByAjax("initPageInfo",requestJsonStr,sucFreshAll);//刷新输出区域
 }
-
 
 function fillPageInfo() {
     if(titleInfoMap.isChanged) {
@@ -65,6 +65,11 @@ function fillPageInfo() {
     if(changedMap != null) {
         fillChangedEle();
         changedMap.isChanged = false;
+    }
+
+    if(getCookie(userNameKey) != null && getCookie(userNameKey) != ""){
+        let loginA = document.getElementById("loginA");
+        loginA.innerHTML = getCookie(userNameKey);
     }
 }
 
@@ -99,10 +104,10 @@ function fillMenuArea() {
         let element = document.getElementById(menuArea);
         for (let i=0;i<menuList.length;i++){
             let element_div = document.createElement("div");
-            element_div.setAttribute("class","dropdown");
+            element_div.setAttribute("class","menuDropDown");
 
             let element_a = document.createElement("a");
-            element_a.setAttribute("class","dropbtn");
+            element_a.setAttribute("class","menuDropButton");
             element_a.setAttribute("id",menuList[i].id);
             element_a.innerHTML = menuList[i].prompt;//菜单名称
             setAttr(element_a,menuList[i].attrMap); // 属性配置
@@ -111,7 +116,7 @@ function fillMenuArea() {
 
             if(menuList[i].subElements != null && menuList[i].subElements.length>0){
                 let element_sub_div = document.createElement("div");
-                element_sub_div.setAttribute("class","dropdown-content");
+                element_sub_div.setAttribute("class","menuDropDown-content");
 
                 let subElements = menuList[i].subElements;
                 for (let j=0;j<subElements.length;j++){
@@ -126,6 +131,10 @@ function fillMenuArea() {
             }
             element.appendChild(element_div);
         }
+        if(getCookie("userName")){
+
+        }
+
         menuMap.isChanged = false;
     }
 }

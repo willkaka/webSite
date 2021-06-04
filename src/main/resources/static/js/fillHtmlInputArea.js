@@ -62,7 +62,7 @@ function fillChangedEle(){
                 //ele.value = "";
                 clearChildren("datalist"+eleId); //清空已有的内容
                 var dataList = document.getElementById("datalist"+eleId);
-                if (JSON.stringify(eleInfo.dataMap) != JSON.stringify({})){
+                if (dataList != null && JSON.stringify(eleInfo.dataMap) != JSON.stringify({})){
                     for(let value in eleInfo.dataMap){
                         let option = document.createElement("option");
                         option.setAttribute("value",value);
@@ -70,17 +70,26 @@ function fillChangedEle(){
                     }
                 }
             }else if(eleInfo.chgType == "selectOption"){
-                //ele.value = "";
                 clearChildren(eleId); //清空已有的内容
-                var dataList = document.getElementById(eleId);
+                let selectTag = document.getElementById(eleId);
                 if (JSON.stringify(eleInfo.dataMap) != JSON.stringify({})){
                     for(let value in eleInfo.dataMap){
                         let option = document.createElement("option");
                         option.setAttribute("value",value);
                         option.innerHTML = eleInfo.dataMap[value];
-                        dataList.appendChild(option);
+                        selectTag.appendChild(option);
                     }
                 }
+            }else if(eleInfo.chgType == "multipleSelect"){
+                let multipleSelect2 = $("#"+eleId);
+                let selectOptions = [];
+                let selectTag = document.getElementById(eleId);
+                if (JSON.stringify(eleInfo.dataMap) != JSON.stringify({})){
+                    for(let mapKey in eleInfo.dataMap){
+                        selectOptions.push({label: eleInfo.dataMap[mapKey], title: eleInfo.dataMap[mapKey], value: mapKey});
+                    }
+                }
+                multipleSelect2.multiselect('dataprovider',selectOptions);
             }
         }
         changedMap.isChanged = false;

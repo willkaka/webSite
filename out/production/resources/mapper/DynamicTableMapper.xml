@@ -54,6 +54,10 @@
         insert into ${tableName} ( ${fieldNames} ) VALUES ( ${fieldValues} )
     </insert>
 
+    <insert id="saveBySql">
+        ${sql}
+    </insert>
+
     <update id="update" parameterType="com.hyw.webSite.dto.DynamicTableDto">
         update ${ew.tableName}
         <foreach collection="ew.fieldValueMap.entrySet()" index="field" item="value" open="SET " separator=",">

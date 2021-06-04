@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hyw.webSite.mapper.DataMapper">
+
+    <!--  查询  -->
+    <select id="queryBySql" resultType="java.util.Map">
+        ${sql}
+    </select>
+
+    <select id="query">
+        SELECT
+            ${ew.sqlSelect}
+        FROM
+            ${tableName}
+            ${ew.customSqlSegment}
+    </select>
+
+    <!--  新增  -->
+    <insert id="saveBySql">
+        ${sql}
+    </insert>
+
+    <!--  更新  -->
+    <update id="updateBySql">
+        ${sql}
+    </update>
+
+    <!--  删除  -->
+    <delete id="deleteBySql">
+        ${sql}
+    </delete>
+
+</mapper>

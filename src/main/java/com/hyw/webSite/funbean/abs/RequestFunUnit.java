@@ -52,14 +52,20 @@ public abstract class RequestFunUnit<D, V extends RequestFunUnit.Variable> imple
         List<Field> fields = ObjectUtil.getAllFieldList(var.getClass());
         for(Field field:fields){
             String fieldName = field.getName();
+            Object value = inputValue.get(fieldName);
             if(inputValue.containsKey(fieldName)){
-                String value = inputValue.get(fieldName);
-                try {
-                    if (!field.isAccessible()) { field.setAccessible(true); }
-                    field.set(var,value);
-                }catch (Exception e) {
-                    throw new BizException("给对象("+var.getClass().getName()+")属性("+fieldName+")赋值("+value+")失败!");
-                }
+//                if(inputValue.get(fieldName) instanceof String) {
+                    try {
+                        if (!field.isAccessible()) {
+                            field.setAccessible(true);
+                        }
+                        field.set(var, value);
+                    } catch (Exception e) {
+                        throw new BizException("给对象(" + var.getClass().getName() + ")属性(" + fieldName + ")赋值(" + value + ")失败!");
+                    }
+//                }else if(value instanceof List){
+//
+//                }
             }
         }
         return var;

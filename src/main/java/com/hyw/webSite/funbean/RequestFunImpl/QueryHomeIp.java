@@ -54,32 +54,46 @@ public class QueryHomeIp extends RequestFunUnit<String, QueryHomeIp.QueryVariabl
 
         System.out.println("线程数："+threadCount+",开始时间："+ LocalDateTime.now());
         List<CheckIPDto> checkIPdtos = new ArrayList<CheckIPDto>();
-        add(checkIPdtos,"113.116.87.0", "113.116.87.255", port, timeount);
-        add(checkIPdtos,"113.116.88.0", "113.116.88.255", port, timeount);
-        add(checkIPdtos,"113.116.89.0", "113.116.89.255", port, timeount);
-        add(checkIPdtos,"113.116.90.0", "113.116.90.255", port, timeount);
-        add(checkIPdtos,"113.116.91.0", "113.116.91.255", port, timeount);
-        add(checkIPdtos,"113.116.92.0", "113.116.92.255", port, timeount);
-        add(checkIPdtos,"113.90.170.0", "113.90.179.255", port, timeount);
-        add(checkIPdtos,"113.90.171.0", "113.90.179.255", port, timeount);
-        add(checkIPdtos,"113.90.172.0", "113.90.179.255", port, timeount);
-        add(checkIPdtos,"113.90.173.0", "113.90.179.255", port, timeount);
-        add(checkIPdtos,"113.90.174.0", "113.90.179.255", port, timeount);
-        add(checkIPdtos,"113.90.175.0", "113.90.179.255", port, timeount);
-        add(checkIPdtos,"113.90.176.0", "113.90.179.255", port, timeount);
-        add(checkIPdtos,"113.90.177.0", "113.90.179.255", port, timeount);
-        add(checkIPdtos,"113.90.178.0", "113.90.179.255", port, timeount);
-        add(checkIPdtos,"113.90.179.0", "113.90.179.255", port, timeount);
-        add(checkIPdtos,"113.90.180.0", "113.90.179.255", port, timeount);
-        add(checkIPdtos,"113.90.181.0", "113.90.179.255", port, timeount);
-        add(checkIPdtos,"113.90.182.0", "113.90.179.255", port, timeount);
-        add(checkIPdtos,"113.90.183.0", "113.90.179.255", port, timeount);
+//        add(checkIPdtos,"113.116.87.0", "113.116.87.255", port, timeount);
+//        add(checkIPdtos,"113.116.88.0", "113.116.88.255", port, timeount);
+//        add(checkIPdtos,"113.116.89.0", "113.116.89.255", port, timeount);
+//        add(checkIPdtos,"113.116.90.0", "113.116.90.255", port, timeount);
+//        add(checkIPdtos,"113.116.91.0", "113.116.91.255", port, timeount);
+//        add(checkIPdtos,"113.116.92.0", "113.116.92.255", port, timeount);
+//        add(checkIPdtos,"113.90.170.0", "113.90.179.255", port, timeount);
+//        add(checkIPdtos,"113.90.171.0", "113.90.179.255", port, timeount);
+//        add(checkIPdtos,"113.90.172.0", "113.90.179.255", port, timeount);
+//        add(checkIPdtos,"113.90.173.0", "113.90.179.255", port, timeount);
+//        add(checkIPdtos,"113.90.174.0", "113.90.179.255", port, timeount);
+//        add(checkIPdtos,"113.90.175.0", "113.90.179.255", port, timeount);
+//        add(checkIPdtos,"113.90.176.0", "113.90.179.255", port, timeount);
+//        add(checkIPdtos,"113.90.177.0", "113.90.179.255", port, timeount);
+//        add(checkIPdtos,"113.90.178.0", "113.90.179.255", port, timeount);
+//        add(checkIPdtos,"113.90.179.0", "113.90.179.255", port, timeount);
+//        add(checkIPdtos,"113.90.180.0", "113.90.179.255", port, timeount);
+//        add(checkIPdtos,"113.90.181.0", "113.90.179.255", port, timeount);
+//        add(checkIPdtos,"113.90.182.0", "113.90.179.255", port, timeount);
+//        add(checkIPdtos,"113.90.183.0", "113.90.179.255", port, timeount);
+        add(checkIPdtos,"183.15.80.0", "183.15.80.255", port, timeount);
+        add(checkIPdtos,"183.15.81.0", "183.15.81.255", port, timeount);
+        add(checkIPdtos,"183.15.82.0", "183.15.82.255", port, timeount);
+        add(checkIPdtos,"183.15.83.0", "183.15.83.255", port, timeount);
+        add(checkIPdtos,"183.15.84.0", "183.15.84.255", port, timeount);
+        add(checkIPdtos,"183.15.85.0", "183.15.85.255", port, timeount);
+        add(checkIPdtos,"183.15.86.0", "183.15.86.255", port, timeount);
         add(checkIPdtos,"183.15.87.0", "183.15.87.255", port, timeount);
         add(checkIPdtos,"183.15.88.0", "183.15.88.255", port, timeount);
         add(checkIPdtos,"183.15.89.0", "183.15.89.255", port, timeount);
         add(checkIPdtos,"183.15.90.0", "183.15.90.255", port, timeount);
         add(checkIPdtos,"183.15.91.0", "183.15.91.255", port, timeount);
         add(checkIPdtos,"183.15.92.0", "183.15.92.255", port, timeount);
+        add(checkIPdtos,"183.15.93.0", "183.15.93.255", port, timeount);
+        add(checkIPdtos,"183.15.94.0", "183.15.94.255", port, timeount);
+        add(checkIPdtos,"183.15.95.0", "183.15.95.255", port, timeount);
+        add(checkIPdtos,"183.15.96.0", "183.15.96.255", port, timeount);
+        add(checkIPdtos,"183.15.97.0", "183.15.97.255", port, timeount);
+        add(checkIPdtos,"183.15.98.0", "183.15.98.255", port, timeount);
+        add(checkIPdtos,"183.15.99.0", "183.15.99.255", port, timeount);
 
         int initThreadCount = Thread.activeCount();
         for(int i=1;i<=threadCount;i++){
@@ -87,8 +101,9 @@ public class QueryHomeIp extends RequestFunUnit<String, QueryHomeIp.QueryVariabl
             checkIPandPortThread.start();
         }
 
+        //监控所有线程是否结束
         while(Thread.activeCount() > initThreadCount && StringUtil.isBlank(CheckIPandPortThread.getIp())){
-            System.out.println(Thread.activeCount());
+            //System.out.println(Thread.activeCount());
             try {
                 Thread.sleep(Long.parseLong("10000"));
             } catch (NumberFormatException e) {
@@ -97,7 +112,6 @@ public class QueryHomeIp extends RequestFunUnit<String, QueryHomeIp.QueryVariabl
                 e.printStackTrace();
             }
         }
-
         return StringUtil.isBlank(CheckIPandPortThread.getIp())?"未找到对应IP.":CheckIPandPortThread.getIp();
     }
 

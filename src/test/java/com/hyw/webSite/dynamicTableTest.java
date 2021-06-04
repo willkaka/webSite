@@ -2,14 +2,12 @@ package com.hyw.webSite;
 
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.service.DynamicTableService;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@SpringBootTest(classes= Application.class)
 public class dynamicTableTest {
 
     @Autowired

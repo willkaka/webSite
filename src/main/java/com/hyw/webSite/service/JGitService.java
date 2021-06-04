@@ -39,40 +39,40 @@ import org.springframework.util.CollectionUtils;
 @Service
 public class JGitService {
 
-	@Test
-	public void test(){
-		String gitLocalPath = "D:\\Java\\DaShuSource\\caes_release_001";
-		//String gitLocalPath = "http://gitlab.dashuf.com/ds2/caes/tree/20201215_develop_5457_%E6%9A%82%E5%81%9C%E6%89%A3%E6%AC%BE%E5%AF%BC%E5%85%A5%E5%8A%9F%E8%83%BD";
-		String sCommitUser = "";
-		LocalDateTime sBegDate = LocalDateTime.of(2020,11,06,0,0);
-		LocalDateTime sEndDate = LocalDateTime.now();
-
-		Map<String,List<GitCommitInfoDto>> fileList = new HashMap<>();
-
-		List<GitCommitInfoDto> gitCommitInfoDtos = getCommitList(gitLocalPath,sCommitUser,sBegDate,sEndDate);
-		//List<GitCommitInfoDto> gitCommitInfoDtos = getCommitList(gitLocalPath,sCommitUser,null,null);
-		for(GitCommitInfoDto gitCommitInfoDto:gitCommitInfoDtos){
-			for(DiffEntry commitInfo:gitCommitInfoDto.getDiffEntryList()){
-				String sPath = commitInfo.getOldPath();
-				List<GitCommitInfoDto> gitCommitInfoDtoList = fileList.get(sPath);
-				if(!CollectionUtils.isEmpty(gitCommitInfoDtoList)){
-					gitCommitInfoDtoList.add(gitCommitInfoDto);
-				}else {
-					List<GitCommitInfoDto> gitCommitInfoDtoList2 = new ArrayList<>();
-					gitCommitInfoDtoList2.add(gitCommitInfoDto);
-					fileList.put(sPath, gitCommitInfoDtoList2);
-				}
-			}
-		}
-		//System.out.println(fileList);
-
-		fileList.forEach((fileName,changeList) ->{
-			System.out.println(fileName);
-			changeList.forEach(commitInfo -> {
-				System.out.println("  "+commitInfo.getCommitDateTime()+"  "+commitInfo.getCommitterIdent().getName()+"  "+commitInfo.getShortMessage());
-			});
-		});
-	}
+//	@Test
+//	public void test(){
+//		String gitLocalPath = "D:\\Java\\DaShuSource\\caes_release_001";
+//		//String gitLocalPath = "http://gitlab.dashuf.com/ds2/caes/tree/20201215_develop_5457_%E6%9A%82%E5%81%9C%E6%89%A3%E6%AC%BE%E5%AF%BC%E5%85%A5%E5%8A%9F%E8%83%BD";
+//		String sCommitUser = "";
+//		LocalDateTime sBegDate = LocalDateTime.of(2020,11,06,0,0);
+//		LocalDateTime sEndDate = LocalDateTime.now();
+//
+//		Map<String,List<GitCommitInfoDto>> fileList = new HashMap<>();
+//
+//		List<GitCommitInfoDto> gitCommitInfoDtos = getCommitList(gitLocalPath,sCommitUser,sBegDate,sEndDate);
+//		//List<GitCommitInfoDto> gitCommitInfoDtos = getCommitList(gitLocalPath,sCommitUser,null,null);
+//		for(GitCommitInfoDto gitCommitInfoDto:gitCommitInfoDtos){
+//			for(DiffEntry commitInfo:gitCommitInfoDto.getDiffEntryList()){
+//				String sPath = commitInfo.getOldPath();
+//				List<GitCommitInfoDto> gitCommitInfoDtoList = fileList.get(sPath);
+//				if(!CollectionUtils.isEmpty(gitCommitInfoDtoList)){
+//					gitCommitInfoDtoList.add(gitCommitInfoDto);
+//				}else {
+//					List<GitCommitInfoDto> gitCommitInfoDtoList2 = new ArrayList<>();
+//					gitCommitInfoDtoList2.add(gitCommitInfoDto);
+//					fileList.put(sPath, gitCommitInfoDtoList2);
+//				}
+//			}
+//		}
+//		//System.out.println(fileList);
+//
+//		fileList.forEach((fileName,changeList) ->{
+//			System.out.println(fileName);
+//			changeList.forEach(commitInfo -> {
+//				System.out.println("  "+commitInfo.getCommitDateTime()+"  "+commitInfo.getCommitterIdent().getName()+"  "+commitInfo.getShortMessage());
+//			});
+//		});
+//	}
 
 	/**
 	 * 取程序提交信息

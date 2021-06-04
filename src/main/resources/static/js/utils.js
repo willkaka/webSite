@@ -6,6 +6,7 @@ function writeWebElementRoute(parentEle,elementInfo){
     if(elementInfo.type == "dropDown") writeDropDown(parentEle,elementInfo);
     if(elementInfo.type == "inputDataList") writeInputDataList(parentEle,elementInfo);
     if(elementInfo.type == "selectOption") writeSelectOption(parentEle,elementInfo);
+    if(elementInfo.type == "multipleSelect") writeMultipleSelect(parentEle,elementInfo);
     if(elementInfo.type == "button") writeButton(parentEle,elementInfo);
 }
 
@@ -27,6 +28,9 @@ function writeInput(parentEle,elementInfo){
     input.setAttribute("placeholder",elementInfo.prompt);
     if(null != elementInfo.defaultValue){
         input.setAttribute("value",elementInfo.defaultValue);
+    }
+    if(null != elementInfo.attrMap){
+        setAttr(input,elementInfo.attrMap);
     }
     groupDiv.appendChild(input);
 
@@ -50,6 +54,9 @@ function writeInputDataList(parentEle,elementInfo){
     input.setAttribute("list","datalist"+elementInfo.id);
     input.setAttribute("class","inputArea_sub_select");
     setEventListener(input,elementInfo.eventInfoList); //事件
+    if(null != elementInfo.attrMap){
+        setAttr(input,elementInfo.attrMap);
+    }
     let dataList = document.createElement("datalist");
     dataList.setAttribute("id","datalist"+elementInfo.id);
 
@@ -64,6 +71,48 @@ function writeInputDataList(parentEle,elementInfo){
     groupDiv.appendChild(input);
     groupDiv.appendChild(dataList);
     parentEle.appendChild(groupDiv);
+}
+
+function writeMultipleSelect(parentEle,elementInfo){
+
+    let groupDiv = document.createElement("div");
+    groupDiv.setAttribute("class","inputArea_div_grp");
+
+    let label = document.createElement("label");
+    label.setAttribute("class","inputArea_sub_label");
+    label.innerHTML = elementInfo.prompt;//名称
+    groupDiv.appendChild(label);
+
+    let select = document.createElement("select");
+    select.setAttribute("id",elementInfo.id);
+    select.setAttribute("multiple","multiple");
+    setEventListener(select,elementInfo.eventInfoList); //事件
+    if(null != elementInfo.attrMap){
+        setAttr(select,elementInfo.attrMap);
+    }
+    groupDiv.appendChild(select);
+    parentEle.appendChild(groupDiv);
+
+    let selectOptions = [];
+    let dataMap = elementInfo.dataMap;
+    for(let mapKey in dataMap){
+        selectOptions.push({label: dataMap[mapKey], title: dataMap[mapKey], value: mapKey});
+    }
+    let multipleSelect2 = $("#"+elementInfo.id);
+    multipleSelect2.multiselect({
+                                enableFiltering: true,
+                                includeSelectAllOption: true,
+                                nonSelectedText: '请选择',
+                                numberDisplayed: 1,
+                                nSelectedText: '个已选!',
+                                selectAllText: '全选',
+                                allSelectedText: '已全选',
+                                selectedClass: 'active multiselect-selected',
+                                optionClass: function(element) {
+                                    var value = $(element).val();
+                                    return value%2 == 0?'even':'odd'; }
+                           });
+    multipleSelect2.multiselect('dataprovider', selectOptions);
 }
 
 /**
@@ -86,6 +135,9 @@ function writeSelectOption(parentEle,elementInfo){
     select.setAttribute("id",elementInfo.id);
     select.setAttribute("class","inputArea_sub_select");
     setEventListener(select,elementInfo.eventInfoList); //事件
+    if(null != elementInfo.attrMap){
+        setAttr(select,elementInfo.attrMap);
+    }
 
     let dataMap = elementInfo.dataMap;
     for(let value in dataMap){
@@ -115,6 +167,9 @@ function writeDropDown(parentEle,elementInfo){
     select.setAttribute("class","inputArea_sub_select");
     //setAttr(select,elementInfo.attrMap); // 属性配置
     setEventListener(select,elementInfo.eventInfoList); //事件
+    if(null != elementInfo.attrMap){
+        setAttr(select,elementInfo.attrMap);
+    }
 
     let dataMap = elementInfo.dataMap;
     for(let value in dataMap){
@@ -133,8 +188,10 @@ function writeDropDown(parentEle,elementInfo){
 function writeButton(parentEle,elementInfo){
     let button = document.createElement("button");
     button.setAttribute("class","inputArea_sub_button");
-    setAttr(button,elementInfo.attrMap); // 属性配置
     setEventListener(button,elementInfo.eventInfoList); //事件
+    if(null != elementInfo.attrMap){
+        setAttr(button,elementInfo.attrMap); // 属性配置
+    }
 
     let span = document.createElement("span");
     span.innerHTML = elementInfo.prompt;//名称
@@ -268,6 +325,7 @@ function callMethod(eventInfo) {
         let requestObj = JSON.parse(requestParm);  //string -> obj
         requestObj.eventId = eventInfo.id;
         requestObj.curMenu = curMenuId;
+        requestObj.userName = getCookie(userNameKey);
         let param = getCurPageInfo();
         requestObj.reqParm = param;
         requestObj.eventInfo = eventInfo; //事件信息
@@ -371,6 +429,14 @@ function sucFreshAll(ReturnDto){
         if(webNextOprMap["callEven"] != null){
             callMethod(webNextOprMap["callEven"]); //调用某事件，实现刷新功能。
         }
+        if(webNextOprMap["execFun"] != null && webNextOprMap["execFun"] != ""){
+            if(webNextOprMap["param"] != null){
+                //webNextOprMap["execFun"].call(webNextOprMap["param"]);
+                eval(webNextOprMap["execFun"]+'("'+webNextOprMap["param"]+'")');
+            }else{
+                eval(webNextOprMap["execFun"]+'()');
+            }
+        }
     }
 }
 
@@ -409,13 +475,25 @@ function getNodeValueMap(nodeTag){
     for (let i=0;i<nodeList.length;i++){
         let nodeEle = nodeList[i];
         if("select"===nodeTag){
-            let index = nodeEle.selectedIndex; // 选中索引
-            if(index >= 0){
-                let text = nodeEle.options[index].text; // 选中文本
-                let value = nodeEle.options[index].value; // 选中值
-                nodeValueMap[nodeEle.id] = value;
+            //判断select/option是否为多选
+            let isMultipleSelect = jQuery("#"+nodeEle.id).attr("multiple");
+            if("multiple" == isMultipleSelect){
+                let selectedValueMap = [];
+                for(optionIndex=0;optionIndex<nodeEle.length;optionIndex++){
+                    if(nodeEle.options[optionIndex].selected){
+                        selectedValueMap.push(nodeEle.options[optionIndex].value);
+                    }
+                }
+                nodeValueMap[nodeEle.id] = selectedValueMap;
             }else{
-                nodeValueMap[nodeEle.id] = "";
+                let index = nodeEle.selectedIndex; // 选中索引
+                if(index >= 0){
+                    let text = nodeEle.options[index].text; // 选中文本
+                    let value = nodeEle.options[index].value; // 选中值
+                    nodeValueMap[nodeEle.id] = value;
+                }else{
+                    nodeValueMap[nodeEle.id] = "";
+                }
             }
         }else if("input"===nodeTag){
             nodeValueMap[nodeEle.id] = nodeEle.value;
@@ -438,6 +516,16 @@ function clearChildren(parentId) {
     }
 }
 
+function clearChildrenExcept(element,tagName) {
+    if(element!=null){
+        let menuElements = element.childNodes;
+        for(let i=menuElements.length-1;i>=0;i--){
+            if(tagName == menuElements[i].tagName || menuElements[i].tagName == "LABEL"){ continue; }
+            element.removeChild(menuElements[i]);
+        }
+    }
+}
+
 /**
  * 不显示指定标签
  * @param eleId
@@ -454,4 +542,39 @@ function hide(eleId){
 function display(eleId){
     let ele = document.getElementById(eleId);
     ele.style.display="";
+}
+
+function setCookie(cname,cvalue,exdays){
+    let d = new Date();
+    d.setTime(d.getTime()+(exdays*24*60*60*1000));
+    let expires = "expires="+d.toGMTString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+
+function delCookie(cname){
+    let expires = "expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = cname + "=" + getCookie(cname) + "; " + expires;
+}
+
+function getCookie(cname){
+    let name = cname + "=";
+    let ca = document.cookie.split(';');
+    for(let i=0; i<ca.length; i++){
+        let c = ca[i].trim();
+        if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+    }
+    return "";
+}
+
+function showLoginWindow(){
+    if(getCookie(userNameKey) != null && getCookie(userNameKey) != ""){
+        alert("您 " + getCookie(userNameKey) + " 已登录！");
+        return;
+    }
+
+    showLoginModal();
+}
+
+function setUserNameIntoCookie(cvalue){
+    setCookie(userNameKey,cvalue,1)
 }

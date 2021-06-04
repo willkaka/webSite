@@ -20,6 +20,8 @@ public interface DynamicTableMapper{
 
     int insert(DynamicTableDto dynamicTableDto);
 
+    int saveBySql(@Param("sql") String sql);
+
     int update(@Param( "ew" ) DynamicTableDto dynamicTableDto);
 
     int delete(@Param( "ew" ) DynamicTableDto dynamicTableDto);

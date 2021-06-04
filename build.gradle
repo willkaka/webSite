@@ -55,6 +55,9 @@ dependencies {
 	// 动态数据源使用
 	compile group: 'org.apache.tomcat', name: 'tomcat-jdbc', version: '9.0.35'
 
+	// https://mvnrepository.com/artifact/org.wso2.apache.httpcomponents/httpclient
+	implementation group: 'org.wso2.apache.httpcomponents', name: 'httpclient', version: '4.3.1.wso2v1'
+
 	// https://mvnrepository.com/artifact/com.baomidou/mybatis-plus
 	// QueryWrapper
 	compile group: 'com.baomidou', name: 'mybatis-plus', version: '3.3.1'
@@ -67,6 +70,10 @@ dependencies {
 	compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.5.1.201910021850-r'
 	// QLExpress 表达式计算
 	compile group: 'com.alibaba', name: 'QLExpress', version: '3.2.0'
+
+	// https://mvnrepository.com/artifact/org.quartz-scheduler/quartz
+	implementation group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.2'
+
 
 }
 

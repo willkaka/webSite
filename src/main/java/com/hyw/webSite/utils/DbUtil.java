@@ -543,6 +543,42 @@ public class DbUtil {
     }
 
     /**
+     * 取sql查询语句执行后记录数
+     * @param connection 数据库连接
+     * @param sql sql
+     * @return 记录数
+     */
+    public static int getSqlRecordCount(Connection connection,String sql){
+        if(connection == null){
+            log.error("数据库连接不允许为null！");
+            return 0;
+        }
+        if(StringUtil.isBlank(sql)){
+            log.error("sql不允为空！");
+            return 0;
+        }
+
+        int count = 0;
+        String sqlCount = SqlUtil.getSelectCountSql(sql);
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet set = statement.executeQuery(sqlCount);
+            if(set != null) {
+                //取记录
+                if(set.next()) {
+                    count = set.getInt(1);
+                }
+            }
+            if(set != null) set.close();
+            statement.close();
+        }catch(Exception e){
+            DbUtil.closeConnection(connection);
+            log.error("执行sql({})出错！",sqlCount,e);
+        }
+        return count;
+    }
+
+    /**
      * 查询数据表返回记录集
      * @param connection 数据库连接
      * @param sql sql
@@ -567,7 +603,9 @@ public class DbUtil {
                 for (int fieldNum = 1; fieldNum <= metaData.getColumnCount(); fieldNum++) {
                     if (metaData.getColumnName(fieldNum) != null && !"".equals(metaData.getColumnName(fieldNum))) {
                         Object fieldValue = set.getObject(metaData.getColumnLabel(fieldNum));
-                        map.get(metaData.getColumnName(fieldNum)).setValue(fieldValue);
+                        if(null != map.get(metaData.getColumnName(fieldNum))){
+                            map.get(metaData.getColumnName(fieldNum)).setValue(fieldValue);
+                        }
                     }
                 }
                 listMap.add(map);
@@ -585,7 +623,7 @@ public class DbUtil {
     private static Map<String,FieldAttr> getFieldAttrMapClone(Map<String,FieldAttr> mapA){
         Map<String,FieldAttr> mapB = new LinkedHashMap<>();
         for(String fieldName:mapA.keySet()){
-            mapB.put(fieldName,mapA.get(fieldName).clone());
+            mapB.put(fieldName,null==mapA.get(fieldName)?null:mapA.get(fieldName).clone());
         }
         return mapB;
     }
