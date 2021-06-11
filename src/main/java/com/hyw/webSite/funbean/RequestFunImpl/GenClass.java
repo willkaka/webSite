@@ -1,9 +1,11 @@
 package com.hyw.webSite.funbean.RequestFunImpl;
 
+import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
 import com.hyw.webSite.model.FieldAttr;
-import com.hyw.webSite.service.ConfigDatabaseInfoService;
+import com.hyw.webSite.queryUtils.NQueryWrapper;
+import com.hyw.webSite.service.DataService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
@@ -22,7 +24,7 @@ import java.util.Map;
 public class GenClass implements RequestFun {
 
     @Autowired
-    private ConfigDatabaseInfoService configDatabaseInfoService;
+    private DataService dataService;
 
     @Override
     public ReturnDto execute(RequestDto requestDto){
@@ -46,7 +48,9 @@ public class GenClass implements RequestFun {
         }
 
         //连接数据库，查询数据，关闭数据库
-        Connection connection = DbUtil.getConnection(configDatabaseInfoService.getDatabaseConfig(dbName),libName);
+//        Connection connection = DbUtil.getConnection(configDatabaseInfoService.getDatabaseConfig(dbName),libName);
+        Connection connection = DbUtil.getConnection(dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
+                .eq(ConfigDatabaseInfo::getDatabaseName,dbName)),libName);
         List<FieldAttr> fields = DbUtil.getFieldAttr(connection,dbName,libName,tableName);
         List<String> keys = DbUtil.getTablePrimaryKeys(connection,libName,tableName);
         String tableComment = DbUtil.getTableComment(connection,tableName);

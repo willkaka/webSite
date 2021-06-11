@@ -6,7 +6,7 @@ import com.hyw.webSite.utils.FileUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.ReturnDto;
-import com.hyw.webSite.web.model.WebElement;
+import com.hyw.webSite.web.model.WebElementDto;
 import com.hyw.webSite.utils.ImageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -49,10 +49,10 @@ public class DisplayDir implements RequestFun {
             throw new BizException("指定文件路径下无文件！");
         }
 
-        List<WebElement> elementList = new ArrayList<>();
+        List<WebElementDto> elementList = new ArrayList<>();
         for(File file:files){
             if(isMatchCondition(file,selectFileType)) {
-                WebElement element = new WebElement();
+                WebElementDto element = new WebElementDto();
                 element.setId(file.getName());
                 element.setType(FileUtil.getFileType(file));
 

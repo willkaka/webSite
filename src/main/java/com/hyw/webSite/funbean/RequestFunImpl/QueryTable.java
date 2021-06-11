@@ -5,7 +5,8 @@ import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.model.FieldAttr;
-import com.hyw.webSite.service.ConfigDatabaseInfoService;
+import com.hyw.webSite.queryUtils.NQueryWrapper;
+import com.hyw.webSite.service.DataService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
@@ -22,7 +23,7 @@ import java.util.*;
 public class QueryTable extends RequestFunUnit<List<Map<String, FieldAttr>>, QueryTable.QueryVariable> {
 
     @Autowired
-    private ConfigDatabaseInfoService configDatabaseInfoService;
+    private DataService dataService;
 
     private static Map<String,String> showCols = new LinkedHashMap<>();
     static{
@@ -60,7 +61,9 @@ public class QueryTable extends RequestFunUnit<List<Map<String, FieldAttr>>, Que
     @Override
     public List<Map<String, FieldAttr>> execLogic(RequestDto requestDto, QueryTable.QueryVariable variable){
 
-        ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(variable.getDbName());
+//        ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(variable.getDbName());
+        ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
+                .eq(ConfigDatabaseInfo::getDatabaseName,variable.getDbName()));
         configDatabaseInfo.setDatabaseLabel(variable.getLibName());
         Connection connection = DbUtil.getConnection(configDatabaseInfo);
 

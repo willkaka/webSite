@@ -1,9 +1,11 @@
 package com.hyw.webSite.funbean.RequestFunImpl;
 
 import com.hyw.webSite.constant.WebConstant;
+import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
-import com.hyw.webSite.service.ConfigDatabaseInfoService;
+import com.hyw.webSite.queryUtils.NQueryWrapper;
+import com.hyw.webSite.service.DataService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
@@ -21,7 +23,7 @@ import java.sql.Connection;
 public class GetTableCreateDdl extends RequestFunUnit<String, GetTableCreateDdl.QueryVariable> {
 
     @Autowired
-    private ConfigDatabaseInfoService configDatabaseInfoService;
+    private DataService dataService;
 
     /**
      * 输入参数检查
@@ -51,7 +53,9 @@ public class GetTableCreateDdl extends RequestFunUnit<String, GetTableCreateDdl.
     public String execLogic(RequestDto requestDto, GetTableCreateDdl.QueryVariable variable){
 
         //连接数据库，查询数据，关闭数据库
-        Connection connection = DbUtil.getConnection(configDatabaseInfoService.getDatabaseConfig(variable.getDbName()), variable.getLibName());
+//        Connection connection = DbUtil.getConnection(configDatabaseInfoService.getDatabaseConfig(variable.getDbName()), variable.getLibName());
+        Connection connection = DbUtil.getConnection(dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
+                .eq(ConfigDatabaseInfo::getDatabaseName,variable.getDbName())),variable.getLibName());
         String tableCreatedDdl = DbUtil.getTableCreatedDdl(connection,variable.getTableName());
         DbUtil.closeConnection(connection);
 

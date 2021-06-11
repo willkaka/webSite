@@ -1,184 +1,200 @@
 body{
-   position: relative;
+    position: relative;
 }
+
+/* ----------- top log css ------------------------ */
+.top_log_div{
+    margin:5px 0px 0px 0px;/*上边距，右边距，下边距，左边距*/
+    border-style:solid;
+    border-width:1px;
+    border-color:#8AB9C2;
+    background-color: #8AB9C2; /*背景色*/
+    text-align:right;
+}
+
+.login_Button{
+    cursor:pointer;
+}
+
 .menu_div {
-   list-style-type: none;
-   margin: 0;
-   padding: 0;
-   overflow: hidden;
-   background-color: #8AB9C2; /*背景色*/
-   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-   border-radius: 8px; /*圆角*/
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #8AB9C2; /*背景色*/
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border-radius: 8px; /*圆角*/
 }
 
-.dropbtn {
-   display: inline-block;
-   color: white;
-   text-align: center;
-   padding: 14px 16px;
-   text-decoration: none;
-   cursor:pointer;
+.menuDropButton {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    cursor:pointer;
 }
 
-.dropdown {
-   display: inline-block;
-   cursor:pointer;
+.menuDropDown {
+    display: inline-block;
+    cursor:pointer;
 }
-.dropdown:hover {
-   background-color: #8AB9C2; /*背景色*/
-}
-
-.dropdown-content {
-   display: none;
-   position: absolute;
-   background-color: #8AB9C2; /*子菜单背景色*/
-   min-width: 120px;
-   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-	border-radius: 8px; /*圆角*/
+.menuDropDown:hover {
+    background-color: #8AB9C2; /*背景色*/
 }
 
-.dropdown-content a {
-   color: black;         /*子菜单字体色 */
-   padding: 12px 10px;   /*字体的上下，左右间距*/
-   text-decoration: none;/*文字装饰*/
-   display: block;       /*按块显示*/
-	border-radius: 8px; /*圆角*/
+.menuDropDown-content {
+    display: none;
+    position: absolute;
+    background-color: #8AB9C2; /*子菜单背景色*/
+    min-width: 120px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border-radius: 8px; /*圆角*/
 }
 
-/*把鼠标放在dropdown-content a上时，a的背景改为xx色*/
-.dropdown-content a:hover {background-color: #3F5766}
+.menuDropDown-content a {
+    color: black;         /*子菜单字体色 */
+    padding: 12px 10px;   /*字体的上下，左右间距*/
+    text-decoration: none;/*文字装饰*/
+    display: block;       /*按块显示*/
+    border-radius: 8px; /*圆角*/
+}
 
-/*把鼠标放在dropdown上时，显示dropdown-content*/
-.dropdown:hover .dropdown-content { display: block; }
+/*把鼠标放在menuDropDown-content a上时，a的背景改为xx色*/
+.menuDropDown-content a:hover {background-color: #3F5766}
+
+/*把鼠标放在menuDropDown上时，显示menuDropDown-content*/
+.menuDropDown:hover .menuDropDown-content { display: block; }
 
 .contentArea{
-  margin:10px 5px 2px 5px;/*上边距，右边距，下边距，左边距*/
-  border-style:solid;
-  border-width:1px;
-  border-color:#8AB9C2;
+    margin:10px 5px 2px 5px;/*上边距，右边距，下边距，左边距*/
+    border-style:solid;
+    border-width:1px;
+    border-color:#8AB9C2;
 }
 
 .navArea{
-   margin:0px 0px 0px 0px;/*上边距，右边距，下边距，左边距*/
-   border-style:solid;
-   border-width:1px;
-   border-color:#8AB9C2;
+    margin:0px 0px 0px 0px;/*上边距，右边距，下边距，左边距*/
+    border-style:solid;
+    border-width:1px;
+    border-color:#8AB9C2;
 
-   background-color: #8AB9C2; /*背景色*/
+    background-color: #8AB9C2; /*背景色*/
 
-   color: white;
-   text-align: left;
-   padding: 2px 5px 2px 5px;/*上边距，右边距，下边距，左边距*/
-   text-decoration: none;
+    color: white;
+    text-align: left;
+    padding: 2px 5px 2px 5px;/*上边距，右边距，下边距，左边距*/
+    text-decoration: none;
 }
 
 .inputArea{
-  /*display:inline-block;*/
-  margin:5px;
-  border-style:solid;
-  border-width:1px;
-  border-color:#8AB9C2;
+    /*display:inline-block;*/
+    margin:5px;
+    border-style:solid;
+    border-width:1px;
+    border-color:#8AB9C2;
 }
 
 .inputArea_div_grp{
-   margin: 5px;
-   display:inline-block;
-   padding: 14px 16px; /*内容与上下左右边距*/
-   background-color: #8AB9C2; /*背景色*/
-   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-   border-radius: 8px; /*圆角*/
+    margin: 5px;
+    display:inline-block;
+    padding: 14px 16px; /*内容与上下左右边距*/
+    background-color: #8AB9C2; /*背景色*/
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border-radius: 8px; /*圆角*/
+    width: fit-content;
 }
 .inputArea_div_grp_inline{
-   margin: 5px;
+    margin: 5px;
 
-   padding: 14px 16px; /*内容与上下左右边距*/
-   background-color: #8AB9C2; /*背景色*/
-   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-   border-radius: 8px; /*圆角*/
+    padding: 14px 16px; /*内容与上下左右边距*/
+    background-color: #8AB9C2; /*背景色*/
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border-radius: 8px; /*圆角*/
 }
 
 .inputArea_sub_label{ color:white;margin: 5px;}
 .inputArea_sub_input{
-   font-size: 16px; /*字体大小*/
-   border: none; border-bottom: 2px solid white; /*输入框只显示一条下划线*/
-   background-color: #8AB9C2; /*输入框背景色与div一致*/
-   color: white;/*字体颜色*/
-   min-height:25px;/*最小高度*/
-   padding: 0px 10px; /*内容与上下 左右边距*/
+    font-size: 16px; /*字体大小*/
+    border: none; border-bottom: 2px solid white; /*输入框只显示一条下划线*/
+    background-color: #8AB9C2; /*输入框背景色与div一致*/
+    color: white;/*字体颜色*/
+    min-height:25px;/*最小高度*/
+    padding: 0px 10px; /*内容与上下 左右边距*/
 }
 .inputArea_sub_input:focus {
-   background-color: #8AB9C2;
+    background-color: #8AB9C2;
 }
 
 .inputArea_sub_select{
-   padding: 0px 10px;/*内容与上下 左右边距*/
-   display: inline-block;
-   border: 1px solid #ccc;
-   border-radius: 4px;
-   box-sizing: border-box;
-   font-size: 16px; /*字体大小*/
-   min-height:25px;/*最小高度*/
+    padding: 0px 10px;/*内容与上下 左右边距*/
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px; /*字体大小*/
+    min-height:25px;/*最小高度*/
 }
 
 .inputArea_sub_button {
-   display: inline-block;
-   border-radius: 8px;
-   background-color: #8AB9C2;
-   border: none;
-   color: #FFFFFF;
-   text-align: center;
-   font-size: 16px;
-   padding: 14px 16px; /*内容与上下左右边距*/
-   transition: all 0.5s;
-   cursor: pointer;
-   margin: 5px;
-   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    display: inline-block;
+    border-radius: 8px;
+    background-color: #8AB9C2;
+    border: none;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 16px;
+    padding: 14px 16px; /*内容与上下左右边距*/
+    transition: all 0.5s;
+    cursor: pointer;
+    margin: 5px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 
 .inputArea_sub_button span {
-   cursor: pointer;
-   display: inline-block;
-   position: relative;
-   transition: 0.5s;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
 }
 
 .inputArea_sub_button span:after {
-   content: '»';
-   position: absolute;
-   opacity: 0;
-   top: 0;
-   right: -20px;
-   transition: 0.5s;
+    content: '»';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
 }
 
 .inputArea_sub_button:hover span {
-   padding-right: 25px;
+    padding-right: 25px;
 }
 
 .inputArea_sub_button:hover span:after {
-   opacity: 1;
-   right: 0;
+    opacity: 1;
+    right: 0;
 }
 
 
 .outputArea{
-  /*display:inline-block;*/
-  margin:2px 5px 2px 5px;/*上边距，右边距，下边距，左边距*/
-  border-style:solid;
-  border-width:1px;
-  border-color:#8AB9C2;
-  /*overflow-style: scrollbar;*/
-  overflow-x:scroll; /*溢出时显示横向滚动条*/
-  /*height:50%;*/
-  max-height:600px;
-  overflow-y:scroll; /*溢出时显示纵向滚动条*/
+    /*display:inline-block;*/
+    margin:2px 5px 2px 5px;/*上边距，右边距，下边距，左边距*/
+    border-style:solid;
+    border-width:1px;
+    border-color:#8AB9C2;
+    /*overflow-style: scrollbar;*/
+    overflow-x:scroll; /*溢出时显示横向滚动条*/
+    /*height:50%;*/
+    max-height:750px;
+    overflow-y:scroll; /*溢出时显示纵向滚动条*/
 }
 /*---------table---------------*/
 .output_table{
-  font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
-  border-collapse:collapse;/*为表格设置合并边框*/
-  margin:2px 5px 2px 5px;/*上边距，右边距，下边距，左边距*/
-  float:left;
+    font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse:collapse;/*为表格设置合并边框*/
+    margin:2px 5px 2px 5px;/*上边距，右边距，下边距，左边距*/
+    float:left;
 }
 /*表格-表头行*/
 .output_table_thead{
@@ -186,75 +202,84 @@ body{
     /*position: sticky;*/
     /*top:0;*/
     /*margin:2px 5px 2px 5px;/*上边距，右边距，下边距，左边距*/
+    white-space: nowrap;
+}
+.output_table_tbody{
+    max-height: 300px;
+    overflow-y: scroll;
 }
 .output_table_th{
-  background-color:#8AB9C2;
-  color:#ffffff;
-
-  border-radius: 8px,8px,0px,0px; /*圆角,每个半径的四个值的顺序是：左上角，右上角，右下角，左下角。*/
-
-  font-size:1.1em;
-  text-align:left;
-  padding-top:15px;
-  padding-bottom:14px;
-  padding-left:5px;
+    background-color:#8AB9C2;
+    color:#ffffff;
+    border-radius: 8px,8px,0px,0px; /*圆角,每个半径的四个值的顺序是：左上角，右上角，右下角，左下角。*/
+    font-size:1.1em;
+    text-align:left;
+    padding-top:15px;
+    padding-bottom:14px;
+    padding-left:5px;
 }
 .output_table_td_0{
-  background-color:white;
-  border:none;
-  white-space: pre-line; /*识别换行符\n*/
-  padding:8px 5px 2px 5px;
-  border:1px solid #98bf21;
+    background-color:white;
+    border:none;
+    /*white-space: pre-line; /*识别换行符\n*/
+    white-space: nowrap;
+    padding:8px 5px 2px 5px;
+    border:1px solid #98bf21;
 }
 .output_table_td_1{
-  background-color:#F8F8FF;
-  border:none;
-  white-space: pre-line; /*识别换行符\n*/
-  padding:8px 5px 2px 5px;
-  border:1px solid #98bf21;
+    background-color:#F8F8FF;
+    border:none;
+    /*white-space: pre-line; /*识别换行符\n*/
+    white-space: nowrap;
+    padding:8px 5px 2px 5px;
+    border:1px solid #98bf21;
 }
 
 .output_textArea{
-  width:100%;
-  height: -webkit-fill-available;
+    width:100%;
+    height: -webkit-fill-available;
 }
 /* ----------- page box ------------------------ */
 .page-box{
-  text-align:center;
-  color:#aaa;
-  margin: 10px;
-  float: left;
+    text-align:center;
+    color:#aaa;
+    margin: 10px;
+    float: left;
+    width:100%;
 }
 
 .page-button {
-  color:#666;
-  border:1px solid #ddd;
-  background:#fcfcfc;
-  padding:4px 12px;
-  margin:0 3px;
-  text-decoration:none;
+    color:#666;
+    border:1px solid #ddd;
+    background:#fcfcfc;
+    padding:4px 12px;
+    margin:0 3px;
+    text-decoration:none;
+    float: left;
+    cursor: pointer;
 }
 .page-button:hover {
-  background:#8AB9C2;;
-  border:1px solid #8AB9C2;;
-  color:#fff;
+    background:#8AB9C2;;
+    border:1px solid #8AB9C2;;
+    color:#fff;
 }
 .page-button-strong {
-  background:#666;
-  border:1px solid #666 ;
-  color:#fff;
-  padding:4px 12px;
-  margin:0 3px;
+    background:#666;
+    border:1px solid #666 ;
+    color:#fff;
+    padding:4px 12px;
+    margin:0 3px;
+    float: left;
 }
 
 /* ----------- bottom css ------------------------ */
 .bottomContent{
-  margin:10px 5px 2px 5px;/*上边距，右边距，下边距，左边距*/
-  border-style:solid;
-  border-width:1px;
-  border-color:#8AB9C2;
-  padding:8px 5px 2px 5px;
-  text-align: center;
+    margin:10px 5px 2px 5px;/*上边距，右边距，下边距，左边距*/
+    border-style:solid;
+    border-width:1px;
+    border-color:#8AB9C2;
+    padding:8px 5px 2px 5px;
+    text-align: center;
 }
 
 /*********************弹窗样式定义*********************************/
@@ -275,15 +300,13 @@ position: fixed;
     min-width: 400px;
     min-height: 300px;
     margin: 5% 10% auto;
-
   	top: 0px;
     left: 0px;
     right: 0px;
-
-  border-radius: 5px;/*圆角*/
-  border-style:solid;
-  border-width:1px;
-  border-color:#8AB9C2;
+    border-radius: 5px;/*圆角*/
+    border-style:solid;
+    border-width:1px;
+    border-color:#8AB9C2;
 }
 /*弹窗头部*/
 .subWidowHeader{

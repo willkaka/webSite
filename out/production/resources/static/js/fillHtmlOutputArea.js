@@ -125,7 +125,11 @@ function fillOutPutAreaWithTable() {
         let fieldAttrCol = colMap[fieldName];
         let element_thead_th = document.createElement("th");
         element_thead_th.setAttribute("class","output_table_th");
-        element_thead_th.innerHTML = fieldAttrCol.remarks;
+        if( fieldAttrCol.remarks != null && fieldAttrCol.remarks != "" && fieldAttrCol.remarks != "null"){
+            element_thead_th.innerHTML = fieldAttrCol.remarks;
+        }else{
+            element_thead_th.innerHTML = fieldName;
+        }
         element_thead_tr.appendChild(element_thead_th);
     }
     //是否有记录操作按钮
@@ -143,10 +147,11 @@ function fillOutPutAreaWithTable() {
 
     //处理表格记录
     let element_tbody = document.createElement("tbody");
+    element_tbody.setAttribute("class","output_table_tbody");
     element_table.appendChild(element_tbody);
 
     //遍历返回的表记录
-    let begSeq = 0;
+    let begSeq = 0;//分页时记录序号累加前页记录数
     if(outputMap.withPage){
         begSeq = outputMap.pageSize * (outputMap.pageNow - 1);
     }
@@ -168,7 +173,6 @@ function fillOutPutAreaWithTable() {
             }else{
                 element_table_td.setAttribute("class","output_table_td_1");
             }
-            //element_table_td.innerHTML = recordMap[tableColList[j]];//字段显示值
             element_table_td.innerHTML = fieldAttr.value;//字段显示值
             element_table_tr.appendChild(element_table_td);
         }

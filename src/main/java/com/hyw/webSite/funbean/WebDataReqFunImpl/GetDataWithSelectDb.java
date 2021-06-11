@@ -2,13 +2,14 @@ package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.funbean.WebDataReqFun;
-import com.hyw.webSite.service.ConfigDatabaseInfoService;
+import com.hyw.webSite.queryUtils.NQueryWrapper;
+import com.hyw.webSite.service.DataService;
 import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.model.EventInfo;
-import com.hyw.webSite.web.model.WebElement;
+import com.hyw.webSite.web.model.WebElementDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ import java.util.Map;
 public class GetDataWithSelectDb implements WebDataReqFun {
 
     @Autowired
-    private ConfigDatabaseInfoService configDatabaseInfoService;
+    private DataService dataService;
 
     @Override
     public Map<String,Object> execute(RequestDto requestDto){
@@ -40,7 +41,9 @@ public class GetDataWithSelectDb implements WebDataReqFun {
         if(StringUtil.isBlank(selectedDb) || StringUtil.isBlank(selectedLib)) return changedEleMap;
 
         String sql = getSqlStm(eventInfo,inputValue);
-        ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(selectedDb);
+//        ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(selectedDb);
+        ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
+                .eq(ConfigDatabaseInfo::getDatabaseName,selectedDb));
         configDatabaseInfo.setDatabaseLabel(selectedLib);
         Connection connection = DbUtil.getConnection(configDatabaseInfo);
         List<Map<String,Object>> records = DbUtil.getSqlRecords(connection,sql);
@@ -57,12 +60,12 @@ public class GetDataWithSelectDb implements WebDataReqFun {
         for(Map<String,Object> record:records){
             map.put((String)record.get("value"),(String)record.get("name"));
         }
-        WebElement webElement = new WebElement();
-        webElement.setId(eventInfo.getRelEleId());
-        webElement.setType(eventInfo.getRelEleType());
-        webElement.setChgType(eventInfo.getRelEleChgType());
-        webElement.setDataMap(map);
-        changedEleMap.put(eventInfo.getRelEleId(),webElement);
+        WebElementDto webElementDto = new WebElementDto();
+        webElementDto.setId(eventInfo.getRelEleId());
+        webElementDto.setType(eventInfo.getRelEleType());
+        webElementDto.setChgType(eventInfo.getRelEleChgType());
+        webElementDto.setDataMap(map);
+        changedEleMap.put(eventInfo.getRelEleId(), webElementDto);
 
         return changedEleMap;
     }

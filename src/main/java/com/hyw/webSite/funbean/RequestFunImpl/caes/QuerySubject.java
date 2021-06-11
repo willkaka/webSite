@@ -4,8 +4,8 @@ import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
 import com.hyw.webSite.model.FieldAttr;
-import com.hyw.webSite.service.ConfigDatabaseInfoService;
-import com.hyw.webSite.service.DynamicTableService;
+import com.hyw.webSite.queryUtils.NQueryWrapper;
+import com.hyw.webSite.service.DataService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
@@ -22,10 +22,7 @@ import java.util.Map;
 public class QuerySubject implements RequestFun {
 
     @Autowired
-    private DynamicTableService dynamicTableService;
-
-    @Autowired
-    private ConfigDatabaseInfoService configDatabaseInfoService;
+    private DataService dataService;
 
     @Override
     public ReturnDto execute(RequestDto requestDto){
@@ -47,7 +44,9 @@ public class QuerySubject implements RequestFun {
         String transId = (String) inputValue.get("transId");
         String libName = "caes";
 
-        ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(dbName);
+//        ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(dbName);
+        ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
+                .eq(ConfigDatabaseInfo::getDatabaseName,dbName));
         configDatabaseInfo.setDatabaseLabel(libName);
         Connection connection = DbUtil.getConnection(configDatabaseInfo);
 

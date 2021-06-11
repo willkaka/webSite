@@ -1,30 +1,20 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
-import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
-import com.hyw.webSite.service.ConfigDatabaseInfoService;
-import com.hyw.webSite.utils.CollectionUtil;
-import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.ReturnDto;
 import com.hyw.webSite.web.model.EventInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Connection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service("login")
 @Slf4j
 public class Login implements RequestFun {
-
-    @Autowired
-    private ConfigDatabaseInfoService configDatabaseInfoService;
 
     @Override
     public ReturnDto execute(RequestDto requestDto){

@@ -18,217 +18,154 @@ import java.util.*;
 @Setter
 @Getter
 @Accessors(chain = true)
-public class NQueryWrapper<T> {
+public class NUpdateWrapper<T> {
 
     private Map<String,Class<T>> classMap = new HashMap<>();
-    private List<String> selectFieldList = new ArrayList<>();
-    private List<UpdCondition> conditionList = new ArrayList<>();
+    private Map<String,Object> setMap = new HashMap<>();
+    private List<UpdCondition> updConditionList = new ArrayList<>();
     private List<Field> classFieldList = new ArrayList<>();
-    private List<GroupInfo> groupInfoList = new ArrayList<>();
-    private List<OrderInfo> orderInfoList = new ArrayList<>();
 
     public String getSql(){
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT ");
-        int condIndex=0;
-        if(CollectionUtil.isNotEmpty(selectFieldList)) {
-            for (String fieldName : selectFieldList) {
-                if (condIndex > 0) sql.append(", ");
-                sql.append(fieldName);
-                condIndex ++;
-            }
-        }else {
-            sql.append("*");
-        }
-        sql.append(" FROM ");
-
+        sql.append("UPDATE ");
         int mapIndex=0;
-        // From tables
         for(String tableName:classMap.keySet()){
             if(mapIndex>0) sql.append(",");
             sql.append(StringUtil.camelCaseToUnderline(tableName));
             mapIndex++;
         }
-
-        // Where conditions
-        if(CollectionUtil.isNotEmpty(conditionList)) sql.append(" WHERE ");
-        condIndex=0;
-        for(UpdCondition condition:conditionList){
+        mapIndex=0;
+        if(CollectionUtil.isNotEmpty(setMap)){
+            sql.append(" SET ");
+            for(String setFieldName:setMap.keySet()){
+                if(mapIndex>0) sql.append(",");
+                sql.append(StringUtil.camelCaseToUnderline(setFieldName)).append("=")
+                .append(setMap.get(setFieldName));
+                mapIndex++;
+            }
+        }
+        if(CollectionUtil.isNotEmpty(updConditionList)) sql.append(" WHERE ");
+        int condIndex=0;
+        for(UpdCondition updCondition : updConditionList){
             if(condIndex>0) sql.append(" AND ");
-            sql.append(StringUtil.camelCaseToUnderline(condition.getColumn().toString()))
-                    .append(" ").append(condition.getSymbol())
-                    .append(" ").append(condition.getValue());
-            condIndex++;
-        }
-
-        // Group By
-        condIndex=0;
-        if(CollectionUtil.isNotEmpty(groupInfoList)) sql.append(" GROUP BY ");
-        for(GroupInfo orderInfo:groupInfoList){
-            if(condIndex>0) sql.append(", ");
-            sql.append(orderInfo.getColumn().toString());
-            condIndex++;
-        }
-
-        // Order By
-        condIndex=0;
-        if(CollectionUtil.isNotEmpty(orderInfoList)) sql.append(" ORDER BY ");
-        for(OrderInfo orderInfo:orderInfoList){
-            if(condIndex>0) sql.append(", ");
-            sql.append(orderInfo.getColumn().toString())
-                    .append(" ").append(orderInfo.getOrderKey());
+            sql.append(StringUtil.camelCaseToUnderline(updCondition.getColumn().toString()))
+                    .append(" ").append(updCondition.getSymbol())
+                    .append(" ").append(updCondition.getValue());
             condIndex++;
         }
         return sql.toString();
     }
 
-    @SafeVarargs
-    public final <A,B> NQueryWrapper<T> selectFields(SFunction<A, B>... functions) {
-        for (SFunction<A, B> function : functions) {
-            SerializedLambda serializedLambda = ClassUtils.resolve(function);
-            selectFieldList.add(StringUtil.camelCaseToUnderline(serializedLambda.getImplMethodName().replace("get", "")));
-        }
+    public <A,B> NUpdateWrapper<T> set(SFunction<A, B> function, Object value) {
+        setMap.put(StringUtil.underlineToCamelCase(putTable(function).getImplMethodName().replace("get","")),
+                getValue(value));
         return this;
     }
 
-    public final <A,B> NQueryWrapper<T> selectFields(String userDefinedField) {
-        selectFieldList.add(userDefinedField);
-        return this;
-    }
-
-    public <A,B> NQueryWrapper<T> eq(SFunction<A, B> function, Object value) {
-        putCondition(StringUtil.underlineToCamelCase(putTable(function).getImplMethodName().replace("get","")),"=",getValue(value));
-        return this;
-    }
-
-    public <A,B> NQueryWrapper<T> eq(SFunction<A, B> function1, SFunction<A, B> function2) {
-        putCondition(StringUtil.camelCaseToUnderline(putTable(function1).getImplMethodName().replace("get","")),"=",
+    public <A,B> NUpdateWrapper<T> set(SFunction<A, B> function1, SFunction<A, B> function2) {
+        setMap.put(StringUtil.underlineToCamelCase(putTable(function1).getImplMethodName().replace("get","")),
                 StringUtil.camelCaseToUnderline(putTable(function2).getImplMethodName().replace("get","")));
         return this;
     }
 
-    public <A,B> NQueryWrapper<T> ne(SFunction<A, B> function, Object value) {
+    public <A,B> NUpdateWrapper<T> eq(SFunction<A, B> function, Object value) {
+        putCondition(StringUtil.underlineToCamelCase(putTable(function).getImplMethodName().replace("get","")),"=",getValue(value));
+        return this;
+    }
+
+    public <A,B> NUpdateWrapper<T> eq(SFunction<A, B> function1, SFunction<A, B> function2) {
+        putCondition(StringUtil.underlineToCamelCase(putTable(function1).getImplMethodName().replace("get","")),"=",
+                StringUtil.camelCaseToUnderline(putTable(function2).getImplMethodName().replace("get","")));
+        return this;
+    }
+
+    public <A,B> NUpdateWrapper<T> ne(SFunction<A, B> function, Object value) {
         putCondition(StringUtil.underlineToCamelCase(putTable(function).getImplMethodName().replace("get","")),"<>",getValue(value));
         return this;
     }
 
-    public <A,B> NQueryWrapper<T> ne(SFunction<A, B> function1, SFunction<A, B> function2) {
+    public <A,B> NUpdateWrapper<T> ne(SFunction<A, B> function1, SFunction<A, B> function2) {
         putCondition(StringUtil.underlineToCamelCase(putTable(function1).getImplMethodName().replace("get","")),"<>",
                 StringUtil.underlineToCamelCase(putTable(function2).getImplMethodName().replace("get","")));
         return this;
     }
 
-    public <A,B> NQueryWrapper<T> gt(SFunction<A, B> function, Object value) {
+    public <A,B> NUpdateWrapper<T> gt(SFunction<A, B> function, Object value) {
         putCondition(StringUtil.underlineToCamelCase(putTable(function).getImplMethodName().replace("get","")),">",getValue(value));
         return this;
     }
 
-    public <A,B> NQueryWrapper<T> gt(SFunction<A, B> function1, SFunction<A, B> function2) {
+    public <A,B> NUpdateWrapper<T> gt(SFunction<A, B> function1, SFunction<A, B> function2) {
         putCondition(StringUtil.underlineToCamelCase(putTable(function1).getImplMethodName().replace("get","")),">",
                 StringUtil.underlineToCamelCase(putTable(function2).getImplMethodName().replace("get","")));
         return this;
     }
 
-    public <A,B> NQueryWrapper<T> ge(SFunction<A, B> function, Object value) {
+    public <A,B> NUpdateWrapper<T> ge(SFunction<A, B> function, Object value) {
         putCondition(StringUtil.underlineToCamelCase(putTable(function).getImplMethodName().replace("get","")),">=",getValue(value));
         return this;
     }
 
-    public <A,B> NQueryWrapper<T> ge(SFunction<A, B> function1, SFunction<A, B> function2) {
+    public <A,B> NUpdateWrapper<T> ge(SFunction<A, B> function1, SFunction<A, B> function2) {
         putCondition(StringUtil.underlineToCamelCase(putTable(function1).getImplMethodName().replace("get","")),">=",
                 StringUtil.underlineToCamelCase(putTable(function2).getImplMethodName().replace("get","")));
         return this;
     }
 
-    public <A,B> NQueryWrapper<T> lt(SFunction<A, B> function, Object value) {
+    public <A,B> NUpdateWrapper<T> lt(SFunction<A, B> function, Object value) {
         putCondition(StringUtil.underlineToCamelCase(putTable(function).getImplMethodName().replace("get","")),"<",value);
         return this;
     }
 
-    public <A,B> NQueryWrapper<T> lt(SFunction<A, B> function1, SFunction<A, B> function2) {
+    public <A,B> NUpdateWrapper<T> lt(SFunction<A, B> function1, SFunction<A, B> function2) {
         putCondition(StringUtil.underlineToCamelCase(putTable(function1).getImplMethodName().replace("get","")),"<",
                 StringUtil.underlineToCamelCase(putTable(function2).getImplMethodName().replace("get","")));
         return this;
     }
 
-    public <A,B> NQueryWrapper<T> le(SFunction<A, B> function, Object value) {
+    public <A,B> NUpdateWrapper<T> le(SFunction<A, B> function, Object value) {
         putCondition(StringUtil.underlineToCamelCase(putTable(function).getImplMethodName().replace("get","")),"<=",getValue(value));
         return this;
     }
 
-    public <A,B> NQueryWrapper<T> le(SFunction<A, B> function1, SFunction<A, B> function2) {
+    public <A,B> NUpdateWrapper<T> le(SFunction<A, B> function1, SFunction<A, B> function2) {
         putCondition(StringUtil.underlineToCamelCase(putTable(function1).getImplMethodName().replace("get","")),"<=",
                 StringUtil.underlineToCamelCase(putTable(function2).getImplMethodName().replace("get","")));
         return this;
     }
 
-    public <A,B> NQueryWrapper<T> in(SFunction<A, B> function, Object value) {
+    public <A,B> NUpdateWrapper<T> in(SFunction<A, B> function, Object value) {
         putCondition(StringUtil.underlineToCamelCase(putTable(function).getImplMethodName().replace("get","")),"in",getValue(value));
         return this;
     }
 
-    public <A,B> NQueryWrapper<T> notIn(SFunction<A, B> function, Object value) {
+    public <A,B> NUpdateWrapper<T> notIn(SFunction<A, B> function, Object value) {
         putCondition(StringUtil.underlineToCamelCase(putTable(function).getImplMethodName().replace("get","")),"not in",getValue(value));
         return this;
     }
 
-    public <A,B> NQueryWrapper<T> like(SFunction<A, B> function, Object value) {
+    public <A,B> NUpdateWrapper<T> like(SFunction<A, B> function, Object value) {
         putCondition(StringUtil.underlineToCamelCase(putTable(function).getImplMethodName().replace("get","")),"like",
                 getValue("%"+String.valueOf(value)+"%"));
         return this;
     }
 
-    public <A,B> NQueryWrapper<T> likeRight(SFunction<A, B> function, Object value) {
+    public <A,B> NUpdateWrapper<T> likeRight(SFunction<A, B> function, Object value) {
         putCondition(StringUtil.underlineToCamelCase(putTable(function).getImplMethodName().replace("get","")),"like",
                 getValue(String.valueOf(value)+"%"));
         return this;
     }
 
-    public <A,B> NQueryWrapper<T> likeLeft(SFunction<A, B> function, Object value) {
+    public <A,B> NUpdateWrapper<T> likeLeft(SFunction<A, B> function, Object value) {
         putCondition(StringUtil.underlineToCamelCase(putTable(function).getImplMethodName().replace("get","")),"like",
                 getValue("%"+String.valueOf(value)));
         return this;
     }
 
-    @SafeVarargs
-    public final <A,B> NQueryWrapper<T> groupBy(SFunction<A, B>... functions) {
-        for (SFunction<A, B> function : functions) {
-            SerializedLambda serializedLambda = ClassUtils.resolve(function);
-            GroupInfo groupInfo = new GroupInfo();
-            groupInfo.setSeq(groupInfoList.size() + 1);
-            groupInfo.setColumn(StringUtil.camelCaseToUnderline(serializedLambda.getImplMethodName().replace("get", "")));
-            groupInfoList.add(groupInfo);
-        }
-        return this;
-    }
-
-    public <A,B> NQueryWrapper<T> orderByAsc(SFunction<A, B> function) {
-        SerializedLambda serializedLambda = ClassUtils.resolve(function);
-        OrderInfo orderInfo = new OrderInfo();
-        orderInfo.setSeq(orderInfoList.size()+1);
-        orderInfo.setOrderKey("Asc");
-        orderInfo.setColumn(StringUtil.camelCaseToUnderline(serializedLambda.getImplMethodName().replace("get","")));
-        orderInfoList.add(orderInfo);
-        return this;
-    }
-
-    public <A,B> NQueryWrapper<T> orderByDesc(SFunction<A, B> function) {
-        SerializedLambda serializedLambda = ClassUtils.resolve(function);
-        OrderInfo orderInfo = new OrderInfo();
-        orderInfo.setSeq(orderInfoList.size()+1);
-        orderInfo.setOrderKey("Desc");
-        orderInfo.setColumn(StringUtil.camelCaseToUnderline(serializedLambda.getImplMethodName().replace("get","")));
-        orderInfoList.add(orderInfo);
-        return this;
-    }
-
-
-
-
     private void putCondition(String fieldName,String symbol,Object value){
-        UpdCondition condition = new UpdCondition();
-        condition.setColumn(fieldName).setSymbol(symbol).setValue(value);
-        conditionList.add(condition);
+        UpdCondition updCondition = new UpdCondition();
+        updCondition.setColumn(fieldName).setSymbol(symbol).setValue(value);
+        updConditionList.add(updCondition);
     }
 
     private <A,B> SerializedLambda putTable(SFunction<A, B> function){
@@ -278,25 +215,8 @@ public class NQueryWrapper<T> {
 @Setter
 @Getter
 @Accessors(chain = true)
-class Condition{
+class UpdCondition {
     private Object column;
     private String symbol;
     private Object value;
-}
-
-@Setter
-@Getter
-@Accessors(chain = true)
-class GroupInfo{
-    private int seq;
-    private Object column;
-}
-
-@Setter
-@Getter
-@Accessors(chain = true)
-class OrderInfo{
-    private int seq;
-    private Object column;
-    private String orderKey; //Asc/Desc
 }

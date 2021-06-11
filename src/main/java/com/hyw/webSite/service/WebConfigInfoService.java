@@ -4,17 +4,21 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hyw.webSite.constant.Constant;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
+import com.hyw.webSite.dao.WebConfigMenu;
+import com.hyw.webSite.dao.WebConfigReq;
+import com.hyw.webSite.dao.WebElement;
 import com.hyw.webSite.dto.DynamicTableDto;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.WebDataReqFun;
 import com.hyw.webSite.model.SpringDatabaseConfig;
+import com.hyw.webSite.queryUtils.NQueryWrapper;
 import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.utils.DataUtil;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.model.EventInfo;
-import com.hyw.webSite.web.model.WebElement;
+import com.hyw.webSite.web.model.WebElementDto;
 import com.ql.util.express.ExpressRunner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +26,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,44 +36,38 @@ import java.util.Map;
 public class WebConfigInfoService {
 
     @Autowired
-    private DynamicTableService dynamicTableService;
-
-    @Autowired
     private SpringDatabaseConfig springDatabaseConfig;
     @Autowired
     private SpringDataSourceService springDataSourceService;
     @Autowired
-    private ConfigDatabaseInfoService configDatabaseInfoService;
+    private DataService dataService;
 
     @Autowired
     ApplicationContext context;
 
-    public List<WebElement> getWebConfigElement(RequestDto requestDto,String elementParent, String elementArea) {
-
+    public List<WebElementDto> getWebConfigElement(RequestDto requestDto, String elementParent, String elementArea) {
+        List<WebElementDto> webElementDtoList = new ArrayList<>();
         Map<String,Object> changedEleMap = new HashMap<>();
         Map<String,String> inputValue = new HashMap<>();
         Map<String,String> curInputValue = (Map<String,String>) requestDto.getReqParm().get("inputValue");
 
-        List<WebElement> webElements = new ArrayList<>();
-        DynamicTableDto dynamicTableDto = new DynamicTableDto();
-        dynamicTableDto.setTableName("web_element");
-        dynamicTableDto.setSelectFields("id,seq,function,area,window,type,prompt,data,attr,event");
-        dynamicTableDto.setSelectWhere("area = '" + elementArea + "' AND function='" + elementParent + "' ");
-        dynamicTableDto.setSelectOrderby("seq");
-        List<Map<String, Object>> rtnListMap = dynamicTableService.selectAll(dynamicTableDto);
-        for (Map<String, Object> rtnMap : rtnListMap) {
-            WebElement webElement = new WebElement();
-            webElement.setId((String) rtnMap.get("id"));
-            webElement.setSeq((String) rtnMap.get("seq"));
-            webElement.setFunction((String) rtnMap.get("function"));
-            webElement.setArea((String) rtnMap.get("area"));
-            webElement.setWindow((String) rtnMap.get("window"));
-            webElement.setType((String) rtnMap.get("type"));
-            webElement.setPrompt((String) rtnMap.get("prompt"));
-            //webElement.setDataMap(getDataMap((String) rtnMap.get("data")));
+        List<WebElement> webElementList = dataService.list(new NQueryWrapper<WebElement>()
+            .eq(WebElement::getArea,elementArea)
+            .eq(WebElement::getFunction,elementParent)
+            .orderByAsc(WebElement::getSeq));
+        for(WebElement webElement : webElementList){
+            WebElementDto webElementDto = new WebElementDto();
+            webElementDto.setWebElementId(webElement.getWebElementId());
+            webElementDto.setFunction(webElement.getFunction());
+            webElementDto.setSeq(webElement.getSeq());
+            webElementDto.setId(webElement.getId());
+            webElementDto.setArea(webElement.getArea());
+            webElementDto.setWindow(webElement.getWindow());
+            webElementDto.setType(webElement.getType());
+            webElementDto.setPrompt(webElement.getPrompt());
 
             //解析data字段
-            String dataString = (String) rtnMap.get("data");
+            String dataString = webElement.getData();
             if(StringUtil.isNotBlank(dataString)) {
                 JSONObject jsonData = JSONObject.parseObject(dataString);
                 //默认值
@@ -89,7 +86,7 @@ public class WebConfigInfoService {
                     } else if ("value".equals(defaultValueObject.getString("type"))) {
                         result = defaultValueObject.getString("value");
                     }
-                    webElement.setDefaultValue((String) result);
+                    webElementDto.setDefaultValue((String) result);
                 }
 
                 String dataType = jsonData.getString("dataType");
@@ -111,7 +108,9 @@ public class WebConfigInfoService {
                             String libNameKey = libName.substring(1);;
                             String libNameN = (String) curInputValue.get(libNameKey);
                             if(StringUtil.isNotBlank(dataBaseName) && StringUtil.isNotBlank(libNameN)){
-                                ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(dataBaseName);
+//                                ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(dataBaseName);
+                                ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
+                                        .eq(ConfigDatabaseInfo::getDatabaseName,dataBaseName));
                                 configDatabaseInfo.setDatabaseLabel(libNameN);
                                 Connection connection = DbUtil.getConnection(configDatabaseInfo);
                                 dataMaps = DbUtil.getSqlRecords(connection,sql);
@@ -131,23 +130,23 @@ public class WebConfigInfoService {
                     String code = dataString.substring(4);
                     dataMap = getWebConfigEnum(code);
                 }
-                webElement.setDataMap(dataMap);
+                webElementDto.setDataMap(dataMap);
             }
 
-            if(CollectionUtil.isEmpty(webElement.getDataMap())){
-                WebElement tempWebElement = (WebElement)changedEleMap.get(webElement.getId());
-                if(tempWebElement != null) {
-                    webElement.setDataMap(tempWebElement.getDataMap());
+            if(CollectionUtil.isEmpty(webElementDto.getDataMap())){
+                WebElementDto tempWebElementDto = (WebElementDto)changedEleMap.get(webElement.getId());
+                if(tempWebElementDto != null) {
+                    webElementDto.setDataMap(tempWebElementDto.getDataMap());
                 }
             }
 
             // 属性 eg. class="xxx",width=100px,height=200px
-            webElement.setAttrMap(getAttrMap((String) rtnMap.get("attr"), ",", "="));
+            webElementDto.setAttrMap(getAttrMap(webElement.getAttr(), ",", "="));
 
             // 事件类型，事件处理ID；数据库按：
             // {"eventList":[{"event":"click","type":menuReq","id":"MR001"},{"event":"click","type":menuReq","id":"MR001"}]}
             List<EventInfo> eventInfos = new ArrayList<>();
-            String configEvent = (String) rtnMap.get("event");
+            String configEvent = webElement.getEvent();
             if(StringUtil.isNotBlank(configEvent)) {
                 JSONObject jsonData = JSONObject.parseObject(configEvent);
                 JSONArray jsonArray = jsonData.getJSONArray("eventList");
@@ -160,12 +159,12 @@ public class WebConfigInfoService {
                     eventInfo.setRelEleId(event.getString("relEleId"));
                     eventInfo.setRelEleType(event.getString("relEleType"));
                     eventInfo.setRelEleChgType(event.getString("relEleChgType"));
-                    eventInfo.setSelectedValue(CollectionUtil.getMapFirstOrNull(webElement.getDataMap()));
+                    eventInfo.setSelectedValue(CollectionUtil.getMapFirstOrNull(webElementDto.getDataMap()));
                     eventInfo.setParamMap(event.getJSONObject("paramMap"));
                     eventInfo.setWithPage(null==event.getBoolean("withPage")?false:event.getBoolean("withPage"));
                     eventInfos.add(eventInfo);
 
-                    inputValue.put(webElement.getId(),CollectionUtil.getMapFirstOrNull(webElement.getDataMap()));
+                    inputValue.put(webElement.getId(),CollectionUtil.getMapFirstOrNull(webElementDto.getDataMap()));
                     Map<String,Object> reqParm = new HashMap<>();
                     reqParm.put("inputValue",inputValue);
                     requestDto.setReqParm(reqParm);
@@ -177,11 +176,11 @@ public class WebConfigInfoService {
                     }
                 }
             }
-            webElement.setEventInfoList(eventInfos);
-            webElement.setSubElements(getWebConfigElement(requestDto,webElement.getId(),elementArea));
-            webElements.add(webElement);
+            webElementDto.setEventInfoList(eventInfos);
+            webElementDto.setSubElements(getWebConfigElement(requestDto, webElement.getId(),elementArea));
+            webElementDtoList.add(webElementDto);
         }
-        return webElements;
+        return webElementDtoList;
     }
 
     /**
@@ -257,8 +256,6 @@ public class WebConfigInfoService {
         List<Map<String, Object>> rtnListMap = new ArrayList<>();
         Map<String, String> enumKeyValueMap = new HashMap<>();
 
-        String tableName, selectFields, whereCondition, orderBy, rtnMapKey = null, rtnMapValue = null;
-
         if (StringUtil.isNotBlank(enumKey) && enumKey.length() > 4 && enumKey.substring(0, 4).equals("sql:")) {
             String sql = enumKey.substring(4);
 
@@ -281,23 +278,11 @@ public class WebConfigInfoService {
                 }
             }
         } else {
-            tableName = "web_config_enum";
-            selectFields = "enum_key,enum_seq,enum_value,enum_text";
-            whereCondition = " enum_key = '" + enumKey + "' ";
-            orderBy = "enum_seq";
-            rtnMapKey = "enum_value";
-            rtnMapValue = "enum_text";
-
-            DynamicTableDto dynamicTableDto = new DynamicTableDto();
-            dynamicTableDto.setTableName(tableName);
-            dynamicTableDto.setSelectFields(selectFields);
-            dynamicTableDto.setSelectWhere(whereCondition);
-            dynamicTableDto.setSelectOrderby(orderBy);
-            rtnListMap = dynamicTableService.selectAll(dynamicTableDto);
-            if (rtnListMap != null) {
-                for (Map<String, Object> rtnMap : rtnListMap) {
-                    enumKeyValueMap.put((String) rtnMap.get(rtnMapKey), (String) rtnMap.get(rtnMapValue));
-                }
+            List<WebConfigMenu> webConfigMenuList = dataService.list(new NQueryWrapper<WebConfigMenu>()
+                .eq(WebConfigMenu::getEnumKey,enumKey)
+                .orderByAsc(WebConfigMenu::getEnumSeq));
+            for(WebConfigMenu webConfigMenu:webConfigMenuList){
+                enumKeyValueMap.put(webConfigMenu.getEnumValue(), webConfigMenu.getEnumText());
             }
         }
         return enumKeyValueMap;
@@ -312,15 +297,11 @@ public class WebConfigInfoService {
      * @return bean name
      */
     public String getReqBean(String reqMapping, String reqName, String reqType) {
-        List<WebElement> webElements = new ArrayList<>();
-        DynamicTableDto dynamicTableDto = new DynamicTableDto();
-        dynamicTableDto.setTableName("web_config_req");
-        dynamicTableDto.setSelectFields("bean_name");
-        dynamicTableDto.setSelectWhere(" req_mapping = '" + reqMapping + "' AND req_name='" + reqName + "' AND req_type='" + reqType + "' ");
-        List<Map<String, Object>> rtnListMap = dynamicTableService.selectAll(dynamicTableDto);
-        if (rtnListMap != null) {
-            String beanName = (String) rtnListMap.get(0).get("bean_name");
-            return beanName;
+        WebConfigReq webConfigReq = dataService.getOne(new NQueryWrapper<WebConfigReq>()
+            .eq(WebConfigReq::getReqName,reqName)
+            .eq(WebConfigReq::getReqType,reqType));
+        if (webConfigReq != null) {
+            return webConfigReq.getBeanName();
         }
         return null;
     }

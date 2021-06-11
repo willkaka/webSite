@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-public class WebElement {
+public class WebElementDto {
     private int webElementId;
     private String id; // 唯一标识
     private String seq; // 序号，显示顺序
@@ -20,7 +20,7 @@ public class WebElement {
     private Map<String,String> dataMap;
     private Map<String,String> attrMap; // 属性 eg. class="xxx",width=100px,height=200px
     private List<EventInfo> eventInfoList; // 事件类型，事件处理ID；数据库按："onclick:clickEvent001#onload:clickEvent002"
-    private List<WebElement> subElements; //子数据项，例如：子菜单等
+    private List<WebElementDto> subElements; //子数据项，例如：子菜单等
 
 //    1 | fun001 | window | menuArea | menu | class="btn btn-light" | null | onclick:fun001MenuClick
 //    2 |

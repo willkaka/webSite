@@ -4,13 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.hyw.webSite.constant.Constant;
 import com.hyw.webSite.funbean.RequestFun;
 import com.hyw.webSite.funbean.WebDataReqFun;
-import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.service.WebConfigInfoService;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.ReturnDto;
 import com.hyw.webSite.web.model.EventInfo;
-import com.hyw.webSite.web.model.WebElement;
+import com.hyw.webSite.web.model.WebElementDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -30,9 +29,6 @@ public class BaseInfoController {
 
     @Autowired
     private WebConfigInfoService webConfigInfoService;
-
-    @Autowired
-    private ConfigDatabaseInfoService configDatabaseInfoService;
 
     @Autowired
     ApplicationContext context;
@@ -74,7 +70,7 @@ public class BaseInfoController {
         returnDto.getTitleInfoMap().put("webName", Constant.WEB_SITE_TITLE);
 
         //取菜单清单
-        List<WebElement> menuList = webConfigInfoService.getWebConfigElement(requestDto, "root", "menuArea");//返回要显示的菜单项;
+        List<WebElementDto> menuList = webConfigInfoService.getWebConfigElement(requestDto, "root", "menuArea");//返回要显示的菜单项;
         returnDto.getMenuMap().put("isChanged", true);
         returnDto.getMenuMap().put("menuList", menuList);
 
@@ -116,13 +112,13 @@ public class BaseInfoController {
         returnDto.getNavMap().put("isChanged", false);
 
         //取菜单输入输出格式信息,例如：输出区域记录编辑按钮，可加在此处。
-        List<WebElement> formatInfoList = webConfigInfoService.getWebConfigElement(requestDto, eventId, "outputArea");
+        List<WebElementDto> formatInfoList = webConfigInfoService.getWebConfigElement(requestDto, eventId, "outputArea");
         formatInfoList.addAll(webConfigInfoService.getWebConfigElement(requestDto, eventId, "modalArea"));
         returnDto.getFormatInfoMap().put("isChanged", true);
         returnDto.getFormatInfoMap().put("formatInfoList", formatInfoList);
 
         //取输入区域元素清单
-        List<WebElement> inputList = webConfigInfoService.getWebConfigElement(requestDto, eventId, "inputArea");
+        List<WebElementDto> inputList = webConfigInfoService.getWebConfigElement(requestDto, eventId, "inputArea");
         returnDto.getInputMap().put("isChanged", true);
         returnDto.getInputMap().put("inputList", inputList);
 

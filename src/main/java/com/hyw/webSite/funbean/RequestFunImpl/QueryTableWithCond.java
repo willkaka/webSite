@@ -1,10 +1,12 @@
 package com.hyw.webSite.funbean.RequestFunImpl;
 
 import com.hyw.webSite.constant.WebConstant;
+import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.model.FieldAttr;
-import com.hyw.webSite.service.ConfigDatabaseInfoService;
+import com.hyw.webSite.queryUtils.NQueryWrapper;
+import com.hyw.webSite.service.DataService;
 import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.SqlUtil;
@@ -24,7 +26,7 @@ import java.util.Map;
 public class QueryTableWithCond extends RequestFunUnit<List<Map<String,FieldAttr>>, QueryTableWithCond.QueryVariable> {
 
     @Autowired
-    private ConfigDatabaseInfoService configDatabaseInfoService;
+    private DataService dataService;
 
     /**
      * 输入参数检查
@@ -68,7 +70,9 @@ public class QueryTableWithCond extends RequestFunUnit<List<Map<String,FieldAttr
         sql = sql + " FROM " + variable.tableName;
 
         //连接数据库，查询数据，关闭数据库
-        Connection connection = DbUtil.getConnection(configDatabaseInfoService.getDatabaseConfig(variable.getDbName()), variable.getLibName());
+//        Connection connection = DbUtil.getConnection(configDatabaseInfoService.getDatabaseConfig(variable.getDbName()), variable.getLibName());
+        Connection connection = DbUtil.getConnection(dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
+                .eq(ConfigDatabaseInfo::getDatabaseName,variable.getDbName())),variable.getLibName());
         String whereCondition = null;
         Map<String,FieldAttr> fieldAttrMap = DbUtil.getFieldAttrMap(connection,variable.getDbName(),variable.getLibName(),variable.getTableName());
         if(StringUtil.isNotBlank(variable.getSelectField()) &&

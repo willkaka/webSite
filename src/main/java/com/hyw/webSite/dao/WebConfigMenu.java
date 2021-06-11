@@ -4,7 +4,8 @@ import lombok.Data;
 
 @Data
 public class WebConfigMenu {
-    private String id;
-    private String name;
-    private String url;
+    private String enumKey;
+    private int enumSeq;
+    private String enumValue;
+    private String enumText;
 }
