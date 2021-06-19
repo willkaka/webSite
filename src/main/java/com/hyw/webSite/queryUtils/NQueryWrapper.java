@@ -10,7 +10,9 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -20,12 +22,19 @@ import java.util.*;
 @Accessors(chain = true)
 public class NQueryWrapper<T> {
 
+    private Connection connection;
     private Map<String,Class<T>> classMap = new HashMap<>();
     private List<String> selectFieldList = new ArrayList<>();
     private List<UpdCondition> conditionList = new ArrayList<>();
     private List<Field> classFieldList = new ArrayList<>();
     private List<GroupInfo> groupInfoList = new ArrayList<>();
     private List<OrderInfo> orderInfoList = new ArrayList<>();
+
+    private int totalCnt=0;  //总记录
+    private int pageSize=0;  //每页记录数
+    private int totalPage=0; //总页数
+    private int curRecord=0; //当前记录号
+    private int curPage=0;   //当前页数
 
     public String getSql(){
         StringBuilder sql = new StringBuilder();
@@ -77,6 +86,47 @@ public class NQueryWrapper<T> {
             if(condIndex>0) sql.append(", ");
             sql.append(orderInfo.getColumn().toString())
                     .append(" ").append(orderInfo.getOrderKey());
+            condIndex++;
+        }
+
+        if(pageSize>0){
+            sql.append(" LIMIT ").append((curPage==0?1:curPage-1)*pageSize).append(",").append(pageSize);
+        }
+
+        return sql.toString();
+    }
+
+    public String getCountSql(){
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT ");
+        sql.append("COUNT(1)");
+        sql.append(" FROM ");
+
+        int mapIndex=0;
+        // From tables
+        for(String tableName:classMap.keySet()){
+            if(mapIndex>0) sql.append(",");
+            sql.append(StringUtil.camelCaseToUnderline(tableName));
+            mapIndex++;
+        }
+
+        // Where conditions
+        if(CollectionUtil.isNotEmpty(conditionList)) sql.append(" WHERE ");
+        int condIndex=0;
+        for(UpdCondition condition:conditionList){
+            if(condIndex>0) sql.append(" AND ");
+            sql.append(StringUtil.camelCaseToUnderline(condition.getColumn().toString()))
+                    .append(" ").append(condition.getSymbol())
+                    .append(" ").append(condition.getValue());
+            condIndex++;
+        }
+
+        // Group By
+        condIndex=0;
+        if(CollectionUtil.isNotEmpty(groupInfoList)) sql.append(" GROUP BY ");
+        for(GroupInfo orderInfo:groupInfoList){
+            if(condIndex>0) sql.append(", ");
+            sql.append(orderInfo.getColumn().toString());
             condIndex++;
         }
         return sql.toString();
@@ -219,6 +269,11 @@ public class NQueryWrapper<T> {
         orderInfo.setOrderKey("Desc");
         orderInfo.setColumn(StringUtil.camelCaseToUnderline(serializedLambda.getImplMethodName().replace("get","")));
         orderInfoList.add(orderInfo);
+        return this;
+    }
+
+    public NQueryWrapper<T> setTable(String tableName){
+        classMap.put(tableName,null);
         return this;
     }
 

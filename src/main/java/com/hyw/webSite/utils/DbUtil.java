@@ -119,67 +119,6 @@ public class DbUtil {
         return fieldsMap;
     }
 
-    public static List<String> getFieldNameList(Connection connection,String dbName, String tableName) {
-        String   catalog           = dbName;  //表所在的编目
-        String   schemaPattern     = null;  //表所在的模式
-        String   tableNamePattern  = tableName; //匹配表名
-        String   columnNamePattern = null; //
-
-        List<Map<String,Object>> fieldsMap = new ArrayList<>();
-        try{
-            DatabaseMetaData databaseMetaData = connection.getMetaData();
-            ResultSet result = databaseMetaData.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
-            fieldsMap = getRcdMapFromResultSet(result);
-        }catch(SQLException e){
-            log.error("取数据表结构失败！",e);
-            throw new BizException("取数据表结构失败！");
-        }
-
-        List<String> fieldsList = new ArrayList<>();
-        for(Map<String,Object> map:fieldsMap){
-            fieldsList.add((String) map.get("COLUMN_NAME"));
-        }
-
-        return fieldsList;
-    }
-
-    /**
-     * 返回表结构显示的内容
-     * @param connection
-     * @param dbName
-     * @param tableName
-     * @return
-     */
-    public static List<String> getFieldInfoShowCol(Connection connection,String dbName, String tableName) {
-        String   catalog           = null;  //表所在的编目
-        String   schemaPattern     = dbName;  //表所在的模式
-        String   tableNamePattern  = tableName; //匹配表名
-        String   columnNamePattern = null; //
-
-        List<String> showColsMap = new ArrayList<>();
-        try{
-            DatabaseMetaData databaseMetaData = connection.getMetaData();
-            ResultSet set = databaseMetaData.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
-            if(set == null) return showColsMap;
-            ResultSetMetaData metaData = set.getMetaData();
-            for (int fieldNum = 1; fieldNum <= metaData.getColumnCount(); fieldNum++) {
-                if (metaData.getColumnName(fieldNum) != null && !"".equals(metaData.getColumnName(fieldNum))) {
-                    String fieldName;
-                    if (StringUtils.isNotBlank(metaData.getColumnLabel(fieldNum))) {
-                        fieldName = metaData.getColumnLabel(fieldNum);
-                    } else {
-                        fieldName = metaData.getColumnName(fieldNum);
-                    }
-                    showColsMap.add(fieldName);
-                }
-            }
-        }catch(SQLException e){
-            log.error("取数据表结构失败！",e);
-            throw new BizException("取数据表结构失败！");
-        }
-        return showColsMap;
-    }
-
     /**
      * 返回表createTableDDL
      * @param connection
@@ -397,58 +336,6 @@ public class DbUtil {
         return listMap;
     }
 
-
-    /**
-     * 查询数据表返回记录集
-     * @param connection 数据库连接
-     * @param table 查询数据表
-     * @return 记录集
-     */
-    public static List<Map<String,Object>> getTableRecords(Connection connection,String table){
-        if(connection == null){
-            log.error("数据库连接不允许为null！");
-            return null;
-        }
-        if(StringUtil.isBlank(table)){
-            log.error("查询数据表不允为空！");
-            return null;
-        }
-
-        List<Map<String,Object>> listMap = new ArrayList<>();
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet set = statement.executeQuery("select * from " + table);
-            if(set != null) {
-                //取记录
-                while(set.next()) {
-                    ResultSetMetaData metaData = set.getMetaData();
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    for (int fieldNum = 1; fieldNum <= metaData.getColumnCount(); fieldNum++) {
-                        if (metaData.getColumnName(fieldNum) != null && !"".equals(metaData.getColumnName(fieldNum))) {
-                            String fieldName;
-                            if (StringUtils.isNotBlank(metaData.getColumnLabel(fieldNum))) {
-                                fieldName = metaData.getColumnLabel(fieldNum);
-                            } else {
-                                fieldName = metaData.getColumnName(fieldNum);
-                            }
-                            Object fieldValue = set.getObject(fieldName);
-                            map.put(fieldName, fieldValue);
-                        }
-                    }
-                    listMap.add(map);
-                }
-            }
-            if(set != null) set.close();
-            statement.close();
-        }catch(Exception e){
-            log.error("查询数据表({})出错！",table,e);
-        }finally {
-            DbUtil.closeConnection(connection);
-        }
-        return listMap;
-    }
-
-
     /**
      * 查询数据表返回记录集
      * @param connection 数据库连接
@@ -629,56 +516,53 @@ public class DbUtil {
     }
 
     /**
-     * 取数据表字段基础信息
+     * 执行update语句
      * @param connection 数据库连接
-     * @param table 查询数据表
+     * @param sql insert/update语句
+     * @return boolean成功为真
      */
-    public static Map<String,FieldAttr> getTableFieldsMap(Connection connection,String table){
-        if(connection == null){
-            log.error("数据库连接不允许为null！");
-            return null;
-        }
-        if(StringUtil.isBlank(table)){
-            log.error("查询数据表不允为空！");
-            return null;
-        }
-
-        String sqlSelect = "";
-        if(Constant.DB_TYPE_ORACLE.equals(getConnectionType(connection).toLowerCase())){
-            sqlSelect = "SELECT * FROM " + table + " WHERE rownum=1";
-        }else{
-            sqlSelect = "SELECT * FROM " + table + " limit 1";
-        }
-
-        Map<String,FieldAttr> fieldMap = new LinkedHashMap<>();
+    public static int updateBySql(Connection connection,String sql){
+        int updateCnt=0;
         try {
             Statement statement = connection.createStatement();
-            ResultSet set = statement.executeQuery(sqlSelect);
-            if(set != null) {
-                //取字段名
-                ResultSetMetaData metaData1 = set.getMetaData();
-                for (int fieldNum = 1; fieldNum <= metaData1.getColumnCount(); fieldNum++) {
-//                    Map<String,Object> field = new HashMap<>();
-                    FieldAttr fieldAttr = new FieldAttr();
-                    fieldAttr.setColumnName(metaData1.getColumnLabel(fieldNum));
-                    fieldAttr.setTypeName(metaData1.getColumnTypeName(fieldNum));
-                    fieldAttr.setColumnSize(metaData1.getPrecision(fieldNum));
-                    fieldAttr.setDecimalDigits(String.valueOf(metaData1.getScale(fieldNum)));
-//                    field.put("name",metaData1.getColumnLabel(fieldNum));
-//                    field.put("type",metaData1.getColumnTypeName(fieldNum));
-//                    //field.put("length",metaData1.getColumnDisplaySize(fieldNum));
-//                    field.put("length",metaData1.getPrecision(fieldNum));
-                    fieldMap.put(metaData1.getColumnLabel(fieldNum),fieldAttr);
-                }
-            }
-            if(set != null) set.close();
+            updateCnt = statement.executeUpdate(sql);
             statement.close();
         }catch(Exception e){
-            log.error("查询数据表({})出错！",table,e);
-        }finally {
-            //DbUtil.closeConnection(connection);
+            log.error("执行sql语句({})出错！",sql,e);
         }
-        return fieldMap;
+        return updateCnt;
+    }
+
+    /**
+     * 执行update语句
+     * @param connection 数据库连接
+     * @param sqlList insert/update语句
+     * @return boolean成功为真
+     */
+    public static int updateBySql(Connection connection,List<String> sqlList){
+        int updateCnt=0;
+        //创建Statement
+        Statement statement;
+        try {
+            statement = connection.createStatement();
+        }catch(Exception e){
+            throw new BizException("数据库连接异常！",e);
+        }
+        //执行sql
+        for (String sql : sqlList) {
+            try {
+            updateCnt = updateCnt + statement.executeUpdate(sql);
+            }catch (Exception e){
+                throw new BizException("执行Sql("+sql+")异常！",e);
+            }
+        }
+        //关闭Statement
+        try {
+            if (statement != null) statement.close();
+        }catch (Exception e){
+            throw new BizException("关闭Statement异常！",e);
+        }
+        return updateCnt;
     }
 
     /**
@@ -708,16 +592,6 @@ public class DbUtil {
             DbUtil.closeConnection(connection);
         }
         return rtnFlag;
-    }
-
-    public static String getConnectionType(Connection connection){
-        String type = "";
-        try {
-            type = connection.getMetaData().getDatabaseProductName().trim();
-        }catch (SQLException e){
-            log.error("取数据类型出错！",e);
-        }
-        return type;
     }
 
     private static List<Map<String,Object>> getRcdMapFromResultSet(ResultSet set){

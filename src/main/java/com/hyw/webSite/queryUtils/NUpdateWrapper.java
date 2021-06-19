@@ -11,6 +11,7 @@ import lombok.experimental.Accessors;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -20,6 +21,7 @@ import java.util.*;
 @Accessors(chain = true)
 public class NUpdateWrapper<T> {
 
+    private Connection connection;
     private Map<String,Class<T>> classMap = new HashMap<>();
     private Map<String,Object> setMap = new HashMap<>();
     private List<UpdCondition> updConditionList = new ArrayList<>();

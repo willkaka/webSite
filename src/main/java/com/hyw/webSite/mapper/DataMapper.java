@@ -1,8 +1,5 @@
 package com.hyw.webSite.mapper;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
-import com.hyw.webSite.dto.DynamicTableDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,18 +13,6 @@ import java.util.Map;
  */
 @Mapper
 public interface DataMapper {
-    List<Map<String, Object>> selectAll(@Param("ew") DynamicTableDto dynamicTableDto);
-
-    List<Map<String, Object>> query(@Param("ew") DynamicTableDto dynamicTableDto);
-
-    int insert(DynamicTableDto dynamicTableDto);
-
-    int update(@Param("ew") DynamicTableDto dynamicTableDto);
-
-    int delete(@Param("ew") DynamicTableDto dynamicTableDto);
-
-    //@Param(Constants.WRAPPER) Wrapper<LoanPayPlan> wrapper
-    <T> List<Map<String, Object>> query(@Param("tableName") String tableName,@Param(Constants.WRAPPER) Wrapper<T> wrapper);
 
     List<Map<String, Object>> queryBySql(@Param("sql") String sql);
 
