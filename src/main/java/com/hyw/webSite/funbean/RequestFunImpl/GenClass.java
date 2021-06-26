@@ -4,8 +4,8 @@ import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
 import com.hyw.webSite.model.FieldAttr;
-import com.hyw.webSite.queryUtils.NQueryWrapper;
-import com.hyw.webSite.service.DataService;
+import com.hyw.webSite.dbservice.NQueryWrapper;
+import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
@@ -84,14 +84,21 @@ public class GenClass implements RequestFun {
             }
             s.append("(\"").append(fieldAttr.getColumnName()).append("\")").append("\n")
                     .append("\t").append("private ");
-            switch (fieldAttr.getTypeName()){
-                case "VARCHAR": s.append("String "); break;
-                case "CHAR"   : s.append("char "); break;
-                case "INT": s.append("Integer "); break;
-                case "DATETIME": s.append("LocalDateTime "); if(!importJar.contains("java.time.LocalDateTime"))importJar.add("java.time.LocalDateTime");break;
-                case "DATE": s.append("LocalDate "); if(!importJar.contains("java.time.LocalDate"))importJar.add("java.time.LocalDate");break;
-                case "DECIMAL": s.append("BigDecimal "); if(!importJar.contains("java.math.BigDecimal"))importJar.add("java.math.BigDecimal");break;
-                default:log.error("未知数据类型({})",fieldAttr.getTypeName());
+
+            if(fieldAttr.getTypeName().startsWith("VARCHAR") || "varchar".equalsIgnoreCase(fieldAttr.getTypeName())){
+                s.append("String ");
+            }else if("char".equalsIgnoreCase(fieldAttr.getTypeName())){
+                s.append("char ");
+            }else if("int".equalsIgnoreCase(fieldAttr.getTypeName())){
+                s.append("Integer ");
+            }else if("datatime".equalsIgnoreCase(fieldAttr.getTypeName())){
+                s.append("LocalDateTime "); if(!importJar.contains("java.time.LocalDateTime"))importJar.add("java.time.LocalDateTime");
+            }else if("date".equalsIgnoreCase(fieldAttr.getTypeName())){
+                s.append("LocalDate "); if(!importJar.contains("java.time.LocalDate"))importJar.add("java.time.LocalDate");
+            }else if("decimal".equalsIgnoreCase(fieldAttr.getTypeName())){
+                s.append("BigDecimal "); if(!importJar.contains("java.math.BigDecimal"))importJar.add("java.math.BigDecimal");
+            }else{
+                log.error("未知数据类型({})",fieldAttr.getTypeName());
             }
             s.append(StringUtil.underlineToCamelCase(fieldAttr.getColumnName())).append(";").append("\n\n");
         }

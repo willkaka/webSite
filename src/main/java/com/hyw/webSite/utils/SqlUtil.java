@@ -78,32 +78,41 @@ public class SqlUtil {
         StringBuilder sqlFields = new StringBuilder();
         StringBuilder sqlValues = new StringBuilder();
         for(Field field:fieldList){
-            String fieldName = field.getName();
+            String fieldName = StringUtil.camelCaseToUnderline(field.getName());
             String fieldType = field.getType().getTypeName();
             //拼接字段名称
             if(StringUtils.isNotBlank(sqlFields.toString())) sqlFields.append(",");
             sqlFields.append(fieldName);
             //拼接字段值
             if(StringUtils.isNotBlank(sqlValues.toString())) sqlValues.append(",");
-            sqlValues.append(getFieldValue(fieldType,jsonObject.get(fieldName)));
+            sqlValues.append(getFieldValue(fieldType,jsonObject.get(field.getName())));
         }
         sql.append(sqlFields).append(") VALUES(").append(sqlValues).append(")");
         return sql.toString();
     }
 
     public static String getFieldValue(String type,Object value){
-        if("int".equalsIgnoreCase(type)){
-            return null==value?"0":value.toString();
+        if(null == value){
+            if("int".equalsIgnoreCase(type) ||
+               "java.math.BigDecimal".equalsIgnoreCase(type)){
+                return "0";
+            }else{
+                return "null";
+            }
+        }else if(value instanceof String && "null".equalsIgnoreCase((String) value)){
+            return "null";
+        }else if("int".equalsIgnoreCase(type)){
+            return value.toString();
         }else if("boolean".equalsIgnoreCase(type)){
-            return null==value?"null":value.toString();
+            return value.toString();
         }else if("char".equalsIgnoreCase(type)){
-            return null==value?"null":"'"+value.toString()+"'";
+            return "'"+value.toString()+"'";
         }else if("java.math.BigDecimal".equalsIgnoreCase(type)){
-            return null==value?"0":value.toString();
+            return value.toString();
         }else if("java.time.LocalDate".equalsIgnoreCase(type)){
-            return null==value?"null":"'"+value.toString()+"'";
+            return "'"+value.toString()+"'";
         }else if("java.time.LocalDateTime".equalsIgnoreCase(type)){
-            return null==value?"null":"'"+value.toString()+"'";
+            return "'"+value.toString()+"'";
         }else{
             return "'" + value + "'";
         }

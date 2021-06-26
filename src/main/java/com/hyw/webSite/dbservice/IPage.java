@@ -1,4 +1,4 @@
-package com.hyw.webSite.queryUtils;
+package com.hyw.webSite.dbservice;
 
 import lombok.Data;
 

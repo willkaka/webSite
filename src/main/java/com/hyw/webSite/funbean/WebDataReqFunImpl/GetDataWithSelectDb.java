@@ -2,8 +2,8 @@ package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.funbean.WebDataReqFun;
-import com.hyw.webSite.queryUtils.NQueryWrapper;
-import com.hyw.webSite.service.DataService;
+import com.hyw.webSite.dbservice.NQueryWrapper;
+import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;

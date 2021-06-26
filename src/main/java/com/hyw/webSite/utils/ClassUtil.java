@@ -42,7 +42,6 @@ public class ClassUtil {
             //setter
             declaredField.set(t, map.get(o));
         }
-
         return t;
     }
 }
