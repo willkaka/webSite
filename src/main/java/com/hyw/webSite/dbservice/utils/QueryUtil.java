@@ -1,5 +1,6 @@
-package com.hyw.webSite.dbservice;
+package com.hyw.webSite.dbservice.utils;
 
+import com.hyw.webSite.dbservice.exception.DbException;
 import org.springframework.lang.Nullable;
 
 import java.io.*;

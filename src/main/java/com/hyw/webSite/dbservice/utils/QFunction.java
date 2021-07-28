@@ -1,4 +1,4 @@
-package com.hyw.webSite.dbservice;
+package com.hyw.webSite.dbservice.utils;
 
 import java.io.Serializable;
 import java.util.function.Function;

@@ -1,13 +1,11 @@
-package com.hyw.webSite.dbservice;
-
-import com.hyw.webSite.exception.FastRuntimeException;
+package com.hyw.webSite.dbservice.exception;
 
 /**
  * 统一的业务异常处理基类
  * 框架已经做了统一异常处理
  * 所有的业务异常可继承此类通过抛出异常的方式来做业务校验等操作
  */
-public class DbException extends FastRuntimeException {
+public class DbException extends DbFastRuntimeException {
 
     public DbException(String message) { super("9998", message); }
 

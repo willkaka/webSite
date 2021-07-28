@@ -1,5 +1,7 @@
 package com.hyw.webSite.dbservice;
 
+import com.hyw.webSite.dbservice.utils.QFunction;
+import com.hyw.webSite.dbservice.utils.QueryUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -54,7 +56,7 @@ public class NUpdateWrapper<T> {
                     .append(" ").append(updCondition.getValue());
             condIndex++;
         }
-        System.out.println(sql);
+//        System.out.println(sql);
         return sql.toString();
     }
 

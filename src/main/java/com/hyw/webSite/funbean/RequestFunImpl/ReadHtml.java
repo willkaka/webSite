@@ -49,7 +49,8 @@ public class ReadHtml extends RequestFunUnit<List<Map<String,FieldAttr>>, ReadHt
     public List<Map<String,FieldAttr>> execLogic(RequestDto requestDto, ReadHtml.QueryVariable variable){
         log.info("执行readHtml,regex:"+variable.getRegex());
         List<Map<String,String>> resultListMap = new ArrayList<>();
-        resultListMap = HttpUtil.searchAllGroup(variable.getRegex(),HttpUtil.getHttpRequestData(variable.getHttpAddress(),variable.getWebCharset()));
+        resultListMap = HttpUtil.searchAllGroup(variable.getRegex(),
+                HttpUtil.getHttpRequestData(variable.getHttpAddress(),variable.getWebCharset()));
         if(CollectionUtil.isEmpty(resultListMap)){
             throw new BizException("无匹配数据！");
         }

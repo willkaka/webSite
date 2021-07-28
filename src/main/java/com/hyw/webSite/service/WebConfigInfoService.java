@@ -21,6 +21,7 @@ import com.hyw.webSite.web.model.EventInfo;
 import com.hyw.webSite.web.model.WebElementDto;
 import com.ql.util.express.ExpressRunner;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,7 @@ public class WebConfigInfoService {
             .eq(WebElement::getArea,elementArea)
             .eq(WebElement::getFunction,elementParent)
             .orderByAsc(WebElement::getSeq));
+        if(CollectionUtil.isEmpty(webElementList)) return new ArrayList<>();
         for(WebElement webElement : webElementList){
             WebElementDto webElementDto = new WebElementDto();
             webElementDto.setWebElementId(webElement.getWebElementId());
@@ -108,7 +110,6 @@ public class WebConfigInfoService {
                             String libNameKey = libName.substring(1);;
                             String libNameN = (String) curInputValue.get(libNameKey);
                             if(StringUtil.isNotBlank(dataBaseName) && StringUtil.isNotBlank(libNameN)){
-//                                ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(dataBaseName);
                                 ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
                                         .eq(ConfigDatabaseInfo::getDatabaseName,dataBaseName));
                                 configDatabaseInfo.setDatabaseLabel(libNameN);

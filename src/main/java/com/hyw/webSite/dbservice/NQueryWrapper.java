@@ -1,5 +1,7 @@
 package com.hyw.webSite.dbservice;
 
+import com.hyw.webSite.dbservice.utils.QFunction;
+import com.hyw.webSite.dbservice.utils.QueryUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -24,6 +26,7 @@ public class NQueryWrapper<T> {
     private List<Field> classFieldList = new ArrayList<>();
     private List<GroupInfo> groupInfoList = new ArrayList<>();
     private List<OrderInfo> orderInfoList = new ArrayList<>();
+    private String lastString;
 
     private int totalCnt=0;  //总记录
     private int pageSize=0;  //每页记录数
@@ -84,11 +87,16 @@ public class NQueryWrapper<T> {
             condIndex++;
         }
 
+        //分页
         if(pageSize>0){
             sql.append(" LIMIT ").append(curPage*pageSize).append(",").append(pageSize);
         }
 
-        System.out.println(sql);
+        //加在sql后方字符 eg. limit x
+        if(QueryUtil.isNotBlankStr(lastString)){
+            sql.append(" ").append(lastString);
+        }
+//        System.out.println(sql);
         return sql.toString();
     }
 
@@ -125,7 +133,7 @@ public class NQueryWrapper<T> {
             sql.append(orderInfo.getColumn().toString());
             condIndex++;
         }
-        System.out.println(sql);
+//        System.out.println(sql);
         return sql.toString();
     }
 
@@ -291,6 +299,11 @@ public class NQueryWrapper<T> {
         orderInfo.setOrderKey("Desc");
         orderInfo.setColumn(QueryUtil.toUnderlineStr(QueryUtil.getImplMethodName(function).replace("get","")));
         orderInfoList.add(orderInfo);
+        return this;
+    }
+
+    public NQueryWrapper<T> last(String lastSql) {
+        this.lastString = lastSql;
         return this;
     }
 

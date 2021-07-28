@@ -1,4 +1,4 @@
-package com.hyw.webSite.dbservice;
+package com.hyw.webSite.dbservice.dto;
 
 import lombok.Data;
 

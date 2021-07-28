@@ -61,7 +61,6 @@ public class QueryTable extends RequestFunUnit<List<Map<String, FieldAttr>>, Que
     @Override
     public List<Map<String, FieldAttr>> execLogic(RequestDto requestDto, QueryTable.QueryVariable variable){
 
-//        ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(variable.getDbName());
         ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
                 .eq(ConfigDatabaseInfo::getDatabaseName,variable.getDbName()));
         configDatabaseInfo.setDatabaseLabel(variable.getLibName());
