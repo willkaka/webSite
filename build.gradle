@@ -74,7 +74,11 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.quartz-scheduler/quartz
 	implementation group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.2'
 
-
+	// Excel操作工具
+	compile 'com.github.crab2died:Excel4J:3.0.0-Alpha'
+	compile 'org.apache.poi:poi:3.15'
+	compile 'org.apache.poi:poi-ooxml:3.15'
+	compile 'xerces:xercesImpl:2.11.0'
 }
 
 test {

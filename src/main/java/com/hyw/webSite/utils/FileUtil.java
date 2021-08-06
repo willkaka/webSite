@@ -17,6 +17,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.xml.sax.helpers.DefaultHandler;
 import sun.misc.BASE64Encoder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.HashMap;
@@ -115,4 +116,29 @@ public class FileUtil {
         }
         return item;
     }
+
+    public static File getFileFromRequest(HttpServletRequest request,String localPath){
+        File file;
+        try{
+            String fileName = request.getParameter("fileName");
+            InputStream is = request.getInputStream();
+            byte[] b = new byte[(int)request.getContentLengthLong()];
+            int read = 0;
+            int i = 0;
+            while((read=is.read())!=-1){
+                b[i] = (byte) read;
+                i++;
+            }
+            file = new File(localPath+fileName);
+            OutputStream os = new FileOutputStream(file);//文件原名,如a.txt
+            os.write(b);
+            os.flush();
+            os.close();
+        }catch (Exception e) {
+            log.error("从请求中读取文件异常！",e);
+            throw new BizException("从请求中读取文件异常！");
+        }
+        return file;
+    }
+
 }

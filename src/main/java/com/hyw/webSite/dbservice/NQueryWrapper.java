@@ -284,21 +284,25 @@ public class NQueryWrapper<T> {
         return this;
     }
 
-    public <A,B> NQueryWrapper<T> orderByAsc(QFunction<A, B> function) {
-        OrderInfo orderInfo = new OrderInfo();
-        orderInfo.setSeq(orderInfoList.size()+1);
-        orderInfo.setOrderKey("Asc");
-        orderInfo.setColumn(QueryUtil.toUnderlineStr(QueryUtil.getImplMethodName(function).replace("get","")));
-        orderInfoList.add(orderInfo);
+    public <A,B> NQueryWrapper<T> orderByAsc(QFunction<A, B>... functions) {
+        for (QFunction<A, B> function : functions) {
+            OrderInfo orderInfo = new OrderInfo();
+            orderInfo.setSeq(orderInfoList.size() + 1);
+            orderInfo.setOrderKey("Asc");
+            orderInfo.setColumn(QueryUtil.toUnderlineStr(QueryUtil.getImplMethodName(function).replace("get", "")));
+            orderInfoList.add(orderInfo);
+        }
         return this;
     }
 
-    public <A,B> NQueryWrapper<T> orderByDesc(QFunction<A, B> function) {
-        OrderInfo orderInfo = new OrderInfo();
-        orderInfo.setSeq(orderInfoList.size()+1);
-        orderInfo.setOrderKey("Desc");
-        orderInfo.setColumn(QueryUtil.toUnderlineStr(QueryUtil.getImplMethodName(function).replace("get","")));
-        orderInfoList.add(orderInfo);
+    public <A,B> NQueryWrapper<T> orderByDesc(QFunction<A, B>... functions) {
+        for (QFunction<A, B> function : functions) {
+            OrderInfo orderInfo = new OrderInfo();
+            orderInfo.setSeq(orderInfoList.size() + 1);
+            orderInfo.setOrderKey("Desc");
+            orderInfo.setColumn(QueryUtil.toUnderlineStr(QueryUtil.getImplMethodName(function).replace("get", "")));
+            orderInfoList.add(orderInfo);
+        }
         return this;
     }
 

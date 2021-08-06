@@ -3,6 +3,7 @@
  **/
 function writeWebElementRoute(parentEle,elementInfo){
     if(elementInfo.type == "input") writeInput(parentEle,elementInfo);
+    if(elementInfo.type == "inputFile") writeInputFile(parentEle,elementInfo);
     if(elementInfo.type == "dropDown") writeDropDown(parentEle,elementInfo);
     if(elementInfo.type == "inputDataList") writeInputDataList(parentEle,elementInfo);
     if(elementInfo.type == "selectOption") writeSelectOption(parentEle,elementInfo);
@@ -29,6 +30,32 @@ function writeInput(parentEle,elementInfo){
     if(null != elementInfo.defaultValue){
         input.setAttribute("value",elementInfo.defaultValue);
     }
+    if(null != elementInfo.attrMap){
+        setAttr(input,elementInfo.attrMap);
+    }
+    groupDiv.appendChild(input);
+
+    parentEle.appendChild(groupDiv);
+}
+
+
+/**
+ * 在父元素插入生成的输入框 div label/input
+ **/
+function writeInputFile(parentEle,elementInfo){
+    let groupDiv = document.createElement("div");
+    groupDiv.setAttribute("class","inputArea_div_grp");
+
+    let label = document.createElement("label");
+    label.setAttribute("class","inputArea_sub_label");
+    label.innerHTML = elementInfo.prompt;//名称
+    groupDiv.appendChild(label);
+
+    let input = document.createElement("input");
+    input.setAttribute("id",elementInfo.id);
+    input.setAttribute("type","file");
+    input.setAttribute("class","inputArea_sub_input");
+    input.setAttribute("placeholder",elementInfo.prompt);
     if(null != elementInfo.attrMap){
         setAttr(input,elementInfo.attrMap);
     }
@@ -266,6 +293,18 @@ function setEventPrcMethod(eventInfo,recordMap) {
     if(eventInfo.type == "webButtonShowModal"){
         eventInfo.recordMap = recordMap;
         showEditModal(eventInfo);
+    }else if(eventInfo.type == "fileReq"){
+        eventInfo.type == "buttonReq";
+        let requestParm = '{"eventId":"","reqParm":{}}';
+        let requestObj = JSON.parse(requestParm);  //string -> obj
+        requestObj.eventId = eventInfo.id;
+        requestObj.curMenu = curMenuId;
+        requestObj.userName = getCookie(userNameKey);
+        let param = getCurPageInfo();
+        requestObj.reqParm = param;
+        requestObj.eventInfo = eventInfo; //事件信息
+//        let requestJsonStr = JSON.stringify(requestObj); // obj -> string
+        sendFileByAjax(eventInfo.type+'/'+eventInfo.id,param.inputValue["file"],sucFreshAll);//刷新输出区域
     }else{
         let requestParm = '{"eventId":"","reqParm":{}}';
         let requestObj = JSON.parse(requestParm);  //string -> obj
@@ -346,6 +385,34 @@ function sendJsonByAjax(requestUrl,requestParam,sucFun) {
         url: requestUrl,
         data: requestParam,//ReqJsonDto
         contentType:"application/json;charset=utf-8",
+        success:function (ReturnDto) {
+            if (ReturnDto.rtnCode === '0000') {
+                sucFun(ReturnDto);
+            } else {
+                alert("请求成功，但后台处理失败!\n返 回 码:"+ReturnDto.rtnCode + "\n失败信息:" + ReturnDto.rtnMsg);
+            }
+        },
+        error:function (ReturnDto) {
+            alert("请求失败，返回信息："+ReturnDto);
+        }
+    });
+}
+
+
+/**
+ * 发送json报文到后台
+ * @param requestUrl
+ * @param requestParam
+ * @param sucfn
+ */
+function sendFileByAjax(requestUrl,formData,sucFun) {
+    requestUrl = requestUrl + '?' + 'fileName=' + formData.name;
+    $.ajax({
+        type: "post",
+        url: requestUrl,
+        data: formData,//ReqJsonDto
+        processData: false,  // 不处理数据
+        contentType: false,  // 不设置内容类型
         success:function (ReturnDto) {
             if (ReturnDto.rtnCode === '0000') {
                 sucFun(ReturnDto);
@@ -496,7 +563,11 @@ function getNodeValueMap(nodeTag){
                 }
             }
         }else if("input"===nodeTag){
-            nodeValueMap[nodeEle.id] = nodeEle.value;
+            if("file"===nodeEle.type){
+                nodeValueMap[nodeEle.id] = nodeEle.files[0];
+            }else{
+                nodeValueMap[nodeEle.id] = nodeEle.value;
+            }
         }
     }
     return nodeValueMap;

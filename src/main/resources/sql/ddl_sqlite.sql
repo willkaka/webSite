@@ -56,3 +56,21 @@ CREATE TABLE If Not Exists config_database_info (
 	login_name varchar(20) , -- comment '登录用户',
 	login_password varchar(20)  -- comment '登录密码',
 ); -- comment '数据源信息表';
+
+
+
+-- 模板定义
+DROP TABLE IF EXISTS template_define;
+CREATE TABLE IF NOT EXISTS template_define (
+  template_define_id integer primary key,
+  template_name varchar(32) NOT NULL,
+  template_desc varchar(200),
+  def_type varchar(10) DEFAULT NULL,
+  sheet_no int(11) DEFAULT '0',
+  pos_row int(11) DEFAULT '0',
+  pos_col int(11) DEFAULT '0',
+  field_name varchar(50) DEFAULT NULL,
+  field_desc varchar(100) DEFAULT NULL,
+  field_type varchar(50) DEFAULT NULL,
+  data_masking varchar(10) DEFAULT NULL);
+CREATE INDEX td_ind_01 on template_define (template_name,def_type);

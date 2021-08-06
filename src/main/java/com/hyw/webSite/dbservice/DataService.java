@@ -1,5 +1,6 @@
 package com.hyw.webSite.dbservice;
 
+import com.hyw.webSite.dao.WebConfigReq;
 import com.hyw.webSite.dbservice.constant.DbConstant;
 import com.hyw.webSite.dbservice.dto.IPage;
 import com.hyw.webSite.dbservice.dto.MysqlColumnInfo;
@@ -116,6 +117,46 @@ public class DataService {
      */
     public <T> int save(Connection connection, List<T> objectList) {
         return JdbcUtil.updateBySql(connection,JdbcUtil.getInsertSql(objectList));
+    }
+
+    /**
+     * 新增记录
+     * @param objectList 对象
+     * @return 新增记录数
+     */
+    public <T> int saveBatch(List<T> objectList,int size) {
+        int count = 0;
+        List<T> newRecords = new ArrayList<>();
+        for(T object:objectList){
+            newRecords.add(object);
+            if(newRecords.size()>=size) {
+                count = count + dataMapper.saveBySql(JdbcUtil.getInsertSql(newRecords));
+                newRecords.clear();
+            }
+        }
+        if(newRecords.size()>0)
+            count = count + dataMapper.saveBySql(JdbcUtil.getInsertSql(newRecords));
+        return count;
+    }
+
+    /**
+     * 新增记录
+     * @param objectList 对象
+     * @return 新增记录数
+     */
+    public <T> int saveBatch(Connection connection, List<T> objectList,int size) {
+        int count = 0;
+        List<T> newRecords = new ArrayList<>();
+        for(T object:objectList){
+            newRecords.add(object);
+            if(newRecords.size()>=size) {
+                count = count + JdbcUtil.updateBySql(connection,JdbcUtil.getInsertSql(newRecords));
+                newRecords.clear();
+            }
+        }
+        if(newRecords.size()>0)
+            count = count + JdbcUtil.updateBySql(connection,JdbcUtil.getInsertSql(newRecords));
+        return count;
     }
 
     //************************删除记录********************************/
@@ -235,6 +276,17 @@ public class DataService {
         }
         if(QueryUtil.isEmptyList(list)) return 0;//throw new DbException("sql("+sql+")查询无记录！");
         return (int) list.get(0).get("COUNT(1)");
+    }
+
+    public <T> List<Map<String, Object>> mapList(NQueryWrapper<T> queryWrapper){
+        String sql = queryWrapper.getSql();
+        List<Map<String, Object>> list = new ArrayList<>();
+        if(queryWrapper.getConnection() != null){
+            list = JdbcUtil.getSqlRecords(queryWrapper.getConnection(),sql);
+        }else {
+            list = dataMapper.queryBySql(sql);
+        }
+        return list;
     }
 
     public <T> List<T> list(NQueryWrapper<T> queryWrapper){

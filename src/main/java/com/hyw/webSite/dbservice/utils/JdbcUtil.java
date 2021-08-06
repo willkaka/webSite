@@ -147,6 +147,50 @@ public class JdbcUtil {
         return sql.toString();
     }
 
+    /**
+     * 生成单笔记录的Insert语句
+     * @param objectList 对象
+     * @return sql
+     */
+    public static <T> String getInsertSql(List<T> objectList) {
+        if (null == objectList) return null;
+        List<Field> fieldList = QueryUtil.getAllFieldList(objectList.get(0).getClass());
+        StringBuilder sql = new StringBuilder();
+        String tableName = QueryUtil.toUnderlineStr(objectList.get(0).getClass().getSimpleName());
+
+        sql.append("INSERT INTO ").append(tableName).append(" (");
+        StringBuilder sqlFields = new StringBuilder();
+        for (Field field : fieldList) {
+            String fieldName = QueryUtil.toUnderlineStr(field.getName());
+            String fieldType = field.getType().getTypeName();
+            //拼接字段名称
+            if (QueryUtil.isNotBlankStr(sqlFields.toString())) sqlFields.append(",");
+            sqlFields.append(fieldName);
+        }
+
+        StringBuilder sqlValues = new StringBuilder();
+        for (Object object:objectList){
+            JSONObject jsonObject = (JSONObject) JSONObject.toJSON(object);
+            if (QueryUtil.isNotBlankStr(sqlValues.toString())) {
+                sqlValues.append(",(");
+            }else {
+                sqlValues.append("(");
+            }
+            StringBuilder sqlValue = new StringBuilder();
+            for (Field field : fieldList) {
+                String fieldType = field.getType().getTypeName();
+                //拼接字段值
+                if (QueryUtil.isNotBlankStr(sqlValue.toString())) sqlValue.append(",");
+                sqlValue.append(getFieldValue(fieldType, jsonObject.get(field.getName())));
+            }
+            sqlValues.append(sqlValue).append(")");
+        }
+
+        sql.append(sqlFields).append(") VALUES").append(sqlValues);
+//        System.out.println(sql);
+        return sql.toString();
+    }
+
     public static String getFieldValue(String type,Object value){
         if(null == value){
             if("int".equalsIgnoreCase(type) ||
