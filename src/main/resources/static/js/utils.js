@@ -56,6 +56,7 @@ function writeInputFile(parentEle,elementInfo){
     input.setAttribute("type","file");
     input.setAttribute("class","inputArea_sub_input");
     input.setAttribute("placeholder",elementInfo.prompt);
+    input.setAttribute("multiple",null);
     if(null != elementInfo.attrMap){
         setAttr(input,elementInfo.attrMap);
     }
@@ -303,8 +304,14 @@ function setEventPrcMethod(eventInfo,recordMap) {
         let param = getCurPageInfo();
         requestObj.reqParm = param;
         requestObj.eventInfo = eventInfo; //事件信息
-//        let requestJsonStr = JSON.stringify(requestObj); // obj -> string
-        sendFileByAjax(eventInfo.type+'/'+eventInfo.id,param.inputValue["file"],sucFreshAll);//刷新输出区域
+        let requestJsonStr = JSON.stringify(requestObj); // obj -> string
+        let formData = new FormData();
+        let files = param.inputValue["file"];
+        for(let j=0;j<files.length;j++){
+            formData.append('fileList',files[j]);
+        }
+        formData.append('requestDto', requestJsonStr);
+        sendFileByAjax(eventInfo.type+'/'+eventInfo.id, formData, sucFreshAll);//刷新输出区域
     }else{
         let requestParm = '{"eventId":"","reqParm":{}}';
         let requestObj = JSON.parse(requestParm);  //string -> obj
@@ -317,6 +324,34 @@ function setEventPrcMethod(eventInfo,recordMap) {
         let requestJsonStr = JSON.stringify(requestObj); // obj -> string
         sendJsonByAjax(eventInfo.type+'/'+eventInfo.id,requestJsonStr,sucFreshAll);//刷新输出区域
     }
+}
+
+
+/**
+ * 发送json报文到后台
+ * @param requestUrl
+ * @param requestParam
+ * @param sucfn
+ */
+function sendFileByAjax(requestUrl,formData,sucFun) {
+    $.ajax({
+        type: "post",
+        url: requestUrl,
+        data: formData,//ReqJsonDto
+        processData: false,  // 不处理数据
+        contentType: false,  // 不设置内容类型
+        success:function (ReturnDto) {
+            if (ReturnDto.rtnCode === '0000') {
+//                alert(ReturnDto.rtnMsg);
+                sucFun(ReturnDto);
+            } else {
+                alert("请求成功，但后台处理失败!\n返 回 码:"+ReturnDto.rtnCode + "\n失败信息:" + ReturnDto.rtnMsg);
+            }
+        },
+        error:function (ReturnDto) {
+            alert("请求失败，返回信息："+ReturnDto);
+        }
+    });
 }
 
 function putChangeValue(param,eventInfo){
@@ -398,33 +433,6 @@ function sendJsonByAjax(requestUrl,requestParam,sucFun) {
     });
 }
 
-
-/**
- * 发送json报文到后台
- * @param requestUrl
- * @param requestParam
- * @param sucfn
- */
-function sendFileByAjax(requestUrl,formData,sucFun) {
-    requestUrl = requestUrl + '?' + 'fileName=' + formData.name;
-    $.ajax({
-        type: "post",
-        url: requestUrl,
-        data: formData,//ReqJsonDto
-        processData: false,  // 不处理数据
-        contentType: false,  // 不设置内容类型
-        success:function (ReturnDto) {
-            if (ReturnDto.rtnCode === '0000') {
-                sucFun(ReturnDto);
-            } else {
-                alert("请求成功，但后台处理失败!\n返 回 码:"+ReturnDto.rtnCode + "\n失败信息:" + ReturnDto.rtnMsg);
-            }
-        },
-        error:function (ReturnDto) {
-            alert("请求失败，返回信息："+ReturnDto);
-        }
-    });
-}
 
 /*请求成功后，刷新所有页面信息*/
 function sucFreshAll(ReturnDto){
@@ -564,7 +572,8 @@ function getNodeValueMap(nodeTag){
             }
         }else if("input"===nodeTag){
             if("file"===nodeEle.type){
-                nodeValueMap[nodeEle.id] = nodeEle.files[0];
+//                nodeValueMap[nodeEle.id] = nodeEle.files[0];
+                nodeValueMap[nodeEle.id] = nodeEle.files;//支持多文件上传
             }else{
                 nodeValueMap[nodeEle.id] = nodeEle.value;
             }

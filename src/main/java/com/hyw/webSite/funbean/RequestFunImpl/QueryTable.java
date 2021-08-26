@@ -4,6 +4,7 @@ import com.hyw.webSite.constant.WebConstant;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
+import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.dbservice.NQueryWrapper;
 import com.hyw.webSite.dbservice.DataService;
@@ -104,7 +105,7 @@ public class QueryTable extends RequestFunUnit<List<Map<String, FieldAttr>>, Que
     @Getter
     @Setter
     @Accessors(chain = true)
-    public static class QueryVariable extends RequestFunUnit.Variable {
+    public static class QueryVariable extends RequestPubDto {
         private String dbName;
         private String libName;
         private String tableName;

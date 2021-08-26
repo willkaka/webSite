@@ -41,11 +41,17 @@ function showEditModal(eventInfo){
 
         let labelType = document.createElement("label");
         labelType.setAttribute("class","inputArea_sub_label");
-        let typeStr = recordMap[field].typeName + "(" + recordMap[field].columnSize;
-        if('DECIMAL' == recordMap[field].typeName){
-            typeStr = typeStr + "," + recordMap[field].decimalDigits;
+        let typeStr;
+        //sqlite数据库
+        if(recordMap[field].columnSize == '2000000000'){
+            typeStr = recordMap[field].typeName;
+        }else{
+            typeStr = recordMap[field].typeName + "(" + recordMap[field].columnSize;
+            if('DECIMAL' == recordMap[field].typeName){
+                typeStr = typeStr + "," + recordMap[field].decimalDigits;
+            }
+            typeStr = typeStr + ")";
         }
-        typeStr = typeStr + ")";
         if('NO' == recordMap[field].isNullable){ typeStr = typeStr + ',' + 'is not null'}
         if(true == recordMap[field].keyField){ typeStr = typeStr + ',' + 'is key'}
         if('YES'== recordMap[field].isAutoincrement){typeStr = typeStr + ',' + 'isAutoincrement'}
@@ -122,13 +128,19 @@ function showAddModal(eventInfo){
 
         let labelType = document.createElement("label");
         labelType.setAttribute("class","inputArea_sub_label");
-        let typeStr = recordMap[field].typeName + "(" + recordMap[field].columnSize;
-        if('DECIMAL' == recordMap[field].typeName){
-            typeStr = typeStr + "," + recordMap[field].decimalDigits;
+        let typeStr;
+        //sqlite数据库
+        if(recordMap[field].columnSize == '2000000000'){
+            typeStr = recordMap[field].typeName;
+        }else{
+            typeStr = recordMap[field].typeName + "(" + recordMap[field].columnSize;
+            if('DECIMAL' == recordMap[field].typeName){
+                typeStr = typeStr + "," + recordMap[field].decimalDigits;
+            }
+            typeStr = typeStr + ")";
         }
-        typeStr = typeStr + ")";
-        if('NO' == recordMap[field].isNullable){ typeStr = typeStr + ' ' + 'is not null.'}
-        if(true == recordMap[field].keyField){ typeStr = typeStr + ' ' + 'is key.'}
+        if('NO' == recordMap[field].isNullable){ typeStr = typeStr + ' ' + 'is not null'}
+        if(true == recordMap[field].keyField){ typeStr = typeStr + ',' + 'is key'}
         if('YES'== recordMap[field].isAutoincrement){typeStr = typeStr + ',' + 'isAutoincrement'}
         labelType.innerHTML = typeStr;
         groupDiv.appendChild(labelType);

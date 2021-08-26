@@ -4,6 +4,7 @@ import com.hyw.webSite.constant.WebConstant;
 import com.hyw.webSite.dto.GitCommitInfoDto;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
+import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.service.JGitService;
 import com.hyw.webSite.utils.StringUtil;
@@ -101,7 +102,7 @@ public class QueryGitHistory extends RequestFunUnit<List<Map<String, FieldAttr>>
     @Getter
     @Setter
     @Accessors(chain = true)
-    public static class QueryVariable extends RequestFunUnit.Variable {
+    public static class QueryVariable extends RequestPubDto {
         private String dir;
         private String ignoreMerge;
         private String user;

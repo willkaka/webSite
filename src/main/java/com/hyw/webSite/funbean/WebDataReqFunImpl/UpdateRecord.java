@@ -13,6 +13,7 @@ import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.ReturnDto;
 import com.hyw.webSite.web.model.EventInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,22 +34,27 @@ public class UpdateRecord implements RequestFun {
 
         Map<String,String> inputValue = (Map<String,String>) requestDto.getReqParm().get("inputValue");
         String dbName = (String) inputValue.get("dbName");
-        if(StringUtil.isBlank(dbName)){
-            throw new BizException("数据库,不允许为空值!");
-        }
+//        if(StringUtil.isBlank(dbName)){
+//            throw new BizException("数据库,不允许为空值!");
+//        }
         String libName = (String) inputValue.get("libName");
-        if(StringUtil.isBlank(libName)){
-            throw new BizException("库名,不允许为空值!");
-        }
+//        if(StringUtil.isBlank(libName)){
+//            throw new BizException("库名,不允许为空值!");
+//        }
         String tableName = (String) inputValue.get("tableName");
-        if(StringUtil.isBlank(tableName)){
-            throw new BizException("表名,不允许为空值!");
+//        if(StringUtil.isBlank(tableName)){
+//            throw new BizException("表名,不允许为空值!");
+//        }
+        Connection connection = null;
+        if(StringUtils.isNotBlank(dbName)) {
+            ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
+                    .eq(ConfigDatabaseInfo::getDatabaseName,dbName));
+            configDatabaseInfo.setDatabaseLabel(libName);
+            connection = DbUtil.getConnection(configDatabaseInfo);
+        }else{
+            tableName = (String) requestDto.getEventInfo().getParamMap().get("tableName");
+            connection = dataService.getSpringDatabaseConnection();
         }
-//        ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(dbName);
-        ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
-                .eq(ConfigDatabaseInfo::getDatabaseName,dbName));
-        configDatabaseInfo.setDatabaseLabel(libName);
-        Connection connection = DbUtil.getConnection(configDatabaseInfo);
 
         EventInfo eventInfo = requestDto.getEventInfo();
         Map<String, FieldAttr> recordMap = eventInfo.getRecordMap();

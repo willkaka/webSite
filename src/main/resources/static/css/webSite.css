@@ -237,7 +237,7 @@ body{
 
 .output_textArea{
     width:100%;
-    height: -webkit-fill-available;
+    height:600px;
 }
 /* ----------- page box ------------------------ */
 .page-box{

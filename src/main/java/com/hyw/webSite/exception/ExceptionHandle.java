@@ -30,7 +30,7 @@ public class ExceptionHandle {
         } else {
             log.error("未知异常！",exception);
             returnDto.setRtnCode("9999");
-            returnDto.setRtnMsg("未知异常！");
+            returnDto.setRtnMsg("未知异常！"+exception.getMessage());
         }
         return returnDto;
     }

@@ -3,6 +3,7 @@ package com.hyw.webSite.funbean.RequestFunImpl;
 import com.hyw.webSite.constant.WebConstant;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
+import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.utils.HttpUtil;
@@ -76,7 +77,7 @@ public class ReadHtml extends RequestFunUnit<List<Map<String,FieldAttr>>, ReadHt
     @Getter
     @Setter
     @Accessors(chain = true)
-    public static class QueryVariable extends RequestFunUnit.Variable {
+    public static class QueryVariable extends RequestPubDto {
         private String httpAddress;
         private String httpAddressSuffixBeg;
         private String httpAddressSuffixEnd;

@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -51,19 +48,16 @@ public class BaseInfoController {
     }
 
     /**
-     * 按钮请求(只改变输出区域数据)
+     * 页面初始化请求
      * @param requestDto 前台传入参数
-     * @return ReqJsonDto 后台返回参数
+     * @return ReturnDto 后台返回参数
      */
     @RequestMapping(value="initPageInfo")
     @ResponseBody
     public ReturnDto initPageInfo(@RequestBody RequestDto requestDto){
-        log.info("后台收到请求initPageInfo");
-        log.info("请求报文内容{}",JSON.toJSONString(requestDto));
+        log.info("后台收到请求initPageInfo,请求报文内容{}",JSON.toJSONString(requestDto));
 
-        ReturnDto returnDto = new ReturnDto();
-        returnDto.setRtnCode("0000");
-        returnDto.setRtnMsg("success");
+        ReturnDto returnDto = new ReturnDto().setRtnCode("0000").setRtnMsg("success");
 
         //取站点名称
         returnDto.getTitleInfoMap().put("isChanged", true);
@@ -93,7 +87,7 @@ public class BaseInfoController {
     /**
      * 菜单请求
      * @param requestDto 前台传入参数
-     * @return ReqJsonDto 后台返回参数
+     * @return ReturnDto 后台返回参数
      */
     @RequestMapping(value="/menuReq/{eventId}")
     @ResponseBody
@@ -136,7 +130,7 @@ public class BaseInfoController {
     /**
      * 按钮请求(只改变输出区域数据)
      * @param requestDto 前台传入参数
-     * @return ReqJsonDto 后台返回参数
+     * @return ReturnDto 后台返回参数
      */
     @RequestMapping(value="/buttonReq/{eventId}")
     @ResponseBody
@@ -161,7 +155,7 @@ public class BaseInfoController {
     /**
      * 页面显示数据请求（例：点选下拉选择触发请求改变另一个下拉选择内容）
      * @param requestDto 前台传入参数
-     * @return ReqJsonDto 后台返回参数
+     * @return ReturnDto 后台返回参数
      */
     @RequestMapping(value="/webDataReq/{eventId}")
     @ResponseBody
@@ -184,4 +178,5 @@ public class BaseInfoController {
         log.info("返回报文内容{}",returnDto);
         return returnDto;
     }
+
 }

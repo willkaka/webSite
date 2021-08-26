@@ -74,3 +74,81 @@ CREATE TABLE IF NOT EXISTS template_define (
   field_type varchar(50) DEFAULT NULL,
   data_masking varchar(10) DEFAULT NULL);
 CREATE INDEX td_ind_01 on template_define (template_name,def_type);
+
+
+
+-- 交易数据
+DROP TABLE IF EXISTS mgt_trx_data;
+CREATE TABLE mgt_trx_data  (
+    mgt_trx_data_id integer primary key,
+    mgt_status VARCHAR(10) DEFAULT NULL,--  COMMENT '迁移状态',
+    loan_no VARCHAR(40) DEFAULT NULL,--  COMMENT '贷款编号',
+    dd_flag VARCHAR(5) DEFAULT NULL,--  COMMENT '是否已代垫',
+    bill_type VARCHAR(5) DEFAULT NULL,--  COMMENT '单据类型',
+    sterm INT(10) DEFAULT 0,--  COMMENT '期次',
+    pay_date DATE DEFAULT NULL,--  COMMENT '应还日期',
+    acc_date DATE DEFAULT NULL,--  COMMENT '该期最后还款日期',
+    pay_corp DECIMAL(18,4) DEFAULT 0.0000,--  COMMENT '应还本金',
+    actual_corp DECIMAL(18,4) DEFAULT 0.0000,--  COMMENT '实还本金',
+    pay_inte DECIMAL(18,4) DEFAULT 0.0000,--  COMMENT '应还利息',
+    actual_inte DECIMAL(18,4) DEFAULT 0.0000,--  COMMENT '实还利息',
+    pay_fine DECIMAL(18,4) DEFAULT 0.0000,--  COMMENT '应还融通罚息',
+    actual_fine DECIMAL(18,4) DEFAULT 0.0000,--  COMMENT '实还融通罚息',
+    pay_compound DECIMAL(18,4) DEFAULT 0.0000,--  COMMENT '应还融通复利',
+    actual_compound DECIMAL(18,4) DEFAULT 0.0000,--  COMMENT '实还融通复利',
+    pay_bank_fine DECIMAL(18,4) DEFAULT 0.0000,--  COMMENT '应还银行罚息',
+    actual_bank_fine DECIMAL(18,4) DEFAULT 0.0000,--  COMMENT '实还银行罚息',
+    pay_bank_compound DECIMAL(18,4) DEFAULT 0.0000,--  COMMENT '应还银行复利',
+    actual_bank_compound DECIMAL(18,4) DEFAULT 0.0000,--  COMMENT '实还银行复利',
+
+    dd_pay_fine DECIMAL(18,4) DEFAULT 0.0000,--  COMMENT '应还代垫罚息',
+    dd_actual_fine DECIMAL(18,4) DEFAULT 0.0000,--  COMMENT '实还代垫罚息',
+    dd_pay_compound DECIMAL(18,4) DEFAULT 0.0000,--  COMMENT '应还代垫复利',
+    dd_actual_compound DECIMAL(18,4) DEFAULT 0.0000,--  COMMENT '实还代垫复利',
+    fee_type VARCHAR(5) DEFAULT NULL,--  COMMENT '费用类型',
+    pay_amount DECIMAL(18,4) DEFAULT 0.0000,--  COMMENT '应还费用',
+    actual_amount DECIMAL(18,4) DEFAULT 0.0000,--  COMMENT '实还费用',
+    acc_user VARCHAR(50) DEFAULT NULL,--  COMMENT '制单人',
+    deduct_channel VARCHAR(50) DEFAULT NULL,--  COMMENT '扣款渠道',
+    mgt_data_path VARCHAR(200) DEFAULT NULL);
+CREATE INDEX mtd_ind_01 on mgt_trx_data (loan_no);
+
+
+
+-- 本息还款计划
+DROP TABLE IF EXISTS mgt_pay_plan;
+CREATE TABLE mgt_pay_plan  (
+    mgt_pay_plan_id integer primary key,
+    mgt_status VARCHAR(10) ,--  COMMENT '迁移状态',
+    loan_no VARCHAR(40) ,-- COMMENT '贷款编号',
+    sterm INT(10) DEFAULT 0, --  COMMENT '期次',
+    pay_date DATE DEFAULT NULL ,-- COMMENT '应还日期',
+    acc_date DATE DEFAULT NULL ,-- COMMENT '该期最后还款日期',
+    pay_corp DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '应还本金',
+    actual_corp DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '实还本金',
+    pay_inte DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '应还利息',
+    actual_inte DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '实还利息',
+    pay_bank_fine DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '应还银行罚息',
+    actual_bank_fine DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '实还银行罚息',
+    pay_bank_compound DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '应还银行复利',
+    actual_bank_compound DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '实还银行复利',
+    pay_fine DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '应还融通罚息',
+    actual_fine DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '实还融通罚息',
+    pay_compound DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '应还融通复利',
+    actual_compound DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '实还融通复利',
+    dd_corp DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '代垫本金',
+    dd_inte DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '代垫利息',
+    dd_fine DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '代垫罚息',
+    dd_compound DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '代垫复利',
+    fine_base DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '罚息基数',
+    compound_base DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '复利基数',
+    dd_flag VARCHAR(5) ,-- COMMENT '是否已代垫',
+    fine_date DATE DEFAULT NULL ,-- COMMENT '罚复日期',
+    month_pay DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '月供',
+    owe_balance DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '剩余本金',
+    business_sum DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '贷款金额',
+    execute_rate DECIMAL(18,4) DEFAULT 0.0000 ,--  COMMENT '利率',
+    loan_term INT(10) DEFAULT 0 ,--  COMMENT '期限',
+    putout_date DATE DEFAULT NULL ,-- COMMENT '放款日期',
+    mgt_data_path VARCHAR(200));
+CREATE INDEX mpp_ind_01 on mgt_pay_plan (loan_no);

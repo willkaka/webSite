@@ -1,11 +1,13 @@
 package com.hyw.webSite.web.dto;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Data
+@Accessors( chain = true )
 public class ReturnDto {
     //报文返回信息
     private String rtnCode = "0000";

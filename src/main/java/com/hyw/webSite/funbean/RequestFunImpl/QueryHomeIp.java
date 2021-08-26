@@ -5,6 +5,7 @@ import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.funbean.RequestFunImpl.checkIP.CheckIPConnect;
 import com.hyw.webSite.funbean.RequestFunImpl.checkIP.CheckIPDto;
 import com.hyw.webSite.funbean.RequestFunImpl.checkIP.CheckIPandPortThread;
+import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import lombok.Getter;
@@ -130,6 +131,6 @@ public class QueryHomeIp extends RequestFunUnit<String, QueryHomeIp.QueryVariabl
     @Getter
     @Setter
     @Accessors(chain = true)
-    public static class QueryVariable extends RequestFunUnit.Variable {
+    public static class QueryVariable extends RequestPubDto {
     }
 }

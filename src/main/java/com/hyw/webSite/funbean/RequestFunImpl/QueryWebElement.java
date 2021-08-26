@@ -1,14 +1,14 @@
 package com.hyw.webSite.funbean.RequestFunImpl;
 
 import com.hyw.webSite.constant.WebConstant;
-import com.hyw.webSite.dao.ConfigDatabaseInfo;
+import com.hyw.webSite.dao.WebElement;
+import com.hyw.webSite.dbservice.DataService;
+import com.hyw.webSite.dbservice.NQueryWrapper;
+import com.hyw.webSite.dbservice.dto.TableFieldInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.model.FieldAttr;
-import com.hyw.webSite.dbservice.NQueryWrapper;
-import com.hyw.webSite.dbservice.DataService;
-import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import lombok.Getter;
@@ -17,12 +17,13 @@ import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service("queryTableRecords")
-public class QueryTableRecords extends RequestFunUnit<List<Map<String,FieldAttr>>, QueryTableRecords.QueryVariable> {
+@Service("queryWebElement")
+public class QueryWebElement extends RequestFunUnit<List<Map<String,FieldAttr>>, QueryWebElement.QueryVariable> {
 
     @Autowired
     private DataService dataService;
@@ -34,14 +35,8 @@ public class QueryTableRecords extends RequestFunUnit<List<Map<String,FieldAttr>
     @Override
     public void checkVariable(QueryVariable variable){
         //输入检查
-        if(StringUtil.isBlank(variable.getDbName())){
-            throw new BizException("DB不允许为空值!");
-        }
-        if(StringUtil.isBlank(variable.getLibName())){
-            throw new BizException("数据库,不允许为空值!");
-        }
-        if(StringUtil.isBlank(variable.getTableName())){
-            throw new BizException("表名,不允许为空值!");
+        if(StringUtil.isBlank(variable.getFunction())){
+            throw new BizException("function不允许为空值!");
         }
     }
 
@@ -59,11 +54,28 @@ public class QueryTableRecords extends RequestFunUnit<List<Map<String,FieldAttr>
         int totalCount;      //表中记录的总行数
 
         //连接数据库，查询数据，关闭数据库
-        Connection connection = DbUtil.getConnection(dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
-                .eq(ConfigDatabaseInfo::getDatabaseName,variable.getDbName())),variable.getLibName());
-        totalCount = DbUtil.getTableRecordCount(connection,variable.getDbName(),variable.getLibName(),variable.getTableName());
-        List<Map<String,FieldAttr>> records = DbUtil.getTableRecords(connection,variable.getDbName(),variable.getLibName(),variable.getTableName(),(pageNow-1)*pageSize,pageSize);
-        DbUtil.closeConnection(connection);
+        List<TableFieldInfo> webElementFieldList = dataService.getTableFieldList(WebElement.class);
+        totalCount = dataService.count(new NQueryWrapper<WebElement>()
+                .eq(WebElement::getFunction,variable.getFunction()));
+        List<Map<String,Object>> webElementMapList = dataService.mapList(new NQueryWrapper<WebElement>()
+                .eq(WebElement::getFunction,variable.getFunction())
+                .orderByAsc(WebElement::getSeq)
+                .setPageSize(pageSize)
+                .setCurRecord((pageNow-1)*pageSize)
+        );
+
+        List<Map<String,FieldAttr>> records = new ArrayList<>();
+        for(Map<String,Object> webElement:webElementMapList){
+            Map<String,FieldAttr> record = new HashMap<>();
+            for(TableFieldInfo tableFieldInfo:webElementFieldList){
+                FieldAttr fieldAttr = new FieldAttr();
+                fieldAttr.setRemarks( tableFieldInfo.getFieldName() );
+                fieldAttr.setColumnName( tableFieldInfo.getFieldName() );
+                fieldAttr.setValue(webElement.get(tableFieldInfo.getFieldName()));
+                record.put( tableFieldInfo.getFieldName(), fieldAttr);
+            }
+            records.add(record);
+        }
 
         //参数配置
         variable.setOutputShowType(WebConstant.OUTPUT_SHOW_TYPE_TABLE); //以表格形式显示
@@ -82,8 +94,6 @@ public class QueryTableRecords extends RequestFunUnit<List<Map<String,FieldAttr>
     @Setter
     @Accessors(chain = true)
     public static class QueryVariable extends RequestPubDto {
-        private String dbName;
-        private String libName;
-        private String tableName;
+        private String function;
     }
 }

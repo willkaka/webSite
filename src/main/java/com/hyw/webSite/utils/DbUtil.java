@@ -244,19 +244,16 @@ public class DbUtil {
      * @return Connection
      */
     public static Connection getConnection(String dbType,String driver,String url,String attr,String lib,String user,String password) {
-        String linkSign = dbType.equals(Constant.DB_TYPE_MYSQL)?"?":
-                        ( dbType.equals(Constant.DB_TYPE_ORACLE)?":":
-                        ( dbType.equals(Constant.DB_TYPE_SQLITE)?":":"") );
-
         String dbUrl ="";
-        if(dbType.equals(Constant.DB_TYPE_MYSQL)) {
+        if(dbType.equalsIgnoreCase(Constant.DB_TYPE_MYSQL)) {
             dbUrl = url
                 + (StringUtil.isNotBlank(lib) ? "/" + lib : "")
                 + (StringUtil.isNotBlank(attr) ? "?" + attr : "");
-        }else if(dbType.equals(Constant.DB_TYPE_ORACLE)){
-            dbUrl = url
-                    + (StringUtil.isNotBlank(lib) ? ":" + lib : "");
-        }if(dbType.equals(Constant.DB_TYPE_SQLITE)){
+        }else if(dbType.equalsIgnoreCase(Constant.DB_TYPE_ORACLE)) {
+            dbUrl = url + (StringUtil.isNotBlank(lib) ? ":" + lib : "");
+//        }else if(dbType.equalsIgnoreCase(Constant.DB_TYPE_EXCEL)){
+//            dbUrl = url + (StringUtil.isNotBlank(lib) ? "DBQ="+ lib : "");
+        }if(dbType.equalsIgnoreCase(Constant.DB_TYPE_SQLITE)){
             if("main".equals(lib)) {
                 dbUrl = url;
             }else{

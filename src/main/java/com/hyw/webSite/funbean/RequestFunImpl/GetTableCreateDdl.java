@@ -6,6 +6,7 @@ import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.dbservice.NQueryWrapper;
 import com.hyw.webSite.dbservice.DataService;
+import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
@@ -70,7 +71,7 @@ public class GetTableCreateDdl extends RequestFunUnit<String, GetTableCreateDdl.
     @Getter
     @Setter
     @Accessors(chain = true)
-    public static class QueryVariable extends RequestFunUnit.Variable {
+    public static class QueryVariable extends RequestPubDto {
         private String dbName;
         private String libName;
         private String tableName;

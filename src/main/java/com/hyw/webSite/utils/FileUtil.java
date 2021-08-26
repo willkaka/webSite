@@ -117,10 +117,10 @@ public class FileUtil {
         return item;
     }
 
-    public static File getFileFromRequest(HttpServletRequest request,String localPath){
+    public static File getFileFromRequest(HttpServletRequest request,String fileNameKey,String localPath){
         File file;
         try{
-            String fileName = request.getParameter("fileName");
+            String fileName = request.getParameter(fileNameKey);
             InputStream is = request.getInputStream();
             byte[] b = new byte[(int)request.getContentLengthLong()];
             int read = 0;
@@ -141,4 +141,37 @@ public class FileUtil {
         return file;
     }
 
+    public static File multipartFileToFile(MultipartFile file){
+        File toFile = null;
+        if (file.equals("") || file.getSize() <= 0) {
+            file = null;
+        } else {
+            InputStream ins = null;
+            try {
+                ins = file.getInputStream();
+                toFile = new File(file.getOriginalFilename());
+                inputStreamToFile(ins, toFile);
+                ins.close();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return toFile;
+    }
+
+    //获取流文件
+    private static void inputStreamToFile(InputStream ins, File file) {
+        try {
+            OutputStream os = new FileOutputStream(file);
+            int bytesRead = 0;
+            byte[] buffer = new byte[8192];
+            while ((bytesRead = ins.read(buffer, 0, 8192)) != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+            os.close();
+            ins.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -1,6 +1,5 @@
 package com.hyw.webSite.dbservice;
 
-import com.hyw.webSite.dao.WebConfigReq;
 import com.hyw.webSite.dbservice.constant.DbConstant;
 import com.hyw.webSite.dbservice.dto.IPage;
 import com.hyw.webSite.dbservice.dto.MysqlColumnInfo;
@@ -14,6 +13,7 @@ import com.hyw.webSite.mapper.DataMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -125,6 +125,28 @@ public class DataService {
      * @return 新增记录数
      */
     public <T> int saveBatch(List<T> objectList,int size) {
+        int count = 0;
+        List<T> newRecords = new ArrayList<>();
+        for(T object:objectList){
+            newRecords.add(object);
+            if(newRecords.size()>=size) {
+                count = count + dataMapper.saveBySql(JdbcUtil.getInsertSql(newRecords));
+                newRecords.clear();
+            }
+        }
+        if(newRecords.size()>0)
+            count = count + dataMapper.saveBySql(JdbcUtil.getInsertSql(newRecords));
+        return count;
+    }
+
+
+    /**
+     * 新增记录
+     * @param objectList 对象
+     * @return 新增记录数
+     */
+    @Transactional
+    public <T> int saveBatchCommit(List<T> objectList,int size) {
         int count = 0;
         List<T> newRecords = new ArrayList<>();
         for(T object:objectList){

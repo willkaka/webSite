@@ -20,7 +20,7 @@ import java.util.*;
  * 功能请求实现单元基类
  */
 @Slf4j
-public abstract class RequestFunUnit<D, V extends RequestFunUnit.Variable> implements RequestFun {
+public abstract class RequestFunUnit<D, V extends RequestPubDto> implements RequestFun {
 
     /**
      * 执行入口
@@ -156,19 +156,5 @@ public abstract class RequestFunUnit<D, V extends RequestFunUnit.Variable> imple
         } catch (Exception e) {
             throw new RuntimeException(vClass + " 实例化失败", e);
         }
-    }
-
-    /**
-     * 自定义变量
-     */
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    public static class Variable {
-        private String outputShowType; //输出显示格式类型
-        private boolean isWithPage; //是否分页
-        private int totalCount;
-        private int pageNow;
-        private int pageSize;
     }
 }

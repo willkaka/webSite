@@ -3,6 +3,7 @@ package com.hyw.webSite.funbean.RequestFunImpl;
 import com.hyw.webSite.constant.WebConstant;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
+import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import lombok.Getter;
@@ -92,7 +93,7 @@ public class PrcStringUtil extends RequestFunUnit<String, PrcStringUtil.QryVaria
     @Getter
     @Setter
     @Accessors(chain = true)
-    public static class QryVariable extends RequestFunUnit.Variable {
+    public static class QryVariable extends RequestPubDto {
         private String inputStr;  //输入字符串
         private String addString; //单双引号
         private String separator; //分隔符
