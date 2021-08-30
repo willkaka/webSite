@@ -6,9 +6,6 @@ import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.utils.ObjectUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.ReturnDto;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -28,9 +25,11 @@ public abstract class RequestFunUnit<D, V extends RequestPubDto> implements Requ
      */
     @Override
     public ReturnDto execute(RequestDto requestDto){
-        //参数赋值
+        // 参数赋值，将请求的参数 RequestDto，
+        // 转为V（父类为RequestPubDto）并将requestDto.getReqParm().get("inputValue")中的值赋到对应的字段
         V var = getVariable(requestDto);
 
+        // 必要的输入检查
         checkVariable(var);
 
         //执行自定义逻辑
@@ -42,6 +41,8 @@ public abstract class RequestFunUnit<D, V extends RequestPubDto> implements Requ
 
     /**
      * 自动取定义的参数值
+     *   参数赋值，将请求的参数 RequestDto，
+     * 转为V（父类为RequestPubDto）并将requestDto.getReqParm().get("inputValue")中的值赋到对应的字段
      * @param requestDto 请求dto
      * @return variable
      */
@@ -54,18 +55,12 @@ public abstract class RequestFunUnit<D, V extends RequestPubDto> implements Requ
             String fieldName = field.getName();
             Object value = inputValue.get(fieldName);
             if(inputValue.containsKey(fieldName)){
-//                if(inputValue.get(fieldName) instanceof String) {
-                    try {
-                        if (!field.isAccessible()) {
-                            field.setAccessible(true);
-                        }
-                        field.set(var, value);
-                    } catch (Exception e) {
-                        throw new BizException("给对象(" + var.getClass().getName() + ")属性(" + fieldName + ")赋值(" + value + ")失败!");
-                    }
-//                }else if(value instanceof List){
-//
-//                }
+                try {
+                    if (!field.isAccessible()) { field.setAccessible(true); }
+                    field.set(var, value);
+                } catch (Exception e) {
+                    throw new BizException("给对象(" + var.getClass().getName() + ")属性(" + fieldName + ")赋值(" + value + ")失败!");
+                }
             }
         }
         return var;
@@ -96,27 +91,26 @@ public abstract class RequestFunUnit<D, V extends RequestPubDto> implements Requ
     public ReturnDto returnData(D data, V variable){
         ReturnDto returnDto = new ReturnDto();
 
-        returnDto.getOutputMap().put("showType", variable.getOutputShowType());//以表格形式显示
-        returnDto.getOutputMap().put("withPage",variable.isWithPage());//表格内容分页显示
+        returnDto.getOutputMap().put("showType", variable.getOutputShowType()); //以表格形式显示
+        returnDto.getOutputMap().put("withPage",variable.isWithPage()); //表格内容分页显示
         returnDto.getOutputMap().put("isChanged",true); //标识输出区域已改变需要刷新
-        returnDto.getOutputMap().put("isClear",true);//清除原有输出内容
+        returnDto.getOutputMap().put("isClear",true); //清除原有输出内容
 
+        //判断目前返回的数据类型
         boolean isListMapFieldAttr = false;
         if(data instanceof List){
             for(Object object:(List) data){
-                if(object instanceof Map){
+                if(object instanceof Map){  //List<Map<>> 则以表格的数据形式返回
                     for(Object key:((Map) object).keySet()){
                         if(key instanceof String && ((Map) object).get(key) instanceof FieldAttr){
                             isListMapFieldAttr = true;
                             break;
                         }
                     }
-                }else{
-
                 }
                 if(isListMapFieldAttr) break;
             }
-        }else if(data instanceof String){
+        }else if(data instanceof String){ // String 则以多行的文本输入形式返回
             returnDto.getOutputMap().put("textAreaValue", data);
         }
 
@@ -133,7 +127,6 @@ public abstract class RequestFunUnit<D, V extends RequestPubDto> implements Requ
 
     /**
      * 实例化变量
-     *
      * @return 返回实例化的变量信息
      */
     public V newInstanceVariable() {

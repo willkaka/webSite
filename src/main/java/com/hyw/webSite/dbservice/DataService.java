@@ -311,6 +311,7 @@ public class DataService {
         return list;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> List<T> list(NQueryWrapper<T> queryWrapper){
         List<T> rtnList = new ArrayList();
         String sql = queryWrapper.getSql();

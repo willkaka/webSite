@@ -152,3 +152,67 @@ CREATE TABLE mgt_pay_plan  (
     putout_date DATE DEFAULT NULL ,-- COMMENT '放款日期',
     mgt_data_path VARCHAR(200));
 CREATE INDEX mpp_ind_01 on mgt_pay_plan (loan_no);
+
+
+-- 菜单组
+-- menu_group	group_desc
+DROP TABLE IF EXISTS web_menu_group_info;
+CREATE TABLE IF NOT EXISTS web_menu_group_info (
+  web_menu_group_info_id integer primary key,
+  menu_group varchar(32) NOT NULL,
+  group_desc varchar(200));
+CREATE INDEX wmg_ind_01 on web_menu_group_info (menu_group);
+
+-- 菜单
+-- menu	menu_desc	menu_group
+DROP TABLE IF EXISTS web_menu_info;
+CREATE TABLE IF NOT EXISTS web_menu_info (
+  web_menu_info_id integer primary key,
+  menu_group varchar(32),
+  menu_seq integer default 0,
+  menu varchar(32) NOT NULL,
+  menu_desc varchar(32) );
+CREATE INDEX wmi_ind_01 on web_menu_info (menu_group,menu_seq);
+CREATE INDEX wmi_ind_02 on web_menu_info (menu);
+
+-- 页面元素
+-- menu	element_seq	element_id	area	sub_area	element_type	element_desc
+DROP TABLE IF EXISTS web_element_info;
+CREATE TABLE IF NOT EXISTS web_element_info (
+  web_element_info_id integer primary key,
+  menu varchar(32) NOT NULL,
+  element_seq integer default 0,
+  element varchar(32),
+  area varchar(32),
+  sub_area varchar(32),
+  element_type varchar(32),
+  element_desc varchar(200) );
+CREATE INDEX wei_ind_01 on web_element_info (menu,element_seq);
+CREATE INDEX wei_ind_02 on web_element_info (element);
+CREATE INDEX wei_ind_03 on web_element_info (area,sub_area);
+
+-- 事件
+-- menu	element	event_type	request_type	request_no	param
+DROP TABLE IF EXISTS web_event_info;
+CREATE TABLE IF NOT EXISTS web_event_info (
+  web_event_info_id integer primary key,
+  menu varchar(32) NOT NULL,
+  element varchar(32),
+  event_type varchar(32),
+  request_type varchar(32),
+  request_no varchar(32),
+  param varchar(500) );
+CREATE INDEX wev_ind_01 on web_event_info (menu,element);
+
+-- 触发
+-- source_menu	source_element	trigger_element	trigger_type	trigger_element_type    param
+DROP TABLE IF EXISTS web_trigger_info;
+CREATE TABLE IF NOT EXISTS web_trigger_info (
+  web_trigger_info_id integer primary key,
+  source_menu varchar(32) NOT NULL,
+  source_element varchar(32),
+  trigger_type varchar(32),
+  trigger_element varchar(32),
+  trigger_element_type varchar(32),
+  param varchar(500) );
+CREATE INDEX wti_ind_01 on web_trigger_info (source_menu,source_element);
