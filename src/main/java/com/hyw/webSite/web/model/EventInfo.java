@@ -12,9 +12,15 @@ public class EventInfo {
     private String event; // click
     private String type; // menuReq/buttonReq
     private String id; // MR001/BR001
-    private String relEleId;
-    private String relEleType;
-    private String relEleChgType; //改变的类型：value-改变值
+
+    private String RelEleId;
+    private String RelEleType;
+    private String RelEleChgType;
+
+    private String triggerType;
+    private String triggerElement;
+    private String triggerElementType; //改变的类型：value-改变值
+
     private String selectedValue;
     private boolean withPage; //是否为分页按钮的请求事件
     private int reqPage; //请求页码

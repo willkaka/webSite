@@ -73,9 +73,9 @@ public class UploadFile extends RequestFunUnit<String, UploadFile.QryVariable> {
         StringBuilder loanNoStr = new StringBuilder();
         StringBuilder updLbrSql = new StringBuilder();
         for(JSONObject jsonObject:jsonObjectList){
-            String loanNo = jsonObject.getString("loanNo");
-            String claimDate = new SimpleDateFormat("yyyy-MM-dd").format(jsonObject.getDate("claimDate"));
-            int overdueDays = jsonObject.getInteger("overdueDays");
+            String loanNo = jsonObject.containsKey("loanNo")?jsonObject.getString("loanNo"):"";
+            String claimDate = jsonObject.containsKey("claimDate")?new SimpleDateFormat("yyyy-MM-dd").format(jsonObject.getDate("claimDate")):"";
+            int overdueDays = jsonObject.containsKey("overdueDays")?jsonObject.getInteger("overdueDays"):0;
 
             updLbrSql.append("UPDATE loanbalance_relative SET current_overdue_date='").append(claimDate)
                     .append("',corp_current_overdue_date='").append(claimDate)

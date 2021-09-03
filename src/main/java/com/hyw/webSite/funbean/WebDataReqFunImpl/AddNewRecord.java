@@ -60,6 +60,7 @@ public class AddNewRecord implements RequestFun {
 
         Map<String,Object> webNextOprMap = new HashMap<>();
         EventInfo eventInfo = new EventInfo();
+        eventInfo.setId("addNewRecord");
         eventInfo.setType("webButtonShowModal");
         eventInfo.setRecordMap(recordMap);
         webNextOprMap.put("callEven",eventInfo);

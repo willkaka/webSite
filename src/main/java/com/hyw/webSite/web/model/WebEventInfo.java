@@ -55,6 +55,24 @@ public class WebEventInfo {
     /**
      * null
      */
+    @TableField("trigger_type")
+    private String triggerType;
+
+    /**
+     * null
+     */
+    @TableField("trigger_element")
+    private String triggerElement;
+
+    /**
+     * null
+     */
+    @TableField("trigger_element_type")
+    private String triggerElementType;
+
+    /**
+     * null
+     */
     @TableField("param")
     private String param;
 

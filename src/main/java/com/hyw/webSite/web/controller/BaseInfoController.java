@@ -10,6 +10,8 @@ import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.ReturnDto;
 import com.hyw.webSite.web.model.EventInfo;
 import com.hyw.webSite.web.model.WebElementDto;
+import com.hyw.webSite.web.service.WebElementService;
+import com.hyw.webSite.web.service.WebMenuService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -26,6 +28,10 @@ public class BaseInfoController {
 
     @Autowired
     private WebConfigInfoService webConfigInfoService;
+    @Autowired
+    private WebMenuService webMenuService;
+    @Autowired
+    private WebElementService webElementService;
 
     @Autowired
     ApplicationContext context;
@@ -39,12 +45,6 @@ public class BaseInfoController {
     public String startRequest(Model model) {
         model.addAttribute("webSiteName", Constant.WEB_SITE_TITLE);
         return "index";
-    }
-
-    @RequestMapping("index2")
-    public String startRequest2(Model model) {
-        model.addAttribute("webSiteName", Constant.WEB_SITE_TITLE);
-        return "index2";
     }
 
     /**
@@ -65,6 +65,7 @@ public class BaseInfoController {
 
         //取菜单清单
         List<WebElementDto> menuList = webConfigInfoService.getWebConfigElement(requestDto, "root", "menuArea");//返回要显示的菜单项;
+//        List<WebElementDto> menuList = webMenuService.getMenu();
         returnDto.getMenuMap().put("isChanged", true);
         returnDto.getMenuMap().put("menuList", menuList);
 
@@ -80,7 +81,7 @@ public class BaseInfoController {
         returnDto.getOutputMap().put("isChanged", false);
         returnDto.getOutputMap().put("outputList", null);
 
-        log.info("返回报文内容{}",returnDto);
+        log.info("返回报文内容{}",JSON.toJSONString(returnDto));
         return returnDto;
     }
 
@@ -107,12 +108,15 @@ public class BaseInfoController {
 
         //取菜单输入输出格式信息,例如：输出区域记录编辑按钮，可加在此处。
         List<WebElementDto> formatInfoList = webConfigInfoService.getWebConfigElement(requestDto, eventId, "outputArea");
+//        List<WebElementDto> formatInfoList = webElementService.getMenuElements(eventId, "outputArea");
         formatInfoList.addAll(webConfigInfoService.getWebConfigElement(requestDto, eventId, "modalArea"));
+//        formatInfoList.addAll(webElementService.getMenuElements(eventId, "modalArea"));
         returnDto.getFormatInfoMap().put("isChanged", true);
         returnDto.getFormatInfoMap().put("formatInfoList", formatInfoList);
 
         //取输入区域元素清单
         List<WebElementDto> inputList = webConfigInfoService.getWebConfigElement(requestDto, eventId, "inputArea");
+//        List<WebElementDto> inputList = webElementService.getMenuElements(eventId, "inputArea");
         returnDto.getInputMap().put("isChanged", true);
         returnDto.getInputMap().put("inputList", inputList);
 
@@ -123,7 +127,7 @@ public class BaseInfoController {
         returnDto.setRtnCode("0000");
         returnDto.setRtnMsg("success");
 
-        log.info("返回报文内容{}",returnDto);
+        log.info("返回报文内容{}",JSON.toJSONString(returnDto));
         return returnDto;
     }
 
@@ -148,7 +152,7 @@ public class BaseInfoController {
         log.info("开始执行{}",eventId);
         returnDto = ((RequestFun) context.getBean(eventId)).execute(requestDto);
 
-        log.info("返回报文内容{}",returnDto);
+        log.info("返回报文内容{}",JSON.toJSONString(returnDto));
         return returnDto;
     }
 
@@ -175,7 +179,7 @@ public class BaseInfoController {
         returnDto.setRtnCode("0000");
         returnDto.setRtnMsg("success");
 
-        log.info("返回报文内容{}",returnDto);
+        log.info("返回报文内容{}",JSON.toJSONString(returnDto));
         return returnDto;
     }
 

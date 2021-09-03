@@ -12,6 +12,7 @@ public class RequestDto {
     private String reqMapping;//对应Controller的Mapping
     private String reqName;//请求名称
     private String reqType;//请求类型
+
     private String curMenu;//当前的菜单
 
     //报文内容

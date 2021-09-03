@@ -1,5 +1,6 @@
 package com.hyw.webSite.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hyw.webSite.constant.Constant;
@@ -17,11 +18,9 @@ import com.hyw.webSite.utils.DataUtil;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
-import com.hyw.webSite.web.model.EventInfo;
-import com.hyw.webSite.web.model.WebElementDto;
+import com.hyw.webSite.web.model.*;
 import com.ql.util.express.ExpressRunner;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -46,11 +45,152 @@ public class WebConfigInfoService {
     @Autowired
     ApplicationContext context;
 
+    @SuppressWarnings("unchecked")
+    public List<WebElementDto> getMenu(){
+        List<WebElementDto> webElementDtoList = new ArrayList<>();
+
+        //取菜单集
+        List<WebMenuGroupInfo> webMenuGroupInfoList = dataService.list(new NQueryWrapper<WebMenuGroupInfo>()
+                .orderByAsc(WebMenuGroupInfo::getWebMenuGroupInfoId));
+
+        int seq = 0;
+        for(WebMenuGroupInfo webMenuGroupInfo : webMenuGroupInfoList){
+            WebElementDto webElementDto = new WebElementDto();
+            webElementDto.setWebElementId(webMenuGroupInfo.getWebMenuGroupInfoId());
+            webElementDto.setFunc("menuGroup");
+            webElementDto.setSeq(String.valueOf(++seq));
+            webElementDto.setId(webMenuGroupInfo.getMenuGroup());
+            webElementDto.setArea("menuArea");
+            webElementDto.setWindow("");
+            webElementDto.setType("menu");
+            webElementDto.setPrompt(webMenuGroupInfo.getGroupDesc());
+
+            List<WebMenuInfo> webMenuInfoList = getMenuInfo(webMenuGroupInfo.getMenuGroup());
+            List<WebElementDto> subWebElementList = new ArrayList<>();
+            for(WebMenuInfo webMenuInfo:webMenuInfoList){
+                WebElementDto subWebElement = new WebElementDto();
+                subWebElement.setWebElementId(webMenuInfo.getWebMenuInfoId());
+                subWebElement.setFunc(webMenuInfo.getMenuGroup());
+                subWebElement.setSeq(String.valueOf(webMenuInfo.getMenuSeq()));
+                subWebElement.setId(webMenuInfo.getMenu());
+                subWebElement.setArea("menuArea");
+                subWebElement.setWindow("");
+                subWebElement.setType("menu");
+                subWebElement.setPrompt(webMenuInfo.getMenuDesc());
+
+                List<EventInfo> webEventInfoList = getEventInfoList(webMenuInfo.getMenu(),"");
+                subWebElement.setEventInfoList(webEventInfoList);
+
+                subWebElementList.add(subWebElement);
+            }
+            webElementDto.setSubElements(subWebElementList);
+            webElementDtoList.add(webElementDto);
+        }
+        return webElementDtoList;
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<WebMenuInfo> getMenuInfo(String menuGroup){
+        //取菜单
+        return dataService.list(new NQueryWrapper<WebMenuInfo>()
+                .eq(WebMenuInfo::getMenuGroup,menuGroup)
+                .orderByAsc(WebMenuInfo::getMenuSeq));
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<WebElementDto> getMenuElements(String menu){
+        List<WebElementDto> webElementDtoList = new ArrayList<>();
+
+        //取菜单元素
+        List<WebMenuGroupInfo> webMenuGroupInfoList = dataService.list(new NQueryWrapper<WebMenuGroupInfo>()
+                .orderByAsc(WebMenuGroupInfo::getWebMenuGroupInfoId));
+
+        int seq = 0;
+        for(WebMenuGroupInfo webMenuGroupInfo : webMenuGroupInfoList){
+            WebElementDto webElementDto = new WebElementDto();
+            webElementDto.setWebElementId(webMenuGroupInfo.getWebMenuGroupInfoId());
+            webElementDto.setFunc("menuGroup");
+            webElementDto.setSeq(String.valueOf(++seq));
+            webElementDto.setId(webMenuGroupInfo.getMenuGroup());
+            webElementDto.setArea("menuArea");
+            webElementDto.setWindow("");
+            webElementDto.setType("menu");
+            webElementDto.setPrompt(webMenuGroupInfo.getGroupDesc());
+
+            List<WebMenuInfo> webMenuInfoList = getMenuInfo(webMenuGroupInfo.getMenuGroup());
+            List<WebElementDto> subWebElementList = new ArrayList<>();
+            for(WebMenuInfo webMenuInfo:webMenuInfoList){
+                WebElementDto subWebElement = new WebElementDto();
+                subWebElement.setWebElementId(webMenuInfo.getWebMenuInfoId());
+                subWebElement.setFunc(webMenuInfo.getMenuGroup());
+                subWebElement.setSeq(String.valueOf(webMenuInfo.getMenuSeq()));
+                subWebElement.setId(webMenuInfo.getMenu());
+                subWebElement.setArea("menuArea");
+                subWebElement.setWindow("");
+                subWebElement.setType("menu");
+                subWebElement.setPrompt(webMenuInfo.getMenuDesc());
+
+                List<EventInfo> webEventInfoList = getEventInfoList(webMenuInfo.getMenu(),"");
+                subWebElement.setEventInfoList(webEventInfoList);
+
+                subWebElementList.add(subWebElement);
+            }
+            webElementDto.setSubElements(subWebElementList);
+            webElementDtoList.add(webElementDto);
+        }
+        return webElementDtoList;
+    }
+
+    private List<EventInfo> getEventInfoList(String menu, String element){
+        List<EventInfo> eventInfoList = new ArrayList<>();
+
+        //取配置的事件
+        NQueryWrapper<WebEventInfo> nQueryWrapper = new NQueryWrapper<WebEventInfo>()
+                .eq(WebEventInfo::getMenu,menu);
+        if(StringUtil.isNotBlank(element)){
+            nQueryWrapper.eq(WebEventInfo::getElement,element);
+        }
+
+        //将web_event_info转为eventInfo
+        List<WebEventInfo> webEventInfoList = dataService.list(nQueryWrapper);
+        for(WebEventInfo webEventInfo:webEventInfoList){
+            EventInfo eventInfo = new EventInfo();
+            eventInfo.setEvent(webEventInfo.getEventType());
+            eventInfo.setType(webEventInfo.getRequestType());
+            eventInfo.setId(webEventInfo.getRequestNo());
+
+//            eventInfo.setSelectedValue(CollectionUtil.getMapFirstOrNull(webElementDto.getDataMap()));
+
+            //事件参数
+            Map<String,Object> eventParam = JSON.parseObject(webEventInfo.getParam());//json转map
+            eventInfo.setParamMap(eventParam);
+            if(CollectionUtil.isNotEmpty(eventParam)) {
+                if(eventParam.containsKey("withPage")) {
+                    boolean isWithPage = (boolean) eventParam.get("withPage");
+                    eventInfo.setWithPage(isWithPage);
+                }
+            }
+            eventInfoList.add(eventInfo);
+        }
+        return eventInfoList;
+    }
+
+
+
+
+
+
+
+
+
     public List<WebElementDto> getWebConfigElement(RequestDto requestDto, String elementParent, String elementArea) {
         List<WebElementDto> webElementDtoList = new ArrayList<>();
         Map<String,Object> changedEleMap = new HashMap<>();
         Map<String,String> inputValue = new HashMap<>();
         Map<String,String> curInputValue = (Map<String,String>) requestDto.getReqParm().get("inputValue");
+
+        //取
+
 
         List<WebElement> webElementList = dataService.list(new NQueryWrapper<WebElement>()
             .eq(WebElement::getArea,elementArea)
@@ -60,7 +200,7 @@ public class WebConfigInfoService {
         for(WebElement webElement : webElementList){
             WebElementDto webElementDto = new WebElementDto();
             webElementDto.setWebElementId(webElement.getWebElementId());
-            webElementDto.setFunction(webElement.getFunction());
+            webElementDto.setFunc(webElement.getFunction());
             webElementDto.setSeq(webElement.getSeq());
             webElementDto.setId(webElement.getId());
             webElementDto.setArea(webElement.getArea());

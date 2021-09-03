@@ -17,6 +17,7 @@ import java.util.function.Function;
 @Setter
 @Getter
 @Accessors(chain = true)
+@SuppressWarnings("unchecked")
 public class NQueryWrapper<T> {
 
     private Connection connection;
@@ -276,6 +277,7 @@ public class NQueryWrapper<T> {
     @SafeVarargs
     public final <A,B> NQueryWrapper<T> groupBy(QFunction<A, B>... functions) {
         for (QFunction<A, B> function : functions) {
+            putTable(function);
             GroupInfo groupInfo = new GroupInfo();
             groupInfo.setSeq(groupInfoList.size() + 1);
             groupInfo.setColumn(QueryUtil.toUnderlineStr(QueryUtil.getImplMethodName(function).replace("get", "")));
@@ -284,8 +286,10 @@ public class NQueryWrapper<T> {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public <A,B> NQueryWrapper<T> orderByAsc(QFunction<A, B>... functions) {
         for (QFunction<A, B> function : functions) {
+            putTable(function);
             OrderInfo orderInfo = new OrderInfo();
             orderInfo.setSeq(orderInfoList.size() + 1);
             orderInfo.setOrderKey("Asc");
@@ -297,6 +301,7 @@ public class NQueryWrapper<T> {
 
     public <A,B> NQueryWrapper<T> orderByDesc(QFunction<A, B>... functions) {
         for (QFunction<A, B> function : functions) {
+            putTable(function);
             OrderInfo orderInfo = new OrderInfo();
             orderInfo.setSeq(orderInfoList.size() + 1);
             orderInfo.setOrderKey("Desc");

@@ -208,192 +208,204 @@ insert into template_define (template_name,template_desc,def_type,sheet_no,pos_r
 ('mgt_trx_data', '迁移_交易信息_模板', 'Detail', 0, 1, 26, null, 'deduct_channel' ,'扣款渠道', 'string');
 
 
-insert into web_menu_group_info (menu_group,group_desc) values('menu_mainPage','主页');
-insert into web_menu_group_info (menu_group,group_desc) values('menu_group_table','数据表操作');
-insert into web_menu_group_info (menu_group,group_desc) values('menu_group_caes','核算数据查询');
-insert into web_menu_group_info (menu_group,group_desc) values('menu_web_mtn','页面维护');
-insert into web_menu_group_info (menu_group,group_desc) values('menu_grp_oth','其它');
-insert into web_menu_group_info (menu_group,group_desc) values('menu_aboutPage','关于');
+DELETE FROM template_define WHERE template_name in ('SPD_claim');
+insert into template_define (template_name,template_desc,def_type,sheet_no,pos_row,pos_col,data_masking,field_name,field_desc,field_type) values
+('SPD_claim', '浦发理赔', 'Detail', 2, 1,  7, null, 'loanNo', '贷款编号', 'string'),
+('SPD_claim', '浦发理赔', 'Detail', 2, 1,  8, null, 'claimDate', '理赔日期', 'date'),
+('SPD_claim', '浦发理赔', 'Detail', 2, 1,  15, null, 'overdueDays', '逾期天数', 'number');
+
+insert into web_menu_group_info (menu_group,group_desc) values
+('menu_mainPage','主页'),
+('menu_group_table','数据表操作'),
+('menu_group_caes','核算数据查询'),
+('menu_web_mtn','页面维护'),
+('menu_grp_oth','其它'),
+('menu_aboutPage','关于');
 
 
 
-insert into web_menu_info (menu,menu_desc,menu_group) values('maintineTable','维护数据表','menu_group_table');
-insert into web_menu_info (menu,menu_desc,menu_group) values('queryTable','查询数据表','menu_group_table');
-insert into web_menu_info (menu,menu_desc,menu_group) values('genClass','类代码生成','menu_group_table');
-insert into web_menu_info (menu,menu_desc,menu_group) values('getTableCreateDdl','数据表创建ddl','menu_group_table');
-insert into web_menu_info (menu,menu_desc,menu_group) values('queryTableWithCond','条件查询数据表','menu_group_table');
-insert into web_menu_info (menu,menu_desc,menu_group) values('codeLibraryQuery','核算参数表查询','menu_group_caes');
-insert into web_menu_info (menu,menu_desc,menu_group) values('subjectQuery','科目查询','menu_group_caes');
-insert into web_menu_info (menu,menu_desc,menu_group) values('queryDir','浏览文件夹','menu_grp_oth');
-insert into web_menu_info (menu,menu_desc,menu_group) values('httpCrawler','网络爬虫','menu_grp_oth');
-insert into web_menu_info (menu,menu_desc,menu_group) values('queryGit','Git历史查询','menu_grp_oth');
-insert into web_menu_info (menu,menu_desc,menu_group) values('queryHomeIp','查询IP','menu_grp_oth');
-insert into web_menu_info (menu,menu_desc,menu_group) values('prcStringUtil','处理字符串','menu_grp_oth');
-insert into web_menu_info (menu,menu_desc,menu_group) values('uploadFile','上传文件','menu_grp_oth');
-insert into web_menu_info (menu,menu_desc,menu_group) values('menuMaintain','菜单维护','menu_web_mtn');
+insert into web_menu_info (menu,menu_desc,menu_group) values
+('maintineTable','维护数据表','menu_group_table'),
+('queryTable','查询数据表','menu_group_table'),
+('genClass','类代码生成','menu_group_table'),
+('getTableCreateDdl','数据表创建ddl','menu_group_table'),
+('queryTableWithCond','条件查询数据表','menu_group_table'),
+('codeLibraryQuery','核算参数表查询','menu_group_caes'),
+('subjectQuery','科目查询','menu_group_caes'),
+('queryDir','浏览文件夹','menu_grp_oth'),
+('httpCrawler','网络爬虫','menu_grp_oth'),
+('queryGit','Git历史查询','menu_grp_oth'),
+('queryHomeIp','查询IP','menu_grp_oth'),
+('prcStringUtil','处理字符串','menu_grp_oth'),
+('uploadFile','上传文件','menu_grp_oth'),
+('menuMaintain','菜单维护','menu_web_mtn');
 
 
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('maintineTable','1','dbName','inputArea','','inputDataList','数据库');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('maintineTable','2','libName','inputArea','','inputDataList','库名');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('maintineTable','3','tableName','inputArea','','inputDataList','表名');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('maintineTable','4','queryButton','inputArea','','button','查询');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('maintineTable','1','editButton','outputArea','','button','edit');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('maintineTable','1','delButton','modalArea','','button','删除');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('maintineTable','2','updButton','modalArea','','button','更新');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTable','1','dbName','inputArea','','inputDataList','数据库');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTable','2','libName','inputArea','','inputDataList','库名');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTable','3','tableName','inputArea','','inputDataList','表名');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTable','4','query','inputArea','','button','查询');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTable','5','addRecord','inputArea','','button','新增记录');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTable','1','editButton','outputArea','','button','edit');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTable','1','delButton','modalArea','editWindow','button','删除');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTable','2','updButton','modalArea','editWindow','button','更新');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTable','3','addButton','modalArea','addWindow','button','新增');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('genClass','1','dbName','inputArea','','inputDataList','数据库');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('genClass','2','libName','inputArea','','inputDataList','库名');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('genClass','3','tableName','inputArea','','inputDataList','表名');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('genClass','99','queryButton','inputArea','','button','生成代码');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('getTableCreateDdl','1','dbName','inputArea','','inputDataList','数据库');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('getTableCreateDdl','2','libName','inputArea','','inputDataList','库名');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('getTableCreateDdl','3','tableName','inputArea','','inputDataList','表名');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('getTableCreateDdl','99','getButton','inputArea','','button','取数据表创建ddl');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTableWithCond','1','dbName','inputArea','','inputDataList','数据库');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTableWithCond','2','libName','inputArea','','inputDataList','库名');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTableWithCond','3','tableName','inputArea','','inputDataList','表名');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTableWithCond','4','showFields','inputArea','','multipleSelect','显示字段');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTableWithCond','5','selectField','inputArea','','selectOption','筛选条件：字段名');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTableWithCond','6','operationType','inputArea','','inputDataList','连接类型');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTableWithCond','7','fieldValue','inputArea','','input','值');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTableWithCond','11','editButton','outputArea','','button','edit');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTableWithCond','21','delButton','modalArea','editWindow','button','删除');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTableWithCond','22','updButton','modalArea','editWindow','button','更新');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTableWithCond','23','addButton','modalArea','addWindow','button','新增');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTableWithCond','98','addRecord','inputArea','','button','新增记录');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryTableWithCond','99','query','inputArea','','button','查询');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('codeLibraryQuery','1','dbName','inputArea','','inputDataList','数据库');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('codeLibraryQuery','2','codeNo','inputArea','','dropDown','CodeNo');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('codeLibraryQuery','99','queryButton','inputArea','','button','查询');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('querySubject','1','dbName','inputArea','','selectOption','数据库');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('querySubject','2','libName','inputArea','','inputDataList','库名');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('querySubject','3','modelId','inputArea','','selectOption','核算办法id');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('querySubject','4','orgId','inputArea','','selectOption','分公司');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('querySubject','5','owner','inputArea','','selectOption','归属');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('querySubject','6','channel','inputArea','','selectOption','交易渠道');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('querySubject','7','freeTax','inputArea','','selectOption','免税');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('querySubject','8','transId','inputArea','','selectOption','交易类型');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('querySubject','99','queryButton','inputArea','','button','查询');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryDir','1','localAddress','inputArea','','inputDataList','文件夹位置');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryDir','2','selectFileType','inputArea','','dropDown','筛选类型');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryDir','99','queryButton','inputArea','','button','查询');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('httpCrawler','1','httpAddress','inputArea','','input','http地址');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('httpCrawler','2','httpAddressSuffixBeg','inputArea','','input','http地址前缀');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('httpCrawler','3','httpAddressSuffixEnd','inputArea','','input','http地址后缀');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('httpCrawler','4','webCharset','inputArea','','dropDown','编码');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('httpCrawler','5','regex','inputArea','','inputDataList','正则表达式');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('httpCrawler','99','query','inputArea','','button','执行');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('gitHistoryQuery','1','dir','inputArea','','selectOption','Git仓库本地路径');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('gitHistoryQuery','2','ignoreMerge','inputArea','','selectOption','是否忽略Merge记录');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('gitHistoryQuery','3','user','inputArea','','input','用户');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('gitHistoryQuery','4','begTime','inputArea','','input','开始时间');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('gitHistoryQuery','5','endTime','inputArea','','input','结束时间');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('gitHistoryQuery','6','groupBy','inputArea','','selectOption','统计方式');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('gitHistoryQuery','99','queryButton','inputArea','','button','查询');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('queryHomeIp','99','queryButton','inputArea','','button','查询');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('prcStringUtil','1','inputStr','inputArea','','input','字符');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('prcStringUtil','2','addString','inputArea','','selectOption','加');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('prcStringUtil','3','separator','inputArea','','selectOption','分隔符');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('prcStringUtil','4','colNum','inputArea','','input','分成几列');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('prcStringUtil','99','process','inputArea','','button','处理');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('uploadFile','1','file','inputArea','','inputFile','选择文件');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('uploadFile','2','fileType','inputArea','','input','文件类型');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('uploadFile','99','uploadFileButton','inputArea','','button','确认上传');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('menuMaintain','1','function','inputArea','','inputDataList','菜单分类');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('menuMaintain','2','query','inputArea','','button','查询');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('menuMaintain','3','addRecord','inputArea','','button','新增记录');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('menuMaintain','4','editButton','outputArea','','button','edit');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('menuMaintain','1','delButton','modalArea','editWindow','button','删除');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('menuMaintain','2','updButton','modalArea','editWindow','button','更新');
-insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values('menuMaintain','3','addButton','modalArea','addWindow','button','新增');
+insert into web_element_info (menu,element_seq,element,area,sub_area,element_type,element_desc) values
+('maintineTable','1','dbName','inputArea','','inputDataList','数据库'),
+('maintineTable','2','libName','inputArea','','inputDataList','库名'),
+('maintineTable','3','tableName','inputArea','','inputDataList','表名'),
+('maintineTable','4','queryButton','inputArea','','button','查询'),
+('maintineTable','1','editButton','outputArea','','button','edit'),
+('maintineTable','1','delButton','modalArea','','button','删除'),
+('maintineTable','2','updButton','modalArea','','button','更新'),
+('queryTable','1','dbName','inputArea','','inputDataList','数据库'),
+('queryTable','2','libName','inputArea','','inputDataList','库名'),
+('queryTable','3','tableName','inputArea','','inputDataList','表名'),
+('queryTable','4','query','inputArea','','button','查询'),
+('queryTable','5','addRecord','inputArea','','button','新增记录'),
+('queryTable','1','editButton','outputArea','','button','edit'),
+('queryTable','1','delButton','modalArea','editWindow','button','删除'),
+('queryTable','2','updButton','modalArea','editWindow','button','更新'),
+('queryTable','3','addButton','modalArea','addWindow','button','新增'),
+('genClass','1','dbName','inputArea','','inputDataList','数据库'),
+('genClass','2','libName','inputArea','','inputDataList','库名'),
+('genClass','3','tableName','inputArea','','inputDataList','表名'),
+('genClass','99','queryButton','inputArea','','button','生成代码'),
+('getTableCreateDdl','1','dbName','inputArea','','inputDataList','数据库'),
+('getTableCreateDdl','2','libName','inputArea','','inputDataList','库名'),
+('getTableCreateDdl','3','tableName','inputArea','','inputDataList','表名'),
+('getTableCreateDdl','99','getButton','inputArea','','button','取数据表创建ddl'),
+('queryTableWithCond','1','dbName','inputArea','','inputDataList','数据库'),
+('queryTableWithCond','2','libName','inputArea','','inputDataList','库名'),
+('queryTableWithCond','3','tableName','inputArea','','inputDataList','表名'),
+('queryTableWithCond','4','showFields','inputArea','','multipleSelect','显示字段'),
+('queryTableWithCond','5','selectField','inputArea','','selectOption','筛选条件：字段名'),
+('queryTableWithCond','6','operationType','inputArea','','inputDataList','连接类型'),
+('queryTableWithCond','7','fieldValue','inputArea','','input','值'),
+('queryTableWithCond','11','editButton','outputArea','','button','edit'),
+('queryTableWithCond','21','delButton','modalArea','editWindow','button','删除'),
+('queryTableWithCond','22','updButton','modalArea','editWindow','button','更新'),
+('queryTableWithCond','23','addButton','modalArea','addWindow','button','新增'),
+('queryTableWithCond','98','addRecord','inputArea','','button','新增记录'),
+('queryTableWithCond','99','query','inputArea','','button','查询'),
+('codeLibraryQuery','1','dbName','inputArea','','inputDataList','数据库'),
+('codeLibraryQuery','2','codeNo','inputArea','','dropDown','CodeNo'),
+('codeLibraryQuery','99','queryButton','inputArea','','button','查询'),
+('querySubject','1','dbName','inputArea','','selectOption','数据库'),
+('querySubject','2','libName','inputArea','','inputDataList','库名'),
+('querySubject','3','modelId','inputArea','','selectOption','核算办法id'),
+('querySubject','4','orgId','inputArea','','selectOption','分公司'),
+('querySubject','5','owner','inputArea','','selectOption','归属'),
+('querySubject','6','channel','inputArea','','selectOption','交易渠道'),
+('querySubject','7','freeTax','inputArea','','selectOption','免税'),
+('querySubject','8','transId','inputArea','','selectOption','交易类型'),
+('querySubject','99','queryButton','inputArea','','button','查询'),
+('queryDir','1','localAddress','inputArea','','inputDataList','文件夹位置'),
+('queryDir','2','selectFileType','inputArea','','dropDown','筛选类型'),
+('queryDir','99','queryButton','inputArea','','button','查询'),
+('httpCrawler','1','httpAddress','inputArea','','input','http地址'),
+('httpCrawler','2','httpAddressSuffixBeg','inputArea','','input','http地址前缀'),
+('httpCrawler','3','httpAddressSuffixEnd','inputArea','','input','http地址后缀'),
+('httpCrawler','4','webCharset','inputArea','','dropDown','编码'),
+('httpCrawler','5','regex','inputArea','','inputDataList','正则表达式'),
+('httpCrawler','99','query','inputArea','','button','执行'),
+('gitHistoryQuery','1','dir','inputArea','','selectOption','Git仓库本地路径'),
+('gitHistoryQuery','2','ignoreMerge','inputArea','','selectOption','是否忽略Merge记录'),
+('gitHistoryQuery','3','user','inputArea','','input','用户'),
+('gitHistoryQuery','4','begTime','inputArea','','input','开始时间'),
+('gitHistoryQuery','5','endTime','inputArea','','input','结束时间'),
+('gitHistoryQuery','6','groupBy','inputArea','','selectOption','统计方式'),
+('gitHistoryQuery','99','queryButton','inputArea','','button','查询'),
+('queryHomeIp','99','queryButton','inputArea','','button','查询'),
+('prcStringUtil','1','inputStr','inputArea','','input','字符'),
+('prcStringUtil','2','addString','inputArea','','selectOption','加'),
+('prcStringUtil','3','separator','inputArea','','selectOption','分隔符'),
+('prcStringUtil','4','colNum','inputArea','','input','分成几列'),
+('prcStringUtil','99','process','inputArea','','button','处理'),
+('uploadFile','1','file','inputArea','','inputFile','选择文件'),
+('uploadFile','2','fileType','inputArea','','input','文件类型'),
+('uploadFile','99','uploadFileButton','inputArea','','button','确认上传'),
+('menuMaintain','1','function','inputArea','','inputDataList','菜单分类'),
+('menuMaintain','2','query','inputArea','','button','查询'),
+('menuMaintain','3','addRecord','inputArea','','button','新增记录'),
+('menuMaintain','4','editButton','outputArea','','button','edit'),
+('menuMaintain','1','delButton','modalArea','editWindow','button','删除'),
+('menuMaintain','2','updButton','modalArea','editWindow','button','更新'),
+('menuMaintain','3','addButton','modalArea','addWindow','button','新增');
+
+
+INSERT INTO web_event_info(menu, element, event_type, request_type, request_no, trigger_type, trigger_element, trigger_element_type, param) VALUES
+('menu', 'maintineTable', 'click', 'menuReq', 'maintineTable', NULL, NULL, NULL, ''),
+('menu', 'queryTable', 'click', 'menuReq', 'queryTable', NULL, NULL, NULL, ''),
+('menu', 'genClass', 'click', 'menuReq', 'genClass', NULL, NULL, NULL, ''),
+('menu', 'getTableCreateDdl', 'click', 'menuReq', 'getTableCreateDdl', NULL, NULL, NULL, ''),
+('menu', 'queryTableWithCond', 'click', 'menuReq', 'queryTableWithCond', NULL, NULL, NULL, ''),
+('menu', 'codeLibraryQuery', 'click', 'menuReq', 'codeLibraryQuery', NULL, NULL, NULL, ''),
+('menu', 'subjectQuery', 'click', 'menuReq', 'subjectQuery', NULL, NULL, NULL, ''),
+('menu', 'queryDir', 'click', 'menuReq', 'queryDir', NULL, NULL, NULL, ''),
+('menu', 'httpCrawler', 'click', 'menuReq', 'httpCrawler', NULL, NULL, NULL, ''),
+('menu', 'queryGit', 'click', 'menuReq', 'gitHistoryQuery', NULL, NULL, NULL, ''),
+('menu', 'queryHomeIp', 'click', 'menuReq', 'queryHomeIp', NULL, NULL, NULL, ''),
+('menu', 'prcStringUtil', 'click', 'menuReq', 'prcStringUtil', NULL, NULL, NULL, ''),
+('menu', 'uploadFile', 'click', 'menuReq', 'uploadFile', NULL, NULL, NULL, ''),
+('menu', 'menuMaintain', 'click', 'menuReq', 'menuMaintain', NULL, NULL, NULL, ''),
+('maintineTable', 'dbName', 'change', 'webDataReq', 'getLibFromDb', 'select', 'libName', 'inputDataList', NULL),
+('maintineTable', 'libName', 'change', 'webDataReq', 'getTabFromLib', 'change', 'tableName', 'inputDataList', NULL),
+('maintineTable', 'queryButton', 'click', 'buttonReq', 'queryTable', NULL, NULL, NULL, ''),
+('maintineTable', 'editButton', 'click', 'webButtonShowModal', 'editRecord', NULL, NULL, NULL, ''),
+('maintineTable', 'delButton', 'click', 'buttonReq', 'deleteRecord', NULL, NULL, NULL, ''),
+('maintineTable', 'updButton', 'click', 'buttonReq', 'updateTableField', NULL, NULL, NULL, ''),
+('queryTable', 'dbName', 'change', 'webDataReq', 'getLibFromDb', 'change', 'libName', 'inputDataList', NULL),
+('queryTable', 'libName', 'change', 'webDataReq', 'getTabFromLib', 'change', 'tableName', 'inputDataList', NULL),
+('queryTable', 'query', 'click', 'buttonReq', 'queryTableRecords', NULL, NULL, NULL, '{"withPage":true}'),
+('queryTable', 'addRecord', 'click', 'buttonReq', 'addNewRecord', NULL, NULL, NULL, ''),
+('queryTable', 'editButton', 'click', 'webButtonShowModal', 'editRecord', NULL, NULL, NULL, ''),
+('queryTable', 'delButton', 'click', 'buttonReq', 'deleteRecord', NULL, NULL, NULL, ''),
+('queryTable', 'updButton', 'click', 'buttonReq', 'updateRecord', NULL, NULL, NULL, ''),
+('queryTable', 'addButton', 'click', 'buttonReq', 'addRecord', NULL, NULL, NULL, ''),
+('genClass', 'dbName', 'change', 'webDataReq', 'getLibFromDb', 'change', 'libName', 'inputDataList', NULL),
+('genClass', 'libName', 'change', 'webDataReq', 'getTabFromLib', 'change', 'tableName', 'inputDataList', NULL),
+('genClass', 'queryButton', 'click', 'buttonReq', 'genClass', NULL, NULL, NULL, ''),
+('getTableCreateDdl', 'dbName', 'change', 'webDataReq', 'getLibFromDb', 'change', 'libName', 'inputDataList', NULL),
+('getTableCreateDdl', 'libName', 'change', 'webDataReq', 'getTabFromLib', 'change', 'tableName', 'inputDataList', NULL),
+('getTableCreateDdl', 'getButton', 'click', 'buttonReq', 'getTableCreateDdl', NULL, NULL, NULL, ''),
+('queryTableWithCond', 'dbName', 'change', 'webDataReq', 'getLibFromDb', 'change', 'libName', 'inputDataList', NULL),
+('queryTableWithCond', 'libName', 'change', 'webDataReq', 'getTabFromLib', 'change', 'tableName', 'inputDataList', NULL),
+('queryTableWithCond', 'tableName', 'change', 'webDataReq', 'getFieldFromTab', 'select', 'tableName', 'selectOption', NULL),
+('queryTableWithCond', 'editButton', 'click', 'webButtonShowModal', 'editRecord', NULL, NULL, NULL, ''),
+('queryTableWithCond', 'delButton', 'click', 'buttonReq', 'deleteRecord', NULL, NULL, NULL, ''),
+('queryTableWithCond', 'updButton', 'click', 'buttonReq', 'updateRecord', NULL, NULL, NULL, ''),
+('queryTableWithCond', 'addButton', 'click', 'buttonReq', 'addRecord', NULL, NULL, NULL, ''),
+('queryTableWithCond', 'addRecord', 'click', 'buttonReq', 'addNewRecord', NULL, NULL, NULL, ''),
+('queryTableWithCond', 'query', 'click', 'buttonReq', 'queryTableWithCond', NULL, NULL, NULL, '{"withPage":true}'),
+('codeLibraryQuery', 'dbName', 'change', 'webDataReq', 'getLibFromDb', 'change', 'libName', 'inputDataList', NULL),
+('codeLibraryQuery', 'queryButton', 'click', 'buttonReq', 'queryCodeLibrary', NULL, NULL, NULL, ''),
+('querySubject', 'dbName', 'change', 'webDataReq', 'getLibFromDb', 'change', 'libName', 'inputDataList', NULL),
+('querySubject', 'libName', 'change', 'webDataReq', 'getDataWithSelectDb', 'change', 'channel', 'selectOption', '{"sql":"select item_no value,item_name name from code_library where code_no=''TransChannel'' and record_ind=''A''"}'),
+('querySubject', 'modelId', 'change', 'webDataReq', 'getDataWithSelectDb', 'change', 'transId', 'selectOption', '{"sql":"select te.trans_id value,cl.item_name name from trans_entry te,code_library cl where te.trans_id=cl.item_no and cl.code_no=''TransId''","sqlParam":{"te.model_id":"#modelId"},"sqlOrder":"order by te.trans_id","sqlGroup":"group by te.trans_id,cl.item_name","specialValue":{"all":"所有"}}'),
+('querySubject', 'queryButton', 'click', 'buttonReq', 'querySubject', NULL, NULL, NULL, ''),
+('queryDir', 'queryButton', 'click', 'buttonReq', 'displayDir', NULL, NULL, NULL, ''),
+('httpCrawler', 'query', 'click', 'buttonReq', 'readHtml', NULL, NULL, NULL, ''),
+('gitHistoryQuery', 'queryButton', 'click', 'buttonReq', 'queryGitHistory', NULL, NULL, NULL, ''),
+('queryHomeIp', 'queryButton', 'click', 'buttonReq', 'queryHomeIp', NULL, NULL, NULL, ''),
+('prcStringUtil', 'process', 'click', 'buttonReq', 'prcStringUtil', NULL, NULL, NULL, ''),
+('uploadFile', 'uploadFileButton', 'click', 'fileReq', 'uploadFile', NULL, NULL, NULL, ''),
+('menuMaintain', 'query', 'click', 'buttonReq', 'queryWebElement', NULL, NULL, NULL, '{"withPage":true}'),
+('menuMaintain', 'addRecord', 'click', 'buttonReq', 'addNewRecord', NULL, NULL, NULL, '{"tableName":"web_element"}'),
+('menuMaintain', 'editButton', 'click', 'webButtonShowModal', 'editRecord', NULL, NULL, NULL, '{"tableName":"web_element"}'),
+('menuMaintain', 'delButton', 'click', 'buttonReq', 'deleteRecord', NULL, NULL, NULL, '{"tableName":"web_element"}'),
+('menuMaintain', 'updButton', 'click', 'buttonReq', 'updateRecord', NULL, NULL, NULL, '{"tableName":"web_element"}'),
+('menuMaintain', 'addButton', 'click', 'buttonReq', 'addRecord', NULL, NULL, NULL, '{"tableName":"web_element"}');
 
 
 
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('maintineTable','','click','menuReq','maintineTable','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryTable','','click','menuReq','queryTable','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('genClass','','click','menuReq','genClass','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('getTableCreateDdl','','click','menuReq','getTableCreateDdl','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryTableWithCond','','click','menuReq','queryTableWithCond','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('codeLibraryQuery','','click','menuReq','codeLibraryQuery','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('subjectQuery','','click','menuReq','subjectQuery','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryDir','','click','menuReq','queryDir','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('httpCrawler','','click','menuReq','httpCrawler','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryGit','','click','menuReq','gitHistoryQuery','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryHomeIp','','click','menuReq','queryHomeIp','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('prcStringUtil','','click','menuReq','prcStringUtil','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('uploadFile','','click','menuReq','uploadFile','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('menuMaintain','','click','menuReq','menuMaintain','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('maintineTable','dbName','change','webDataReq','getLibFromDb','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('maintineTable','libName','change','webDataReq','getTabFromLib','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('maintineTable','queryButton','click','buttonReq','queryTable','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('maintineTable','editButton','click','webButtonShowModal','editRecord','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('maintineTable','delButton','click','buttonReq','deleteRecord','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('maintineTable','updButton','click','buttonReq','updateTableField','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryTable','dbName','change','webDataReq','getLibFromDb','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryTable','libName','change','webDataReq','getTabFromLib','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryTable','query','click','buttonReq','queryTableRecords','{"withPage":true}');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryTable','addRecord','click','buttonReq','addNewRecord','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryTable','editButton','click','webButtonShowModal','editRecord','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryTable','delButton','click','buttonReq','deleteRecord','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryTable','updButton','click','buttonReq','updateRecord','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryTable','addButton','click','buttonReq','addRecord','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('genClass','dbName','change','webDataReq','getLibFromDb','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('genClass','libName','change','webDataReq','getTabFromLib','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('genClass','queryButton','click','buttonReq','genClass','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('getTableCreateDdl','dbName','change','webDataReq','getLibFromDb','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('getTableCreateDdl','libName','change','webDataReq','getTabFromLib','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('getTableCreateDdl','getButton','click','buttonReq','getTableCreateDdl','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryTableWithCond','dbName','change','webDataReq','getLibFromDb','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryTableWithCond','libName','change','webDataReq','getTabFromLib','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryTableWithCond','tableName','change','webDataReq','getFieldFromTab','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryTableWithCond','editButton','click','webButtonShowModal','editRecord','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryTableWithCond','delButton','click','buttonReq','deleteRecord','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryTableWithCond','updButton','click','buttonReq','updateRecord','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryTableWithCond','addButton','click','buttonReq','addRecord','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryTableWithCond','addRecord','click','buttonReq','addNewRecord','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryTableWithCond','query','click','buttonReq','queryTableWithCond','{"withPage":true}');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('codeLibraryQuery','dbName','change','webDataReq','getLibFromDb','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('codeLibraryQuery','queryButton','click','buttonReq','queryCodeLibrary','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('querySubject','dbName','change','webDataReq','getLibFromDb','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('querySubject','libName','change','webDataReq','getDataWithSelectDb','{"sql":"select model_id value,name from acct_model_organization where record_ind=''A''"}');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('querySubject','modelId','change','webDataReq','getDataWithSelectDb','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('querySubject','queryButton','click','buttonReq','querySubject','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryDir','queryButton','click','buttonReq','displayDir','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('httpCrawler','query','click','buttonReq','readHtml','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('gitHistoryQuery','queryButton','click','buttonReq','queryGitHistory','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('queryHomeIp','queryButton','click','buttonReq','queryHomeIp','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('prcStringUtil','process','click','buttonReq','prcStringUtil','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('uploadFile','uploadFileButton','click','fileReq','uploadFile','');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('menuMaintain','query','click','buttonReq','queryWebElement','{"withPage":true}');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('menuMaintain','addRecord','click','buttonReq','addNewRecord','{"tableName":"web_element"}');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('menuMaintain','editButton','click','webButtonShowModal','editRecord','{"tableName":"web_element"}');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('menuMaintain','delButton','click','buttonReq','deleteRecord','{"tableName":"web_element"}');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('menuMaintain','updButton','click','buttonReq','updateRecord','{"tableName":"web_element"}');
-insert into web_event_info (menu,element,event_type,request_type,request_no,param) values('menuMaintain','addButton','click','buttonReq','addRecord','{"tableName":"web_element"}');
 
-insert into web_trigger_info (source_menu,source_element,trigger_element,trigger_type,trigger_element_type,param) values('maintineTable','dbName','libName','select','inputDataList','');
-insert into web_trigger_info (source_menu,source_element,trigger_element,trigger_type,trigger_element_type,param) values('maintineTable','libName','tableName','select','inputDataList','');
-insert into web_trigger_info (source_menu,source_element,trigger_element,trigger_type,trigger_element_type,param) values('queryTable','dbName','libName','select','inputDataList','');
-insert into web_trigger_info (source_menu,source_element,trigger_element,trigger_type,trigger_element_type,param) values('queryTable','libName','tableName','select','inputDataList','');
-insert into web_trigger_info (source_menu,source_element,trigger_element,trigger_type,trigger_element_type,param) values('genClass','dbName','libName','select','inputDataList','');
-insert into web_trigger_info (source_menu,source_element,trigger_element,trigger_type,trigger_element_type,param) values('genClass','libName','tableName','select','inputDataList','');
-insert into web_trigger_info (source_menu,source_element,trigger_element,trigger_type,trigger_element_type,param) values('getTableCreateDdl','dbName','libName','select','inputDataList','');
-insert into web_trigger_info (source_menu,source_element,trigger_element,trigger_type,trigger_element_type,param) values('getTableCreateDdl','libName','tableName','select','inputDataList','');
-insert into web_trigger_info (source_menu,source_element,trigger_element,trigger_type,trigger_element_type,param) values('queryTableWithCond','dbName','libName','select','inputDataList','');
-insert into web_trigger_info (source_menu,source_element,trigger_element,trigger_type,trigger_element_type,param) values('queryTableWithCond','libName','tableName','select','inputDataList','');
-insert into web_trigger_info (source_menu,source_element,trigger_element,trigger_type,trigger_element_type,param) values('queryTableWithCond','tableName','selectField','select','selectOption','');
-insert into web_trigger_info (source_menu,source_element,trigger_element,trigger_type,trigger_element_type,param) values('codeLibraryQuery','dbName','libName','select','inputDataList','');
-insert into web_trigger_info (source_menu,source_element,trigger_element,trigger_type,trigger_element_type,param) values('querySubject','dbName','libName','select','inputDataList','');
-insert into web_trigger_info (source_menu,source_element,trigger_element,trigger_type,trigger_element_type,param) values('querySubject','libName','modelId','select','selectOption','{"sql":"select model_id value,name from acct_model_organization where record_ind=''A''"}');
-insert into web_trigger_info (source_menu,source_element,trigger_element,trigger_type,trigger_element_type,param) values('querySubject','libName','orgId','select','selectOption','{"sql":"select item_no value,item_name name from code_library where code_no=''BranchName'' and record_ind=''A''"}');
-insert into web_trigger_info (source_menu,source_element,trigger_element,trigger_type,trigger_element_type,param) values('querySubject','libName','owner','select','selectOption','{"sql":"select item_no value,item_name name from code_library where code_no=''AccountOwner'' and record_ind=''A''"}');
-insert into web_trigger_info (source_menu,source_element,trigger_element,trigger_type,trigger_element_type,param) values('querySubject','libName','channel','select','selectOption','{"sql":"select item_no value,item_name name from code_library where code_no=''TransChannel'' and record_ind=''A''"}');
-insert into web_trigger_info (source_menu,source_element,trigger_element,trigger_type,trigger_element_type,param) values('querySubject','modelId','transId','select','selectOption','{"sql":"select te.trans_id value,cl.item_name name from trans_entry te,code_library cl where te.trans_id=cl.item_no and cl.code_no=''TransId''","sqlParam":{"te.model_id":"#modelId"},"sqlOrder":"order by te.trans_id","sqlGroup":"group by te.trans_id,cl.item_name","specialValue":{"all":"所有"}}');
+update web_event_info set trigger_element='libName',trigger_type='select',trigger_element_type='inputDataList',param=null WHERE menu='maintineTable' AND element='dbName' AND event_type='change';
+update web_event_info set trigger_element='tableName',trigger_type='change',trigger_element_type='inputDataList',param=null WHERE menu='maintineTable' AND element='libName' AND event_type='change';
+update web_event_info set trigger_element='libName',trigger_type='change',trigger_element_type='inputDataList',param=null WHERE menu='queryTable' AND element='dbName' AND event_type='change';
+update web_event_info set trigger_element='tableName',trigger_type='change',trigger_element_type='inputDataList',param=null WHERE menu='queryTable' AND element='libName' AND event_type='change';
+update web_event_info set trigger_element='libName',trigger_type='change',trigger_element_type='inputDataList',param=null WHERE menu='genClass' AND element='dbName' AND event_type='change';
+update web_event_info set trigger_element='tableName',trigger_type='change',trigger_element_type='inputDataList',param=null WHERE menu='genClass' AND element='libName' AND event_type='change';
+update web_event_info set trigger_element='libName',trigger_type='change',trigger_element_type='inputDataList',param=null WHERE menu='getTableCreateDdl' AND element='dbName' AND event_type='change';
+update web_event_info set trigger_element='tableName',trigger_type='change',trigger_element_type='inputDataList',param=null WHERE menu='getTableCreateDdl' AND element='libName' AND event_type='change';
+update web_event_info set trigger_element='libName',trigger_type='change',trigger_element_type='inputDataList',param=null WHERE menu='queryTableWithCond' AND element='dbName' AND event_type='change';
+update web_event_info set trigger_element='tableName',trigger_type='change',trigger_element_type='inputDataList',param=null WHERE menu='queryTableWithCond' AND element='libName' AND event_type='change';
+update web_event_info set trigger_element='tableName',trigger_type='select',trigger_element_type='selectOption',param=null WHERE menu='queryTableWithCond' AND element='tableName' AND event_type='change';
+update web_event_info set trigger_element='libName',trigger_type='change',trigger_element_type='inputDataList',param=null WHERE menu='codeLibraryQuery' AND element='dbName' AND event_type='change';
+update web_event_info set trigger_element='libName',trigger_type='change',trigger_element_type='inputDataList',param=null WHERE menu='querySubject' AND element='dbName' AND event_type='change';
+update web_event_info set trigger_element='modelId',trigger_type='change',trigger_element_type='selectOption',param='{"sql":"select model_id value,name from acct_model_organization where record_ind=''A''"}' WHERE menu='querySubject' AND element='libName' AND event_type='change';
+update web_event_info set trigger_element='orgId',trigger_type='change',trigger_element_type='selectOption',param='{"sql":"select item_no value,item_name name from code_library where code_no=''BranchName'' and record_ind=''A''"}' WHERE menu='querySubject' AND element='libName' AND event_type='change';
+update web_event_info set trigger_element='owner',trigger_type='change',trigger_element_type='selectOption',param='{"sql":"select item_no value,item_name name from code_library where code_no=''AccountOwner'' and record_ind=''A''"}' WHERE menu='querySubject' AND element='libName' AND event_type='change';
+update web_event_info set trigger_element='channel',trigger_type='change',trigger_element_type='selectOption',param='{"sql":"select item_no value,item_name name from code_library where code_no=''TransChannel'' and record_ind=''A''"}' WHERE menu='querySubject' AND element='libName' AND event_type='change';
+update web_event_info set trigger_element='transId',trigger_type='change',trigger_element_type='selectOption',param='{"sql":"select te.trans_id value,cl.item_name name from trans_entry te,code_library cl where te.trans_id=cl.item_no and cl.code_no=''TransId''","sqlParam":{"te.model_id":"#modelId"},"sqlOrder":"order by te.trans_id","sqlGroup":"group by te.trans_id,cl.item_name","specialValue":{"all":"所有"}}' WHERE menu='querySubject' AND element='modelId' AND event_type='change';

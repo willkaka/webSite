@@ -201,18 +201,35 @@ CREATE TABLE IF NOT EXISTS web_event_info (
   event_type varchar(32),
   request_type varchar(32),
   request_no varchar(32),
-  param varchar(500) );
-CREATE INDEX wev_ind_01 on web_event_info (menu,element);
-
--- 触发
--- source_menu	source_element	trigger_element	trigger_type	trigger_element_type    param
-DROP TABLE IF EXISTS web_trigger_info;
-CREATE TABLE IF NOT EXISTS web_trigger_info (
-  web_trigger_info_id integer primary key,
-  source_menu varchar(32) NOT NULL,
-  source_element varchar(32),
   trigger_type varchar(32),
   trigger_element varchar(32),
   trigger_element_type varchar(32),
   param varchar(500) );
-CREATE INDEX wti_ind_01 on web_trigger_info (source_menu,source_element);
+CREATE INDEX wev_ind_01 on web_event_info (menu,element);
+
+
+
+-- 数据字典
+DROP TABLE IF EXISTS sys_code_library;
+CREATE TABLE IF NOT EXISTS sys_code_library (
+  sys_code_library_id integer primary key,
+  code_no varchar(100) NOT NULL,
+  sub_code varchar(100),
+  item_no varchar(500),
+  item_name varchar(500),
+  item_desc varchar(500));
+CREATE INDEX scl_ind_01 on sys_code_library (code_no,sub_code);
+
+-- 系统参数
+DROP TABLE IF EXISTS sys_param;
+CREATE TABLE IF NOT EXISTS sys_param (
+  sys_param_id integer primary key,
+  param_level1 varchar(100) NOT NULL,
+  param_level2 varchar(500),
+  param_level3 varchar(500),
+  param_name varchar(500),
+  param_value1 varchar(500),
+  param_value2 varchar(500),
+  param_value3 varchar(500),
+  param_desc varchar(500));
+CREATE INDEX sp_ind_01 on sys_param (param_level1,param_level2,param_level3);

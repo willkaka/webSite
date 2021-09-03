@@ -248,7 +248,14 @@ function setEventListener(element,eventInfoList){
     if(eventInfoList != null && eventInfoList.length > 0 ){
         for (let i=0;i<eventInfoList.length;i++){
             let eventInfo = eventInfoList[i];
-            element.addEventListener(eventInfo.event,setEventPrcMethod.bind(this,eventInfo,eventInfo.recordMap),false);
+            let triggerInfoList = eventInfo.triggerInfoList;
+            if( triggerInfoList != null){
+                for (let j=0;i<triggerInfoList.length;j++){
+                    element.addEventListener(eventInfo.event,setEventPrcMethod.bind(this,eventInfo,eventInfo.recordMap),false);
+                }
+            }else{
+                element.addEventListener(eventInfo.event,setEventPrcMethod.bind(this,eventInfo,eventInfo.recordMap),false);
+            }
         }
     }
 }
@@ -327,32 +334,6 @@ function setEventPrcMethod(eventInfo,recordMap) {
 }
 
 
-/**
- * 发送json报文到后台
- * @param requestUrl
- * @param requestParam
- * @param sucfn
- */
-function sendFileByAjax(requestUrl,formData,sucFun) {
-    $.ajax({
-        type: "post",
-        url: requestUrl,
-        data: formData,//ReqJsonDto
-        processData: false,  // 不处理数据
-        contentType: false,  // 不设置内容类型
-        success:function (ReturnDto) {
-            if (ReturnDto.rtnCode === '0000') {
-//                alert(ReturnDto.rtnMsg);
-                sucFun(ReturnDto);
-            } else {
-                alert("请求成功，但后台处理失败!\n返 回 码:"+ReturnDto.rtnCode + "\n失败信息:" + ReturnDto.rtnMsg);
-            }
-        },
-        error:function (ReturnDto) {
-            alert("请求失败，返回信息："+ReturnDto);
-        }
-    });
-}
 
 function putChangeValue(param,eventInfo){
     let inputValueMap = param["inputValue"];
@@ -420,6 +401,32 @@ function sendJsonByAjax(requestUrl,requestParam,sucFun) {
         url: requestUrl,
         data: requestParam,//ReqJsonDto
         contentType:"application/json;charset=utf-8",
+        success:function (ReturnDto) {
+            if (ReturnDto.rtnCode === '0000') {
+                sucFun(ReturnDto);
+            } else {
+                alert("请求成功，但后台处理失败!\n返 回 码:"+ReturnDto.rtnCode + "\n失败信息:" + ReturnDto.rtnMsg);
+            }
+        },
+        error:function (ReturnDto) {
+            alert("请求失败，返回信息："+ReturnDto);
+        }
+    });
+}
+
+/**
+ * 发送json报文到后台
+ * @param requestUrl
+ * @param requestParam
+ * @param sucfn
+ */
+function sendFileByAjax(requestUrl,formData,sucFun) {
+    $.ajax({
+        type: "post",
+        url: requestUrl,
+        data: formData,//ReqJsonDto
+        processData: false,  // 不处理数据
+        contentType: false,  // 不设置内容类型
         success:function (ReturnDto) {
             if (ReturnDto.rtnCode === '0000') {
                 sucFun(ReturnDto);
