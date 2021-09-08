@@ -1,6 +1,11 @@
 package com.hyw.webSite.funbean.RequestFunImpl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hyw.webSite.constant.WebConstant;
 import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.exception.BizException;
@@ -9,6 +14,7 @@ import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.utils.FileUtil;
 import com.hyw.webSite.utils.excel.ExcelTemplateUtil;
 import com.hyw.webSite.web.dto.RequestDto;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -17,8 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -63,11 +71,50 @@ public class UploadFile extends RequestFunUnit<String, UploadFile.QryVariable> {
             if("SPD_Claim".equalsIgnoreCase(variable.getFileType())){
                 outString.append(spdClaimSql(excelTemplateUtil.getExcelRecords("SPD_Claim",file)));
             }
+            if("yapi2postman".equalsIgnoreCase(variable.getFileType())){
+                outString.append(yapi2Postman(file));
+            }
         }
 
         return outString.toString();
     }
 
+    private String yapi2Postman(File file){
+        JSONObject postmanJSONObject = new JSONObject();
+        StringBuilder stringBuffer = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+            String lineString;
+            while((lineString = br.readLine()) != null){
+//                stringBuffer.append(lineString.replaceAll("\t",""));
+                stringBuffer.append(lineString);
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        String jsonString = "{" + stringBuffer.toString() + "}";
+        String jsonString = stringBuffer.toString();
+        JSONObject jsonObject = JSONObject.parseObject(jsonString);
+        JSONArray list = (JSONArray) jsonObject.get("list");
+        for(Object key:list){
+            YapiInfo yapiInfo = new YapiInfo();
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                yapiInfo = objectMapper.readValue(key.toString(), YapiInfo.class);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return "";
+    }
+
+
+    /**
+     * 浦发理赔更新逾期天数sql生成。
+     * @param jsonObjectList
+     * @return
+     */
     private String spdClaimSql(List<JSONObject> jsonObjectList){
         StringBuilder rtnStr = new StringBuilder();
         StringBuilder loanNoStr = new StringBuilder();
@@ -159,4 +206,89 @@ public class UploadFile extends RequestFunUnit<String, UploadFile.QryVariable> {
         private List<MultipartFile> fileList;
         private String fileType;
     }
+}
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+class YapiInfo{
+    private int index;
+    private String name;
+    private String desc;
+    private List<YapiInfoSub> list;
+}
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+class YapiInfoSub{
+    private int index;
+    private String path;
+    private String method;
+    private String title;
+//    @JSONField(name = "req_body_other")
+    @JsonProperty(value = "req_body_other")
+    private String reqBodyOther;
+}
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+class PostManInfo{
+    @JsonProperty(value = "info")
+    private PostManInfoDir postManInfoDir;
+    @JsonProperty(value = "item")
+    private List<PostManInfoItem> postManInfoItems;
+
+
+}
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+class PostManInfoDir{
+    @JsonProperty(value = "_postman_id")
+    private String postmanId;
+    private String name;
+    private String schema;
+}
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+class PostManInfoItem{
+    private String name;
+    private PostManInfoItemRequest request;
+    private List<String> response = new ArrayList<>();
+}
+
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+class PostManInfoItemRequest{
+    private String method;
+    @JsonProperty(value = "header")
+    private List<PostManInfoItemRequestHeader> headers;
+    private PostManInfoItemRequestUrl url;
+    private PostManInfoItemRequestBody body;
+}
+
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+class PostManInfoItemRequestHeader{
+    private String key;
+    private String name;
+    private String value;
+    private String type;
+}
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+class PostManInfoItemRequestUrl{
+    private String raw;
+    private List<String> host;
+    private List<String> path;
+}
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+class PostManInfoItemRequestBody{
+    private String mode;
+    private String raw;
 }
