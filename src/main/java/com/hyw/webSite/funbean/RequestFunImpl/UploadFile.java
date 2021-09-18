@@ -1,8 +1,8 @@
 package com.hyw.webSite.funbean.RequestFunImpl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -97,6 +96,7 @@ public class UploadFile extends RequestFunUnit<String, UploadFile.QryVariable> {
         String jsonString = stringBuffer.toString();
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
         JSONArray list = (JSONArray) jsonObject.get("list");
+        List<YapiInfo> yapiInfoList = new ArrayList<>();
         for(Object key:list){
             YapiInfo yapiInfo = new YapiInfo();
             ObjectMapper objectMapper = new ObjectMapper();
@@ -105,8 +105,9 @@ public class UploadFile extends RequestFunUnit<String, UploadFile.QryVariable> {
             }catch (Exception e){
                 e.printStackTrace();
             }
+            yapiInfoList.add(yapiInfo);
         }
-        return "";
+        return JSON.toJSONString(yapiInfoList);
     }
 
 

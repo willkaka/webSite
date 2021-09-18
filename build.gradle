@@ -82,6 +82,10 @@ dependencies {
 	compile 'org.apache.poi:poi:3.15'
 	compile 'org.apache.poi:poi-ooxml:3.15'
 	compile 'xerces:xercesImpl:2.11.0'
+
+	// Java解析
+	implementation group: 'com.github.javaparser', name: 'javaparser-core', version: '3.23.0'
+
 }
 
 test {

@@ -20,12 +20,65 @@ import sun.misc.BASE64Encoder;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Slf4j
 public class FileUtil {
+
+    /**
+     * 获取目录下的所有文件
+     * @param file 文件夹
+     * @return List<String> 文件路径清单
+     */
+    public static List<String> getFilePathList(File file) {
+        List<String> filePathList = new ArrayList<>();
+
+        if (file.isFile()) {
+            filePathList.add(file.getPath());
+            return filePathList;
+        }
+
+        if (file.isDirectory()){
+            File[] fileList = file.listFiles();
+            if(fileList != null) {
+                for (File subFile : fileList) {
+                    filePathList.addAll(getFilePathList(subFile));
+                }
+            }
+        }
+        return filePathList;
+    }
+
+    /**
+     * 获取目录下的所有文件
+     * @param file 文件夹
+     * @return List<String> 文件路径清单
+     */
+    public static List<String> getFilePathListWithType(File file,String type) {
+        List<String> filePathList = new ArrayList<>();
+
+        if (file.isFile()) {
+            String filePath = file.getPath();
+            if(filePath.endsWith(type)) {
+                filePathList.add(file.getPath());
+            }
+            return filePathList;
+        }
+
+        if (file.isDirectory()){
+            File[] fileList = file.listFiles();
+            if(fileList != null) {
+                for (File subFile : fileList) {
+                    filePathList.addAll(getFilePathList(subFile));
+                }
+            }
+        }
+        return filePathList;
+    }
 
     /**
      * 获取类型
