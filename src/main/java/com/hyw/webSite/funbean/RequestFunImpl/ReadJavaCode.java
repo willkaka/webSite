@@ -3,12 +3,17 @@ package com.hyw.webSite.funbean.RequestFunImpl;
 import com.alibaba.fastjson.JSON;
 import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.exception.BizException;
+import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.utils.FileUtil;
 import com.hyw.webSite.utils.excel.ExcelTemplateUtil;
 import com.hyw.webSite.utils.javaParse.*;
+import com.hyw.webSite.utils.javaParse.dto.JavaClassFieldInfo;
+import com.hyw.webSite.utils.javaParse.dto.JavaClassInfo;
+import com.hyw.webSite.utils.javaParse.dto.JavaClassMethodInfo;
+import com.hyw.webSite.utils.javaParse.dto.JavaClassMethodParamInfo;
 import com.hyw.webSite.web.dto.RequestDto;
 import lombok.Data;
 import lombok.Getter;
@@ -40,9 +45,7 @@ public class ReadJavaCode extends RequestFunUnit<String, ReadJavaCode.QryVariabl
     @Override
     public void checkVariable(QryVariable variable){
         //输入检查
-        if(Objects.isNull(variable.getRootPath())){
-            throw new BizException("导入文件不允许为空值!");
-        }
+        IfThrow.trueThenThrowMsg(Objects.isNull(variable.getRootPath()),"导入文件不允许为空值!");
     }
 
     /**
@@ -58,9 +61,9 @@ public class ReadJavaCode extends RequestFunUnit<String, ReadJavaCode.QryVariabl
         List<InterfaceInfo> interfaceInfoList = new ArrayList<>();
         File file = new File(rootPath);
         List<String> filePathList = FileUtil.getFilePathListWithType(file,"java");
-        Map<String,JavaClassInfo> javaClassInfoMap = new HashMap<>();
+        Map<String, JavaClassInfo> javaClassInfoMap = new HashMap<>();
         for(String javaFilePath:filePathList){
-            JavaClassInfo javaClassInfo = JavaUtil.getJavaClassInfo(javaFilePath);
+            JavaClassInfo javaClassInfo = JavaUtil.getJavaClassInfo(javaFilePath,null,null);
             String classPath = (javaClassInfo.getPackageStr()+"."+javaClassInfo.getName());
             javaClassInfoMap.put(classPath,javaClassInfo);
             if(javaClassInfo.getAnnotationList().contains("@Controller") ||
@@ -92,7 +95,7 @@ public class ReadJavaCode extends RequestFunUnit<String, ReadJavaCode.QryVariabl
                     interfaceInfo.setReqPath(path);
 
                     List<JavaClassFieldInfo> fields = new ArrayList<>();
-                    for(JavaClassMethodParamInfo argDef:javaClassMethodInfo.getParamList()){
+                    for(JavaClassMethodParamInfo argDef:javaClassMethodInfo.getInputParamList()){
                         JavaClassFieldInfo interfaceField = new JavaClassFieldInfo();
                         interfaceField.setArgString(null);
 

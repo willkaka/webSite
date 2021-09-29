@@ -3,6 +3,7 @@ package com.hyw.webSite.funbean.RequestFunImpl;
 import com.hyw.webSite.constant.WebConstant;
 import com.hyw.webSite.dto.GitCommitInfoDto;
 import com.hyw.webSite.exception.BizException;
+import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.model.FieldAttr;
@@ -33,15 +34,12 @@ public class QueryGitHistory extends RequestFunUnit<List<Map<String, FieldAttr>>
     @Override
     public void checkVariable(QueryGitHistory.QueryVariable variable){
         //输入检查
-        if(StringUtil.isBlank(variable.getDir())){
-            throw new BizException("git路径不允许为空值!");
-        }
-        if(StringUtil.isBlank(variable.getBegTime())){
-            throw new BizException("筛选时间不允许为空值!");
-        }
-        if(StringUtil.isBlank(variable.getEndTime())){
-            throw new BizException("筛选时间不允许为空值!");
-        }
+        IfThrow.trueThenThrowMsg(StringUtil.isBlank(variable.getDir()),"git路径不允许为空值!");
+
+        IfThrow.trueThenThrowMsg(StringUtil.isBlank(variable.getBegTime()),"筛选时间不允许为空值!");
+
+        IfThrow.trueThenThrowMsg(StringUtil.isBlank(variable.getEndTime()),"筛选时间不允许为空值!");
+
     }
 
     /**

@@ -3,6 +3,7 @@ package com.hyw.webSite.funbean.RequestFunImpl;
 import com.hyw.webSite.constant.WebConstant;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
+import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.dbservice.NQueryWrapper;
 import com.hyw.webSite.dbservice.DataService;
@@ -33,15 +34,12 @@ public class GetTableCreateDdl extends RequestFunUnit<String, GetTableCreateDdl.
     @Override
     public void checkVariable(GetTableCreateDdl.QueryVariable variable){
         //输入检查
-        if(StringUtil.isBlank(variable.getDbName())){
-            throw new BizException("DB不允许为空值!");
-        }
-        if(StringUtil.isBlank(variable.getLibName())){
-            throw new BizException("数据库,不允许为空值!");
-        }
-        if(StringUtil.isBlank(variable.getTableName())){
-            throw new BizException("表名,不允许为空值!");
-        }
+        IfThrow.trueThenThrowMsg(StringUtil.isBlank(variable.getDbName()),"DB不允许为空值!");
+
+        IfThrow.trueThenThrowMsg(StringUtil.isBlank(variable.getLibName()),"数据库,不允许为空值!");
+
+        IfThrow.trueThenThrowMsg(StringUtil.isBlank(variable.getTableName()),"表名,不允许为空值!");
+
     }
 
     /**

@@ -2,6 +2,7 @@ package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
+import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.RequestFun;
 import com.hyw.webSite.dbservice.NQueryWrapper;
 import com.hyw.webSite.dbservice.DataService;
@@ -29,17 +30,11 @@ public class UpdateTableField implements RequestFun {
 
         Map<String,String> inputValue = (Map<String,String>) requestDto.getReqParm().get("inputValue");
         String dbName = (String) inputValue.get("dbName");
-        if(StringUtil.isBlank(dbName)){
-            throw new BizException("数据库,不允许为空值!");
-        }
+        IfThrow.trueThenThrowMsg(StringUtil.isBlank(dbName),"数据库,不允许为空值!");
         String libName = (String) inputValue.get("libName");
-        if(StringUtil.isBlank(libName)){
-            throw new BizException("库名,不允许为空值!");
-        }
+        IfThrow.trueThenThrowMsg(StringUtil.isBlank(libName),"库名,不允许为空值!");
         String tableName = (String) inputValue.get("tableName");
-        if(StringUtil.isBlank(tableName)){
-            throw new BizException("表名,不允许为空值!");
-        }
+        IfThrow.trueThenThrowMsg(StringUtil.isBlank(tableName),"表名,不允许为空值!");
 
 //        ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(dbName);
         ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()

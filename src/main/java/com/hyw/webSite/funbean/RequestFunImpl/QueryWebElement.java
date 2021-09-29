@@ -6,6 +6,7 @@ import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.dbservice.NQueryWrapper;
 import com.hyw.webSite.dbservice.dto.TableFieldInfo;
 import com.hyw.webSite.exception.BizException;
+import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.model.FieldAttr;
@@ -35,9 +36,7 @@ public class QueryWebElement extends RequestFunUnit<List<Map<String,FieldAttr>>,
     @Override
     public void checkVariable(QueryVariable variable){
         //输入检查
-        if(StringUtil.isBlank(variable.getFunction())){
-            throw new BizException("function不允许为空值!");
-        }
+        IfThrow.trueThenThrowMsg(StringUtil.isBlank(variable.getFunction()),"function不允许为空值!");
     }
 
     /**

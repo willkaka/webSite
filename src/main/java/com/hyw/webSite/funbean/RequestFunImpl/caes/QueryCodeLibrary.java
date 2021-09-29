@@ -2,6 +2,7 @@ package com.hyw.webSite.funbean.RequestFunImpl.caes;
 
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
+import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.RequestFun;
 import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.dbservice.NQueryWrapper;
@@ -34,9 +35,8 @@ public class QueryCodeLibrary implements RequestFun {
         Map<String,String> inputValue = (Map<String,String>) requestDto.getReqParm().get("inputValue");
         String dbName = (String) inputValue.get("dbName");
         String codeNo = (String) inputValue.get("codeNo");
-        if(StringUtil.isBlank(dbName)){
-            throw new BizException("DB不允许为空值!");
-        }
+        IfThrow.trueThenThrowMsg(StringUtil.isBlank(dbName),"DB不允许为空值!");
+
         String libName = "caes";
 
 //        ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(dbName);

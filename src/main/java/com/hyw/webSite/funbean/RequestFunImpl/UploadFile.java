@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hyw.webSite.constant.WebConstant;
 import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.exception.BizException;
+import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.utils.FileUtil;
@@ -46,9 +47,8 @@ public class UploadFile extends RequestFunUnit<String, UploadFile.QryVariable> {
     @Override
     public void checkVariable(UploadFile.QryVariable variable){
         //输入检查
-        if(Objects.isNull(variable.getFileList())){
-            throw new BizException("导入文件不允许为空值!");
-        }
+        IfThrow.trueThenThrowMsg(Objects.isNull(variable.getFileList()),"导入文件不允许为空值!");
+
     }
 
     /**

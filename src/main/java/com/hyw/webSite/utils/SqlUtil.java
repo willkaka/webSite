@@ -2,6 +2,7 @@ package com.hyw.webSite.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hyw.webSite.exception.BizException;
+import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.model.FieldAttr;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
@@ -129,9 +130,7 @@ public class SqlUtil {
         if(CollectionUtils.isEmpty(fieldAttrMap)) return null;
 
         List<String> keyFields = DbUtil.getTablePrimaryKeys(connection,libName,tableName);
-        if(CollectionUtil.isEmpty(keyFields)){
-            throw new BizException("数据表"+tableName+",无主键,无法更新!");
-        }
+        IfThrow.trueThenThrowMsg(CollectionUtil.isEmpty(keyFields),"数据表"+tableName+",无主键,无法更新!");
 
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO ").append(tableName).append(" (");
@@ -215,9 +214,7 @@ public class SqlUtil {
             }
         }
         List<String> keyFields = DbUtil.getTablePrimaryKeys(connection,libName,tableName);
-        if(CollectionUtil.isEmpty(keyFields)){
-            throw new BizException("数据表"+tableName+",无主键,无法更新!");
-        }
+        IfThrow.trueThenThrowMsg(CollectionUtil.isEmpty(keyFields),"数据表"+tableName+",无主键,无法更新!");
 
         sql.append(" WHERE ");
         int keyFieldCount = 0;

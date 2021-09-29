@@ -34,17 +34,14 @@ public class UpdateRecord implements RequestFun {
 
         Map<String,String> inputValue = (Map<String,String>) requestDto.getReqParm().get("inputValue");
         String dbName = (String) inputValue.get("dbName");
-//        if(StringUtil.isBlank(dbName)){
-//            throw new BizException("数据库,不允许为空值!");
-//        }
+//        IfThrow.trueThenThrowMsg(StringUtil.isBlank(dbName),"数据库,不允许为空值!");
+//
         String libName = (String) inputValue.get("libName");
-//        if(StringUtil.isBlank(libName)){
-//            throw new BizException("库名,不允许为空值!");
-//        }
+//        IfThrow.trueThenThrowMsg(StringUtil.isBlank(libName),"库名,不允许为空值!");
+//
         String tableName = (String) inputValue.get("tableName");
-//        if(StringUtil.isBlank(tableName)){
-//            throw new BizException("表名,不允许为空值!");
-//        }
+//        IfThrow.trueThenThrowMsg(StringUtil.isBlank(tableName),"表名,不允许为空值!");
+//
         Connection connection = null;
         if(StringUtils.isNotBlank(dbName)) {
             ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()

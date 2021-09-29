@@ -1,6 +1,7 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
 import com.hyw.webSite.exception.BizException;
+import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.WebDataReqFun;
 import com.hyw.webSite.web.dto.RequestDto;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +18,7 @@ public class GetGitDirList implements WebDataReqFun {
         String dirPath = "D:\\Java\\DaShuSource";
         File dir = new File(dirPath);
         File [] files = dir.listFiles();
-        if(null == files){
-            throw new BizException("指定文件路径下无文件！");
-        }
+        IfThrow.trueThenThrowMsg(null == files,"指定文件路径下无文件！");
 
         Map<String,Object> rtnMap = new HashMap<>();
         for(File file:files){

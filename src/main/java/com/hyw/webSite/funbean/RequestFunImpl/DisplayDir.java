@@ -1,6 +1,7 @@
 package com.hyw.webSite.funbean.RequestFunImpl;
 
 import com.hyw.webSite.exception.BizException;
+import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.RequestFun;
 import com.hyw.webSite.utils.FileUtil;
 import com.hyw.webSite.utils.StringUtil;
@@ -35,19 +36,13 @@ public class DisplayDir implements RequestFun {
 
         Map<String,String> inputValue = (Map<String,String>) requestDto.getReqParm().get("inputValue");
         String dirPath = (String) inputValue.get("localAddress");
-        if(StringUtil.isBlank(dirPath)){
-            throw new BizException("文件夹位置,不允许为空值!");
-        }
+        IfThrow.trueThenThrowMsg(StringUtil.isBlank(dirPath),"文件夹位置,不允许为空值!");
         String selectFileType = (String) inputValue.get("selectFileType");
-        if(StringUtil.isBlank(dirPath)){
-            throw new BizException("筛选类型,不允许为空值!");
-        }
+        IfThrow.trueThenThrowMsg(StringUtil.isBlank(dirPath),"筛选类型,不允许为空值!");
 
         File dir = new File(dirPath);
         File [] files = dir.listFiles();
-        if(null == files){
-            throw new BizException("指定文件路径下无文件！");
-        }
+        IfThrow.trueThenThrowMsg(null == files,"指定文件路径下无文件！");
 
         List<WebElementDto> elementList = new ArrayList<>();
         for(File file:files){
