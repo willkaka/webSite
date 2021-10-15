@@ -1,5 +1,6 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
+import com.hyw.webSite.constant.Constant;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.exception.IfThrow;
@@ -36,11 +37,15 @@ public class UpdateTableField implements RequestFun {
         String tableName = (String) inputValue.get("tableName");
         IfThrow.trueThenThrowMsg(StringUtil.isBlank(tableName),"表名,不允许为空值!");
 
-//        ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(dbName);
-        ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
-                .eq(ConfigDatabaseInfo::getDatabaseName,dbName));
-        configDatabaseInfo.setDatabaseLabel(libName);
-        Connection connection = DbUtil.getConnection(configDatabaseInfo);
+        Connection connection = null;
+        if(Constant.DB_SOURCE_SYS.equals(dbName)){
+            connection = dataService.getSpringDatabaseConnection();
+        }else {
+            ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
+                    .eq(ConfigDatabaseInfo::getDatabaseName, dbName));
+            configDatabaseInfo.setDatabaseLabel(libName);
+            connection = DbUtil.getConnection(configDatabaseInfo);
+        }
 
         //设计数据表
         //ALTER TABLE user10 MODIFY email VARCHAR(200) NOT NULL DEFAULT 'a@a.com';

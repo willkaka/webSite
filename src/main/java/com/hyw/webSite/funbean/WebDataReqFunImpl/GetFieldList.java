@@ -1,5 +1,6 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
+import com.hyw.webSite.constant.Constant;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.funbean.WebDataReqFun;
 import com.hyw.webSite.dbservice.NQueryWrapper;
@@ -32,13 +33,7 @@ public class GetFieldList implements WebDataReqFun {
         String selectedLib = inputValue.get("libName");
         String tableName = inputValue.get("tableName");
 
-//        ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(selectedDb);
-        ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
-                .eq(ConfigDatabaseInfo::getDatabaseName,selectedDb));
-        if(!"sqlite".equals(configDatabaseInfo.getDatabaseType().toLowerCase())) {
-            configDatabaseInfo.setDatabaseLabel(selectedLib);
-        }
-        Connection connection = DbUtil.getConnection(configDatabaseInfo);
+        Connection connection = dataService.getSpringDatabaseConnection(selectedDb,selectedLib);
         List<Map<String,Object>> fields = DbUtil.getFieldInfo(connection,selectedDb,selectedLib,tableName);
         DbUtil.closeConnection(connection);
 

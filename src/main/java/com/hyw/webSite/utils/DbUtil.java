@@ -327,6 +327,7 @@ public class DbUtil {
             statement.close();
         }catch(Exception e){
             log.error("执行SQL({})出错！",sql,e);
+            throw new BizException("执行SQL("+sql+")出错！");
         }finally {
             //DbUtil.closeConnection(connection);
         }
@@ -342,11 +343,11 @@ public class DbUtil {
     public static int getTableRecordCount(Connection connection,String db,String lib,String table){
         if(connection == null){
             log.error("数据库连接不允许为null！");
-            return 0;
+            throw new BizException("数据库连接不允许为null！");
         }
         if(StringUtil.isBlank(table)){
             log.error("查询数据表不允为空！");
-            return 0;
+            throw new BizException("查询数据表不允为空！");
         }
 
         int count = 0;
@@ -365,6 +366,7 @@ public class DbUtil {
         }catch(Exception e){
             DbUtil.closeConnection(connection);
             log.error("查询数据表({})出错！",table,e);
+            throw new BizException("查询数据表("+table+")出错！");
         }
         return count;
     }
@@ -630,7 +632,6 @@ public class DbUtil {
             throw new BizException("读取resultset出错！");
         }
         //排序
-
 
         return fieldAttrMap;
     }

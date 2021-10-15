@@ -1,5 +1,6 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
+import com.hyw.webSite.constant.Constant;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.exception.IfThrow;
@@ -45,10 +46,7 @@ public class DeleteRecord implements RequestFun {
 
         Connection connection = null;
         if(StringUtils.isNotBlank(dbName)) {
-            ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
-                    .eq(ConfigDatabaseInfo::getDatabaseName,dbName));
-            configDatabaseInfo.setDatabaseLabel(libName);
-            connection = DbUtil.getConnection(configDatabaseInfo);
+            connection = dataService.getSpringDatabaseConnection(dbName,libName);
         }else{
             tableName = (String) requestDto.getEventInfo().getParamMap().get("tableName");
             connection = dataService.getSpringDatabaseConnection();

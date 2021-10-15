@@ -1,5 +1,6 @@
 package com.hyw.webSite.funbean.RequestFunImpl;
 
+import com.hyw.webSite.constant.Constant;
 import com.hyw.webSite.constant.WebConstant;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
@@ -57,8 +58,7 @@ public class QueryTableRecords extends RequestFunUnit<List<Map<String,FieldAttr>
         int totalCount;      //表中记录的总行数
 
         //连接数据库，查询数据，关闭数据库
-        Connection connection = DbUtil.getConnection(dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
-                .eq(ConfigDatabaseInfo::getDatabaseName,variable.getDbName())),variable.getLibName());
+        Connection connection = dataService.getSpringDatabaseConnection(variable.getDbName(),variable.getLibName());
         totalCount = DbUtil.getTableRecordCount(connection,variable.getDbName(),variable.getLibName(),variable.getTableName());
         List<Map<String,FieldAttr>> records = DbUtil.getTableRecords(connection,variable.getDbName(),variable.getLibName(),variable.getTableName(),(pageNow-1)*pageSize,pageSize);
         DbUtil.closeConnection(connection);

@@ -1,8 +1,6 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
-import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.funbean.WebDataReqFun;
-import com.hyw.webSite.dbservice.NQueryWrapper;
 import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.utils.DbUtil;
@@ -41,11 +39,8 @@ public class GetDataWithSelectDb implements WebDataReqFun {
         if(StringUtil.isBlank(selectedDb) || StringUtil.isBlank(selectedLib)) return changedEleMap;
 
         String sql = getSqlStm(eventInfo,inputValue);
-//        ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(selectedDb);
-        ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
-                .eq(ConfigDatabaseInfo::getDatabaseName,selectedDb));
-        configDatabaseInfo.setDatabaseLabel(selectedLib);
-        Connection connection = DbUtil.getConnection(configDatabaseInfo);
+        Connection connection = dataService.getSpringDatabaseConnection(selectedDb,selectedLib);
+
         List<Map<String,Object>> records = DbUtil.getSqlRecords(connection,sql);
         DbUtil.closeConnection(connection);
 

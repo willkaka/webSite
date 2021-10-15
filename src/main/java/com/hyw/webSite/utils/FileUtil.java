@@ -12,6 +12,7 @@ import org.apache.tika.mime.MediaType;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.xml.sax.helpers.DefaultHandler;
@@ -28,6 +29,7 @@ import java.util.regex.Pattern;
 
 @Slf4j
 public class FileUtil {
+
 
     /**
      * 获取目录下的所有文件
@@ -213,7 +215,7 @@ public class FileUtil {
     }
 
     //获取流文件
-    private static void inputStreamToFile(InputStream ins, File file) {
+    public static void inputStreamToFile(InputStream ins, File file) {
         try {
             OutputStream os = new FileOutputStream(file);
             int bytesRead = 0;

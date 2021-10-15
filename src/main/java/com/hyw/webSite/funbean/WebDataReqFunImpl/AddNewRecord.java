@@ -1,5 +1,6 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
+import com.hyw.webSite.constant.Constant;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
@@ -39,16 +40,8 @@ public class AddNewRecord implements RequestFun {
         String tableName = (String) inputValue.get("tableName");
 //        IfThrow.trueThenThrowMsg(StringUtil.isBlank(tableName),"表名,不允许为空值!");
 
-        Connection connection = null;
-        if(StringUtils.isNotBlank(dbName)) {
-            ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
-                    .eq(ConfigDatabaseInfo::getDatabaseName, dbName));
-            configDatabaseInfo.setDatabaseLabel(libName);
-            connection = DbUtil.getConnection(configDatabaseInfo);
-        }else{
-            tableName = (String) requestDto.getEventInfo().getParamMap().get("tableName");
-            connection = dataService.getSpringDatabaseConnection();
-        }
+        Connection connection = dataService.getSpringDatabaseConnection(dbName,libName);
+
         Map<String,FieldAttr> recordMap = DbUtil.getFieldAttrMap(connection,dbName,libName,tableName);
         DbUtil.closeConnection(connection);
 

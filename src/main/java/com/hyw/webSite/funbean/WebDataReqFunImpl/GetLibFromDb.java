@@ -1,5 +1,6 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
+import com.hyw.webSite.constant.Constant;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.funbean.WebDataReqFun;
 import com.hyw.webSite.dbservice.NQueryWrapper;
@@ -29,10 +30,8 @@ public class GetLibFromDb implements WebDataReqFun {
         EventInfo eventInfo = requestDto.getEventInfo();//事件信息
 
         if(StringUtil.isBlank(eventInfo.getSelectedValue())) return changedEleMap;
-//        Connection connection = DbUtil.getConnection(configDatabaseInfoService.getDatabaseConfig(eventInfo.getSelectedValue()));
-        ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
-                .eq(ConfigDatabaseInfo::getDatabaseName,eventInfo.getSelectedValue()));
-        Connection connection = DbUtil.getConnection(configDatabaseInfo);
+
+        Connection connection = dataService.getSpringDatabaseConnection(eventInfo.getSelectedValue(),null);
         List<String> libs = DbUtil.getLibraryNames(connection);
         DbUtil.closeConnection(connection);
 

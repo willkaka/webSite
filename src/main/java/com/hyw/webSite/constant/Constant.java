@@ -9,5 +9,7 @@ public class Constant {
     public static final String DB_TYPE_SQLITE = "sqlite";
     public static final String DB_TYPE_EXCEL = "excel";
 
+    public static final String DB_SOURCE_SYS = "sys_db";
+
     public static final String SYS_PATH_PRE = "src/main/resources/static/";
 }

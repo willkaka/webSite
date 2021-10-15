@@ -1,5 +1,7 @@
 package com.hyw.webSite.dbservice;
 
+import com.hyw.webSite.constant.Constant;
+import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.dbservice.constant.DbConstant;
 import com.hyw.webSite.dbservice.dto.IPage;
 import com.hyw.webSite.dbservice.dto.MysqlColumnInfo;
@@ -10,6 +12,7 @@ import com.hyw.webSite.dbservice.utils.JdbcUtil;
 import com.hyw.webSite.dbservice.utils.QFunction;
 import com.hyw.webSite.dbservice.utils.QueryUtil;
 import com.hyw.webSite.mapper.DataMapper;
+import com.hyw.webSite.utils.DbUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,6 +53,23 @@ public class DataService {
             throw new DbException("取系统数据库连接异常！"+dbType);
         }
         return connection;
+    }
+
+    /**
+     * 按传入的db名称取db连接
+     * @param dbName    db名称
+     * @param libName   数据库名称
+     * @return Connection
+     */
+    public Connection getSpringDatabaseConnection(String dbName, String libName){
+        if(Constant.DB_SOURCE_SYS.equals(dbName)) {
+            return getSpringDatabaseConnection();
+        }else {
+            ConfigDatabaseInfo configDatabaseInfo = this.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
+                    .eq(ConfigDatabaseInfo::getDatabaseName, dbName));
+            configDatabaseInfo.setDatabaseLabel(libName);
+            return DbUtil.getConnection(configDatabaseInfo);
+        }
     }
 
     public String getDatabaseType(){

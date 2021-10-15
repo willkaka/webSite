@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hyw.webSite.constant.WebConstant;
 import com.hyw.webSite.dbservice.DataService;
-import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.funbean.abs.RequestPubDto;
@@ -21,6 +20,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,6 +39,9 @@ public class UploadFile extends RequestFunUnit<String, UploadFile.QryVariable> {
 
     @Autowired
     private DataService dataService;
+
+    @Value("${upload.file.local.path}")
+    private String uploadFileLocalPath;
 
     /**
      * 输入参数检查
@@ -65,7 +68,7 @@ public class UploadFile extends RequestFunUnit<String, UploadFile.QryVariable> {
 
         int cnt = 0;
         for(MultipartFile multipartFile:variable.getFileList()) {
-            File file = FileUtil.multipartFileToFile(multipartFile);
+            File file = multipartFileToFile(multipartFile);
 
             if("SPD_Claim".equalsIgnoreCase(variable.getFileType())){
                 outString.append(spdClaimSql(excelTemplateUtil.getExcelRecords("SPD_Claim",file)));
@@ -110,6 +113,25 @@ public class UploadFile extends RequestFunUnit<String, UploadFile.QryVariable> {
         return JSON.toJSONString(yapiInfoList);
     }
 
+    public File multipartFileToFile(MultipartFile file){
+        String location = System.getProperty("user.dir") + uploadFileLocalPath;
+        File toFile = null;
+        if (file.equals("") || file.getSize() <= 0) {
+            file = null;
+        } else {
+            InputStream ins = null;
+            try {
+                ins = file.getInputStream();
+                toFile = new File( (location.endsWith("/")||location.endsWith("\\")?location:(location + "/"))
+                        + file.getOriginalFilename());
+                FileUtil.inputStreamToFile(ins, toFile);
+                ins.close();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return toFile;
+    }
 
     /**
      * 浦发理赔更新逾期天数sql生成。
@@ -196,6 +218,7 @@ public class UploadFile extends RequestFunUnit<String, UploadFile.QryVariable> {
 
         return rtnStr.toString();
     }
+
 
     /**
      * 输入输出参数

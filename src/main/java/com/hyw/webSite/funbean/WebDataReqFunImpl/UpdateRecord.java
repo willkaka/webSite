@@ -1,5 +1,6 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
+import com.hyw.webSite.constant.Constant;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
@@ -43,7 +44,9 @@ public class UpdateRecord implements RequestFun {
 //        IfThrow.trueThenThrowMsg(StringUtil.isBlank(tableName),"表名,不允许为空值!");
 //
         Connection connection = null;
-        if(StringUtils.isNotBlank(dbName)) {
+        if(Constant.DB_SOURCE_SYS.equals(dbName)) {
+            connection = dataService.getSpringDatabaseConnection();
+        }else if(StringUtils.isNotBlank(dbName)) {
             ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
                     .eq(ConfigDatabaseInfo::getDatabaseName,dbName));
             configDatabaseInfo.setDatabaseLabel(libName);

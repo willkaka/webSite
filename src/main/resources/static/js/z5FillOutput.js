@@ -22,6 +22,29 @@ function fillOutputArea() {
         if("textArea"===showType){
             fillOutPutAreaWithText();
         }
+        if("mapData_labelShow"===showType){
+            fillOutPutLabelShow();
+        }
+    }
+}
+
+function fillOutPutLabelShow() {
+    let parent_ele = document.getElementById("outputArea");
+
+    let mapDataList = outputMap.mapData;  // List<WebDivDto>
+    for (let i=0;i<mapDataList.length;i++){
+        let webDivDto = mapDataList[i];  // WebDivDto
+
+        let resp_div = document.createElement("div");
+        resp_div.setAttribute("class","responsive");
+
+        let divSubElementList = webDivDto.subElements; //List<WebElementDto>
+        for (let eleIndex=0;i<divSubElementList.length;eleIndex++){
+            let webElementDto = divSubElementList[eleIndex];
+
+            writeWebElementRoute(resp_div,webElementDto);
+        }
+        parent_ele.appendChild(resp_div);
     }
 }
 

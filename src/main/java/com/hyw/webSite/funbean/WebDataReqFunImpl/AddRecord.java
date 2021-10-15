@@ -1,5 +1,6 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
+import com.hyw.webSite.constant.Constant;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.exception.IfThrow;
@@ -44,10 +45,7 @@ public class AddRecord implements RequestFun {
 
 
         //建立数据库连接，并执行写入操作
-        ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
-                .eq(ConfigDatabaseInfo::getDatabaseName,dbName));
-        configDatabaseInfo.setDatabaseLabel(libName);
-        Connection connection = DbUtil.getConnection(configDatabaseInfo);
+        Connection connection = dataService.getSpringDatabaseConnection(dbName,libName);
 
         //取数据表字段定义信息
         Map<String,FieldAttr> fieldAttrMap = DbUtil.getFieldAttrMap(connection,dbName,libName,tableName);

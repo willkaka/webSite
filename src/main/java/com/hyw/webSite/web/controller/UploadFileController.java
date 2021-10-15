@@ -18,7 +18,7 @@ import java.util.Map;
 
 @RestController
 @Slf4j
-public class UploanFileController {
+public class UploadFileController {
 
     @Autowired
     ApplicationContext context;

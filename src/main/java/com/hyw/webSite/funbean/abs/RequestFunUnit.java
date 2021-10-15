@@ -6,6 +6,7 @@ import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.utils.ObjectUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.ReturnDto;
+import com.hyw.webSite.web.model.WebDivDto;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -98,17 +99,23 @@ public abstract class RequestFunUnit<D, V extends RequestPubDto> implements Requ
 
         //判断目前返回的数据类型
         boolean isListMapFieldAttr = false;
-        if(data instanceof List){
-            for(Object object:(List) data){
-                if(object instanceof Map){  //List<Map<>> 则以表格的数据形式返回
-                    for(Object key:((Map) object).keySet()){
-                        if(key instanceof String && ((Map) object).get(key) instanceof FieldAttr){
+        boolean isDivMap = false;
+        if(data instanceof List) {
+            for (Object object : (List) data) {
+                if (object instanceof Map) {  //List<Map<>> 则以表格的数据形式返回
+                    for (Object key : ((Map) object).keySet()) {
+                        if (key instanceof String && ((Map) object).get(key) instanceof FieldAttr) {
                             isListMapFieldAttr = true;
                             break;
                         }
                     }
                 }
-                if(isListMapFieldAttr) break;
+                if (isListMapFieldAttr) break;
+                if( object instanceof WebDivDto){
+                    isDivMap = true;
+                    break;
+                }
+                if (isDivMap) break;
             }
         }else if(data instanceof String){ // String 则以多行的文本输入形式返回
             returnDto.getOutputMap().put("textAreaValue", data);
@@ -119,6 +126,9 @@ public abstract class RequestFunUnit<D, V extends RequestPubDto> implements Requ
             returnDto.getOutputMap().put("totalCount", variable.getTotalCount());
             returnDto.getOutputMap().put("pageNow", variable.getPageNow());
             returnDto.getOutputMap().put("pageSize", variable.getPageSize());
+        }
+        if(isDivMap){
+            returnDto.getOutputMap().put("mapData", data);
         }
 
         return returnDto;

@@ -83,6 +83,7 @@ function showEditModal(eventInfo){
     }
 
     display("swBackGround");
+    modalMove();
 }
 
 /**
@@ -170,6 +171,7 @@ function showAddModal(eventInfo){
     }
 
     display("swBackGround");
+    modalMove();
 }
 
 
@@ -244,4 +246,9 @@ function showLoginModal(){
     writeWebElementRoute(footerDiv,webElement);
 
     display("swBackGround");
+    modalMove();
+}
+
+function modalMove(){
+    $("#swBorder").draggable();//为模态对话框添加拖拽
 }

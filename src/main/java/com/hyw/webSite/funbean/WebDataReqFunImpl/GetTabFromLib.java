@@ -1,5 +1,6 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
+import com.hyw.webSite.constant.Constant;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.funbean.WebDataReqFun;
 import com.hyw.webSite.dbservice.NQueryWrapper;
@@ -31,16 +32,9 @@ public class GetTabFromLib implements WebDataReqFun {
         String selectedDb = inputValue.get("dbName");
         String selectedLib = inputValue.get("libName");
 
-//        ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(selectedDb);
-        ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
-                .eq(ConfigDatabaseInfo::getDatabaseName,selectedDb));
-        if(!"sqlite".equals(configDatabaseInfo.getDatabaseType().toLowerCase())) {
-            configDatabaseInfo.setDatabaseLabel(selectedLib);
-        }
-        Connection connection = DbUtil.getConnection(configDatabaseInfo);
-        List<String> tables = DbUtil.getTableNames(connection,selectedLib);
+        Connection connection = dataService.getSpringDatabaseConnection(selectedDb,selectedLib);
+        List<String> tables = DbUtil.getTableNames(connection, selectedLib);
         DbUtil.closeConnection(connection);
-
 
         Map<String,String> map = new TreeMap<String, String>(
                 new Comparator<String>() {

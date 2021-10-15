@@ -182,7 +182,7 @@ public class WebConfigInfoService {
 
 
 
-
+    @SuppressWarnings("unchecked")
     public List<WebElementDto> getWebConfigElement(RequestDto requestDto, String elementParent, String elementArea) {
         List<WebElementDto> webElementDtoList = new ArrayList<>();
         Map<String,Object> changedEleMap = new HashMap<>();
@@ -313,7 +313,11 @@ public class WebConfigInfoService {
                     if(StringUtil.isNotBlank(eventInfo.getType())
                             && "webDataReq".equals(eventInfo.getType())
                             && StringUtil.isNotBlank(eventInfo.getId())) {
-                        changedEleMap.putAll(((WebDataReqFun) context.getBean(eventInfo.getId())).execute(requestDto));
+                        try {
+                            changedEleMap.putAll(((WebDataReqFun) context.getBean(eventInfo.getId())).execute(requestDto));
+                        }catch (Exception e){
+                            //不处理。
+                        }
                     }
                 }
             }
@@ -393,6 +397,7 @@ public class WebConfigInfoService {
      * @param enumKey 枚举关键字
      * @return Map<String, String>
      */
+    @SuppressWarnings("unchecked")
     public Map<String, String> getWebConfigEnum(String enumKey) {
         List<Map<String, Object>> rtnListMap = new ArrayList<>();
         Map<String, String> enumKeyValueMap = new HashMap<>();

@@ -1,5 +1,6 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
+import com.hyw.webSite.constant.Constant;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.funbean.WebDataReqFun;
 import com.hyw.webSite.model.FieldAttr;
@@ -42,9 +43,7 @@ public class GetFieldFromTab implements WebDataReqFun {
             return changedEleMap;
         }
 
-//        Connection connection = DbUtil.getConnection(configDatabaseInfoService.getDatabaseConfig(selectedDb), selectedLib);
-        Connection connection = DbUtil.getConnection(dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
-                .eq(ConfigDatabaseInfo::getDatabaseName,selectedDb)), selectedLib);
+        Connection connection = dataService.getSpringDatabaseConnection(selectedDb,selectedLib);
         Map<String, FieldAttr> fields = DbUtil.getFieldAttrMap(connection,selectedDb,selectedLib,tableName);
         DbUtil.closeConnection(connection);
 
