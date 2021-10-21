@@ -1,10 +1,7 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
-import com.hyw.webSite.constant.Constant;
-import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.funbean.WebDataReqFun;
 import com.hyw.webSite.model.FieldAttr;
-import com.hyw.webSite.dbservice.NQueryWrapper;
 import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
@@ -43,9 +40,9 @@ public class GetFieldFromTab implements WebDataReqFun {
             return changedEleMap;
         }
 
-        Connection connection = dataService.getSpringDatabaseConnection(selectedDb,selectedLib);
+        Connection connection = dataService.getDatabaseConnection(selectedDb,selectedLib);
         Map<String, FieldAttr> fields = DbUtil.getFieldAttrMap(connection,selectedDb,selectedLib,tableName);
-        DbUtil.closeConnection(connection);
+        dataService.closeConnection(connection);
 
         Map<String,String> map = new LinkedHashMap<>();
         for(String fieldName:fields.keySet()){

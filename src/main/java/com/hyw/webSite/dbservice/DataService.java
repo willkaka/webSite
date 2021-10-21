@@ -11,7 +11,6 @@ import com.hyw.webSite.dbservice.exception.DbException;
 import com.hyw.webSite.dbservice.utils.JdbcUtil;
 import com.hyw.webSite.dbservice.utils.QFunction;
 import com.hyw.webSite.dbservice.utils.QueryUtil;
-import com.hyw.webSite.mapper.DataMapper;
 import com.hyw.webSite.utils.DbUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +33,9 @@ import java.util.Map;
 public class DataService {
 
     @Autowired
-    DataMapper dataMapper;
-
-    @Autowired
     private DataSource dataSource;
+
+    private static Connection springConnection;
 
     //************************数据库********************************/
     /**
@@ -45,14 +43,15 @@ public class DataService {
      * @return Connection
      */
     public Connection getSpringDatabaseConnection(){
-        String dbType="";
-        Connection connection = null;
-        try {
-            connection = dataSource.getConnection();
-        }catch (Exception e){
-            throw new DbException("取系统数据库连接异常！"+dbType);
+        if(springConnection==null) {
+            try {
+                springConnection = dataSource.getConnection();
+            } catch (Exception e) {
+                log.error("取系统数据库连接异常！", e);
+                throw new DbException("取系统数据库连接异常！");
+            }
         }
-        return connection;
+        return springConnection;
     }
 
     /**
@@ -61,7 +60,7 @@ public class DataService {
      * @param libName   数据库名称
      * @return Connection
      */
-    public Connection getSpringDatabaseConnection(String dbName, String libName){
+    public Connection getDatabaseConnection(String dbName, String libName){
         if(Constant.DB_SOURCE_SYS.equals(dbName)) {
             return getSpringDatabaseConnection();
         }else {
@@ -69,6 +68,14 @@ public class DataService {
                     .eq(ConfigDatabaseInfo::getDatabaseName, dbName));
             configDatabaseInfo.setDatabaseLabel(libName);
             return DbUtil.getConnection(configDatabaseInfo);
+        }
+    }
+
+    public void closeConnection(Connection connection){
+        try{
+            if(connection != null) connection.close();
+        }catch (Exception e){
+            log.error("关闭数据库连接出错！",e);
         }
     }
 
@@ -109,7 +116,7 @@ public class DataService {
      * @return 新增记录数
      */
     public <T> int save(T object) {
-        return dataMapper.saveBySql(JdbcUtil.getInsertSql(object));
+        return save(getSpringDatabaseConnection(),object);
     }
 
     /**
@@ -127,7 +134,7 @@ public class DataService {
      * @return 新增记录数
      */
     public <T> int save(List<T> objectList) {
-        return dataMapper.saveBySql(JdbcUtil.getInsertSql(objectList));
+        return save(getSpringDatabaseConnection(),objectList);
     }
 
     /**
@@ -150,12 +157,12 @@ public class DataService {
         for(T object:objectList){
             newRecords.add(object);
             if(newRecords.size()>=size) {
-                count = count + dataMapper.saveBySql(JdbcUtil.getInsertSql(newRecords));
+                count = count + save(getSpringDatabaseConnection(),newRecords);
                 newRecords.clear();
             }
         }
         if(newRecords.size()>0)
-            count = count + dataMapper.saveBySql(JdbcUtil.getInsertSql(newRecords));
+            count = count + save(getSpringDatabaseConnection(),newRecords);
         return count;
     }
 
@@ -172,12 +179,12 @@ public class DataService {
         for(T object:objectList){
             newRecords.add(object);
             if(newRecords.size()>=size) {
-                count = count + dataMapper.saveBySql(JdbcUtil.getInsertSql(newRecords));
+                count = count + save(getSpringDatabaseConnection(),newRecords);
                 newRecords.clear();
             }
         }
         if(newRecords.size()>0)
-            count = count + dataMapper.saveBySql(JdbcUtil.getInsertSql(newRecords));
+            count = count + save(getSpringDatabaseConnection(),newRecords);
         return count;
     }
 
@@ -203,12 +210,12 @@ public class DataService {
 
     //************************删除记录********************************/
     public <T,B> int delete(T object, QFunction<T, B> function){
-        String fieldName = QueryUtil.toUnderlineStr(QueryUtil.getImplMethodName(function).replace("get", ""));
-        return dataMapper.deleteBySql(JdbcUtil.getDeleteSql(object,fieldName));
+        String keyFieldName = QueryUtil.toUnderlineStr(QueryUtil.getImplMethodName(function).replace("get", ""));
+        return delete(getSpringDatabaseConnection(),object,keyFieldName);
     }
 
     public <T> int delete(T object,String keyFieldName){
-        return dataMapper.deleteBySql(JdbcUtil.getDeleteSql(object,keyFieldName));
+        return delete(getSpringDatabaseConnection(),object,keyFieldName);
     }
 
     public <T> int delete(Connection connection,T object,String keyFieldName){
@@ -216,11 +223,10 @@ public class DataService {
     }
 
     public <T> int deleteById(List<T> objectList,String keyFieldName){
-        List<String> sqlList = JdbcUtil.getDeleteSql(objectList,keyFieldName);
-        if(QueryUtil.isEmptyList(sqlList)) throw new DbException("生成的sql为空！");
+        if(QueryUtil.isEmptyList(objectList)) throw new DbException("objectList为空！");
         int deleteCnt = 0;
-        for(String sql:sqlList){
-            deleteCnt = deleteCnt + dataMapper.deleteBySql(sql);
+        for(T object:objectList){
+            deleteCnt = deleteCnt + delete(object,keyFieldName);
         }
         return deleteCnt;
     }
@@ -233,19 +239,18 @@ public class DataService {
         if(nUpdateWrapper.getConnection() != null){
             return JdbcUtil.updateBySql(nUpdateWrapper.getConnection(),nUpdateWrapper.getSql());
         }else {
-//            System.out.println(nUpdateWrapper.getSql());
-            return dataMapper.deleteBySql(nUpdateWrapper.getSql());
+            return JdbcUtil.updateBySql(getSpringDatabaseConnection(),nUpdateWrapper.getSql());
         }
     }
 
     //************************更新记录********************************/
     public <T,B> int update(T object,QFunction<T, B> function){
         String fieldName = QueryUtil.toUnderlineStr(QueryUtil.getImplMethodName(function).replace("get", ""));
-        return dataMapper.deleteBySql(JdbcUtil.getUpdateSql(object,fieldName));
+        return updateById(getSpringDatabaseConnection(),object,fieldName);
     }
 
     public <T> int updateById(T object,String keyFieldName){
-        return dataMapper.updateBySql(JdbcUtil.getUpdateSql(object,keyFieldName));
+        return updateById(getSpringDatabaseConnection(),object,keyFieldName);
     }
 
     public <T> int updateById(Connection connection,T object,String keyFieldName){
@@ -253,11 +258,10 @@ public class DataService {
     }
 
     public <T> int updateById(List<T> objectList,String keyFieldName){
-        List<String> sqlList = JdbcUtil.getUpdateSql(objectList,keyFieldName);
-        if(QueryUtil.isEmptyList(sqlList)) throw new DbException("生成的sql为空！");
+        if(QueryUtil.isEmptyList(objectList)) throw new DbException("objectList为空！");
         int updateCnt = 0;
-        for(String sql:sqlList){
-            updateCnt = updateCnt + dataMapper.updateBySql(sql);
+        for(T object:objectList){
+            updateCnt = updateCnt + updateById(object,keyFieldName);
         }
         return updateCnt;
     }
@@ -276,8 +280,7 @@ public class DataService {
         if(updateWrapper.getConnection() != null){
             return JdbcUtil.updateBySql(updateWrapper.getConnection(),updateWrapper.getSql());
         }else {
-//            System.out.println(updateWrapper.getSql());
-            return dataMapper.updateBySql(updateWrapper.getSql());
+            return JdbcUtil.updateBySql(getSpringDatabaseConnection(),updateWrapper.getSql());
         }
     }
 
@@ -290,9 +293,8 @@ public class DataService {
         if(queryWrapper.getConnection() != null){
             list = JdbcUtil.getSqlRecords(queryWrapper.getConnection(),sql);
         }else {
-            list = dataMapper.queryBySql(sql);
+            list = JdbcUtil.getSqlRecords(getSpringDatabaseConnection(),sql);
         }
-//        if(QueryUtil.isEmptyList(list)) throw new DbException("生成的sql为空！");
         for(Map<String, Object> map:list){
             try {
                 Class<T> clazz = queryWrapper.getTableClass();
@@ -310,24 +312,16 @@ public class DataService {
 
     public <T> int count(NQueryWrapper<T> queryWrapper){
         String sql = queryWrapper.getCountSql();
-        List<Map<String, Object>> list = new ArrayList<>();
-        if(queryWrapper.getConnection() != null){
-            list = JdbcUtil.getSqlRecords(queryWrapper.getConnection(),sql);
-        }else {
-            list = dataMapper.queryBySql(sql);
-        }
+        List<Map<String, Object>> list = JdbcUtil.getSqlRecords(queryWrapper.getConnection()==null?
+                getSpringDatabaseConnection():queryWrapper.getConnection(),sql);
         if(QueryUtil.isEmptyList(list)) return 0;//throw new DbException("sql("+sql+")查询无记录！");
         return (int) list.get(0).get("COUNT(1)");
     }
 
     public <T> List<Map<String, Object>> mapList(NQueryWrapper<T> queryWrapper){
         String sql = queryWrapper.getSql();
-        List<Map<String, Object>> list = new ArrayList<>();
-        if(queryWrapper.getConnection() != null){
-            list = JdbcUtil.getSqlRecords(queryWrapper.getConnection(),sql);
-        }else {
-            list = dataMapper.queryBySql(sql);
-        }
+        List<Map<String, Object>> list = JdbcUtil.getSqlRecords(queryWrapper.getConnection()==null?
+                getSpringDatabaseConnection():queryWrapper.getConnection(),sql);
         return list;
     }
 
@@ -335,13 +329,8 @@ public class DataService {
     public <T> List<T> list(NQueryWrapper<T> queryWrapper){
         List<T> rtnList = new ArrayList();
         String sql = queryWrapper.getSql();
-        List<Map<String, Object>> list = new ArrayList<>();
-        if(queryWrapper.getConnection() != null){
-            list = JdbcUtil.getSqlRecords(queryWrapper.getConnection(),sql);
-        }else {
-            list = dataMapper.queryBySql(sql);
-        }
-//        if(QueryUtil.isEmptyList(list)) throw new DbException("sql("+sql+")查询无记录！");
+        List<Map<String, Object>> list = JdbcUtil.getSqlRecords(queryWrapper.getConnection()==null?
+                getSpringDatabaseConnection():queryWrapper.getConnection(),sql);
         for(Map<String, Object> map:list){
             try {
                 Class<T> clazz = queryWrapper.getTableClass();
@@ -359,13 +348,8 @@ public class DataService {
         int totalCnt = count(queryWrapper);
         List<T> rtnList = new ArrayList();
         String sql = queryWrapper.getSql();
-        List<Map<String, Object>> list = new ArrayList<>();
-        if(queryWrapper.getConnection() != null){
-            list = JdbcUtil.getSqlRecords(queryWrapper.getConnection(),sql);
-        }else {
-            list = dataMapper.queryBySql(sql);
-        }
-//        if(QueryUtil.isEmptyList(list)) throw new DbException("sql("+sql+")查询无记录！");
+        List<Map<String, Object>> list = JdbcUtil.getSqlRecords(queryWrapper.getConnection()==null?
+                getSpringDatabaseConnection():queryWrapper.getConnection(),sql);
         for(Map<String, Object> map:list){
             try {
                 Class<T> clazz = queryWrapper.getTableClass();
@@ -383,40 +367,40 @@ public class DataService {
     }
 
     //************************查询数据表定义********************************/
-    //数据库清单
-    public List<String> getMysqlDatabase(){
-        return dataMapper.getMysqlDatabase();
-    }
-
-    //数据表清单
-    public List<String> getMysqlTableList(){
-        return dataMapper.getMysqlTableList();
-    }
-
-    //数据表信息
-    public List<MysqlTableInfo> getMysqlTableInfo(String database){
-        return dataMapper.getMysqlTableInfo(database);
-    }
-
-    //数据表结构
-    public List<MysqlColumnInfo> getMysqlColumnInfo(String tableName){
-        return dataMapper.getMysqlColumnInfo(tableName);
-    }
-
-    //create table
-    public <T> String getTableDdlStr(Class<T> clazz){
-        String tableName = QueryUtil.toUnderlineStr(clazz.getSimpleName());
-        String dbType = getDatabaseType();
-        if(dbType.contains("sqlite")) {
-            return dataMapper.getSqliteTableDdl(tableName); //dbType= Constant.DB_TYPE_SQLITE;
-        }else if(dbType.contains("oracle")) {
-            return null;//dbType= Constant.DB_TYPE_ORACLE;
-        }else if(dbType.contains("mysql")) {
-            return dataMapper.getMysqlTableDdl(tableName); //dbType= Constant.DB_TYPE_MYSQL;
-        }else{
-            throw new DbException("暂不支持当前数据库"+dbType);
-        }
-    }
+//    //数据库清单
+//    public List<String> getMysqlDatabase(){
+//        return dataMapper.getMysqlDatabase();
+//    }
+//
+//    //数据表清单
+//    public List<String> getMysqlTableList(){
+//        return dataMapper.getMysqlTableList();
+//    }
+//
+//    //数据表信息
+//    public List<MysqlTableInfo> getMysqlTableInfo(String database){
+//        return dataMapper.getMysqlTableInfo(database);
+//    }
+//
+//    //数据表结构
+//    public List<MysqlColumnInfo> getMysqlColumnInfo(String tableName){
+//        return dataMapper.getMysqlColumnInfo(tableName);
+//    }
+//
+//    //create table
+//    public <T> String getTableDdlStr(Class<T> clazz){
+//        String tableName = QueryUtil.toUnderlineStr(clazz.getSimpleName());
+//        String dbType = getDatabaseType();
+//        if(dbType.contains("sqlite")) {
+//            return dataMapper.getSqliteTableDdl(tableName); //dbType= Constant.DB_TYPE_SQLITE;
+//        }else if(dbType.contains("oracle")) {
+//            return null;//dbType= Constant.DB_TYPE_ORACLE;
+//        }else if(dbType.contains("mysql")) {
+//            return dataMapper.getMysqlTableDdl(tableName); //dbType= Constant.DB_TYPE_MYSQL;
+//        }else{
+//            throw new DbException("暂不支持当前数据库"+dbType);
+//        }
+//    }
 
     public <T> List<TableFieldInfo> getTableFieldList(Class<T> clazz){
         Connection connection = getSpringDatabaseConnection();

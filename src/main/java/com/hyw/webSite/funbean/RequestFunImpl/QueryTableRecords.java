@@ -1,14 +1,10 @@
 package com.hyw.webSite.funbean.RequestFunImpl;
 
-import com.hyw.webSite.constant.Constant;
 import com.hyw.webSite.constant.WebConstant;
-import com.hyw.webSite.dao.ConfigDatabaseInfo;
-import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.model.FieldAttr;
-import com.hyw.webSite.dbservice.NQueryWrapper;
 import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
@@ -58,10 +54,12 @@ public class QueryTableRecords extends RequestFunUnit<List<Map<String,FieldAttr>
         int totalCount;      //表中记录的总行数
 
         //连接数据库，查询数据，关闭数据库
-        Connection connection = dataService.getSpringDatabaseConnection(variable.getDbName(),variable.getLibName());
+        Connection connection = dataService.getDatabaseConnection(variable.getDbName(),variable.getLibName());
         totalCount = DbUtil.getTableRecordCount(connection,variable.getDbName(),variable.getLibName(),variable.getTableName());
         List<Map<String,FieldAttr>> records = DbUtil.getTableRecords(connection,variable.getDbName(),variable.getLibName(),variable.getTableName(),(pageNow-1)*pageSize,pageSize);
-        DbUtil.closeConnection(connection);
+        if(!connection.equals(dataService.getSpringDatabaseConnection())) {
+            DbUtil.closeConnection(connection);
+        }
 
         //参数配置
         variable.setOutputShowType(WebConstant.OUTPUT_SHOW_TYPE_TABLE); //以表格形式显示

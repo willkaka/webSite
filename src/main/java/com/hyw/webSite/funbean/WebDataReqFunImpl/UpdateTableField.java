@@ -67,7 +67,7 @@ public class UpdateTableField implements RequestFun {
 
         DbUtil.executeSql(connection,sql.toString());
 
-        DbUtil.closeConnection(connection);
+        dataService.closeConnection(connection);
 
 
         return returnDto;

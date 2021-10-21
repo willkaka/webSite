@@ -1,9 +1,6 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
-import com.hyw.webSite.constant.Constant;
-import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.funbean.WebDataReqFun;
-import com.hyw.webSite.dbservice.NQueryWrapper;
 import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.web.dto.RequestDto;
@@ -33,9 +30,9 @@ public class GetFieldList implements WebDataReqFun {
         String selectedLib = inputValue.get("libName");
         String tableName = inputValue.get("tableName");
 
-        Connection connection = dataService.getSpringDatabaseConnection(selectedDb,selectedLib);
+        Connection connection = dataService.getDatabaseConnection(selectedDb,selectedLib);
         List<Map<String,Object>> fields = DbUtil.getFieldInfo(connection,selectedDb,selectedLib,tableName);
-        DbUtil.closeConnection(connection);
+        dataService.closeConnection(connection);
 
         changedEleMap.put("recordMap",fields);
 

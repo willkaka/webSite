@@ -1,15 +1,10 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
-import com.hyw.webSite.constant.Constant;
-import com.hyw.webSite.dao.ConfigDatabaseInfo;
-import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.RequestFun;
-import com.hyw.webSite.dbservice.NQueryWrapper;
 import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.utils.DbUtil;
-import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.ReturnDto;
 import com.hyw.webSite.web.model.EventInfo;
@@ -46,7 +41,7 @@ public class DeleteRecord implements RequestFun {
 
         Connection connection = null;
         if(StringUtils.isNotBlank(dbName)) {
-            connection = dataService.getSpringDatabaseConnection(dbName,libName);
+            connection = dataService.getDatabaseConnection(dbName,libName);
         }else{
             tableName = (String) requestDto.getEventInfo().getParamMap().get("tableName");
             connection = dataService.getSpringDatabaseConnection();
@@ -70,7 +65,7 @@ public class DeleteRecord implements RequestFun {
         DbUtil.executeSql(connection,sql.toString());
         log.info("已执行sql:"+sql.toString());
 
-        DbUtil.closeConnection(connection);
+        dataService.closeConnection(connection);
 
         Map<String,Object> webNextOprMap = new HashMap<>();
         webNextOprMap.put("alert","true");//是否提示成功

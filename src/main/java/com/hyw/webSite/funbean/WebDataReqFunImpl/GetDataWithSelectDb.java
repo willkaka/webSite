@@ -39,10 +39,10 @@ public class GetDataWithSelectDb implements WebDataReqFun {
         if(StringUtil.isBlank(selectedDb) || StringUtil.isBlank(selectedLib)) return changedEleMap;
 
         String sql = getSqlStm(eventInfo,inputValue);
-        Connection connection = dataService.getSpringDatabaseConnection(selectedDb,selectedLib);
+        Connection connection = dataService.getDatabaseConnection(selectedDb,selectedLib);
 
         List<Map<String,Object>> records = DbUtil.getSqlRecords(connection,sql);
-        DbUtil.closeConnection(connection);
+        dataService.closeConnection(connection);
 
         Map<String,String> map = new HashMap<>();
         //特殊值

@@ -1,9 +1,6 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
-import com.hyw.webSite.constant.Constant;
-import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.funbean.WebDataReqFun;
-import com.hyw.webSite.dbservice.NQueryWrapper;
 import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.web.dto.RequestDto;
@@ -32,9 +29,9 @@ public class GetTabFromLib implements WebDataReqFun {
         String selectedDb = inputValue.get("dbName");
         String selectedLib = inputValue.get("libName");
 
-        Connection connection = dataService.getSpringDatabaseConnection(selectedDb,selectedLib);
+        Connection connection = dataService.getDatabaseConnection(selectedDb,selectedLib);
         List<String> tables = DbUtil.getTableNames(connection, selectedLib);
-        DbUtil.closeConnection(connection);
+        dataService.closeConnection(connection);
 
         Map<String,String> map = new TreeMap<String, String>(
                 new Comparator<String>() {

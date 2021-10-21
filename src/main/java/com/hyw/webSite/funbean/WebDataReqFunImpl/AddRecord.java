@@ -1,12 +1,8 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
-import com.hyw.webSite.constant.Constant;
-import com.hyw.webSite.dao.ConfigDatabaseInfo;
-import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.RequestFun;
 import com.hyw.webSite.model.FieldAttr;
-import com.hyw.webSite.dbservice.NQueryWrapper;
 import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.SqlUtil;
@@ -45,12 +41,13 @@ public class AddRecord implements RequestFun {
 
 
         //建立数据库连接，并执行写入操作
-        Connection connection = dataService.getSpringDatabaseConnection(dbName,libName);
+        Connection connection = dataService.getDatabaseConnection(dbName,libName);
 
         //取数据表字段定义信息
         Map<String,FieldAttr> fieldAttrMap = DbUtil.getFieldAttrMap(connection,dbName,libName,tableName);
         for(String alterFieldName:inputValue.keySet()){
-            if("modal".equals( alterFieldName.substring(0,5)) ){
+            if(StringUtil.isNotBlank(alterFieldName) && alterFieldName.length()>5 &&
+                    "modal".equals( alterFieldName.substring(0,5)) ){
                 String fieldName = alterFieldName.substring(5,alterFieldName.length());
                 FieldAttr fieldAttr = fieldAttrMap.get(fieldName);
                 if(null!=fieldAttr) fieldAttr.setValue(inputValue.get(alterFieldName));
@@ -63,7 +60,7 @@ public class AddRecord implements RequestFun {
         DbUtil.executeSql(connection,sql);
         log.info("已执行sql:"+sql);
 
-        DbUtil.closeConnection(connection);
+        dataService.closeConnection(connection);
 
         //设置成功写入后的自动刷新
         Map<String,Object> webNextOprMap = new HashMap<>();

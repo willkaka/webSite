@@ -190,8 +190,6 @@ public class WebConfigInfoService {
         Map<String,String> curInputValue = (Map<String,String>) requestDto.getReqParm().get("inputValue");
 
         //取
-
-
         List<WebElement> webElementList = dataService.list(new NQueryWrapper<WebElement>()
             .eq(WebElement::getArea,elementArea)
             .eq(WebElement::getFunction,elementParent)

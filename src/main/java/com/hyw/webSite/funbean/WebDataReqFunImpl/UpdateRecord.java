@@ -64,7 +64,7 @@ public class UpdateRecord implements RequestFun {
         DbUtil.executeSql(connection,updateSql);
         log.info("已执行sql:"+updateSql);
 
-        DbUtil.closeConnection(connection);
+        dataService.closeConnection(connection);
 
         Map<String,Object> webNextOprMap = new HashMap<>();
         webNextOprMap.put("type","hide");

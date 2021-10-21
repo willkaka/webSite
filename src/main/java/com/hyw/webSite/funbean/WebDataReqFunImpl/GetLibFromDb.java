@@ -1,9 +1,6 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
-import com.hyw.webSite.constant.Constant;
-import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.funbean.WebDataReqFun;
-import com.hyw.webSite.dbservice.NQueryWrapper;
 import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
@@ -31,9 +28,9 @@ public class GetLibFromDb implements WebDataReqFun {
 
         if(StringUtil.isBlank(eventInfo.getSelectedValue())) return changedEleMap;
 
-        Connection connection = dataService.getSpringDatabaseConnection(eventInfo.getSelectedValue(),null);
+        Connection connection = dataService.getDatabaseConnection(eventInfo.getSelectedValue(),null);
         List<String> libs = DbUtil.getLibraryNames(connection);
-        DbUtil.closeConnection(connection);
+        dataService.closeConnection(connection);
 
         Map<String,String> map = new TreeMap<String, String>(
         new Comparator<String>() {
