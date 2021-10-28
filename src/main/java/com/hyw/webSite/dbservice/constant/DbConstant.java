@@ -7,4 +7,6 @@ public class DbConstant {
     public static final String DB_TYPE_ORACLE = "oracle";
     public static final String DB_TYPE_SQLITE = "sqlite";
 
+    //spring data source default value.
+    public static final String DB_SOURCE_SYS = "sys_db";
 }

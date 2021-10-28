@@ -61,7 +61,7 @@ public class DataService {
      * @return Connection
      */
     public Connection getDatabaseConnection(String dbName, String libName){
-        if(Constant.DB_SOURCE_SYS.equals(dbName)) {
+        if(DbConstant.DB_SOURCE_SYS.equals(dbName)) {
             return getSpringDatabaseConnection();
         }else {
             ConfigDatabaseInfo configDatabaseInfo = this.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
