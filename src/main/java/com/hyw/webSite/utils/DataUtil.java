@@ -1,7 +1,6 @@
 package com.hyw.webSite.utils;
 
 import com.hyw.webSite.exception.BizException;
-import com.hyw.webSite.exception.IfThrow;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +16,7 @@ public class DataUtil {
     public static Map<String,String> getValueMap(List<Map<String,Object>> mapList){
         Map<String,String> rtnMap = new HashMap<>();
         for(Map<String,Object> map:mapList){
-            IfThrow.trueThenThrowMsg(map.size()>2,"DataUtil.getValueMap要求List中的Map只能包含两个元素！");
+            BizException.trueThrow(map.size()>2,"DataUtil.getValueMap要求List中的Map只能包含两个元素！");
 
             int index=0;
             String rtnKey="",rtnValue="";

@@ -3,7 +3,6 @@ package com.hyw.webSite.funbean.RequestFunImpl;
 import com.alibaba.fastjson.JSON;
 import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.exception.BizException;
-import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.utils.CollectionUtil;
@@ -45,7 +44,7 @@ public class ReadJavaCode extends RequestFunUnit<String, ReadJavaCode.QryVariabl
     @Override
     public void checkVariable(QryVariable variable){
         //输入检查
-        IfThrow.trueThenThrowMsg(Objects.isNull(variable.getRootPath()),"导入文件不允许为空值!");
+        BizException.trueThrow(Objects.isNull(variable.getRootPath()),"导入文件不允许为空值!");
     }
 
     /**

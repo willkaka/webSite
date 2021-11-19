@@ -3,7 +3,6 @@ package com.hyw.webSite.funbean.RequestFunImpl;
 import com.hyw.webSite.constant.WebConstant;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
-import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.model.FieldAttr;
@@ -43,11 +42,11 @@ public class QueryTable extends RequestFunUnit<List<Map<String, FieldAttr>>, Que
     @Override
     public void checkVariable(QueryTable.QueryVariable variable){
         //输入检查
-        IfThrow.trueThenThrowMsg(StringUtil.isBlank(variable.getDbName()),"DB不允许为空值!");
+        BizException.trueThrow(StringUtil.isBlank(variable.getDbName()),"DB不允许为空值!");
 
-        IfThrow.trueThenThrowMsg(StringUtil.isBlank(variable.getLibName()),"数据库,不允许为空值!");
+        BizException.trueThrow(StringUtil.isBlank(variable.getLibName()),"数据库,不允许为空值!");
 
-        IfThrow.trueThenThrowMsg(StringUtil.isBlank(variable.getTableName()),"表名,不允许为空值!");
+        BizException.trueThrow(StringUtil.isBlank(variable.getTableName()),"表名,不允许为空值!");
 
     }
 

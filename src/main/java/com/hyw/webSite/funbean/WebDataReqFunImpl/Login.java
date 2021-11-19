@@ -1,7 +1,6 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
 import com.hyw.webSite.exception.BizException;
-import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.RequestFun;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
@@ -23,9 +22,9 @@ public class Login implements RequestFun {
 
         Map<String,String> inputValue = (Map<String,String>) requestDto.getReqParm().get("inputValue");
         String userName = (String) inputValue.get("modaluserName");
-        IfThrow.trueThenThrowMsg(StringUtil.isBlank(userName),"用户名不允许为空值!");
+        BizException.trueThrow(StringUtil.isBlank(userName),"用户名不允许为空值!");
         String passWord = (String) inputValue.get("modalpwd");
-        IfThrow.trueThenThrowMsg(StringUtil.isBlank(passWord),"密码不允许为空值!");
+        BizException.trueThrow(StringUtil.isBlank(passWord),"密码不允许为空值!");
 
 //        ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(userName);
 //        configDatabaseInfo.setDatabaseLabel(passWord);

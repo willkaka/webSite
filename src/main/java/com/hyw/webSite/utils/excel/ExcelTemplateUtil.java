@@ -7,7 +7,6 @@ import com.github.crab2died.utils.Utils;
 import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.dbservice.NQueryWrapper;
 import com.hyw.webSite.exception.BizException;
-import com.hyw.webSite.exception.IfThrow;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -242,7 +241,7 @@ public class ExcelTemplateUtil {
         //打开excel
         Workbook wb = null;
         try {
-            IfThrow.notInThenThrowMsg(file.getName().toUpperCase(),
+            BizException.notInThrowMsg(file.getName().toUpperCase(),
                     "上传文件文件(" + file.getName() + ")暂不支持，目前仅支持后缀为.xls/.xlsx的文件！","XLS","XLSX");
             if (file.getName().toUpperCase().endsWith("XLS")) {
                 wb = new HSSFWorkbook(new FileInputStream(file));
@@ -293,7 +292,7 @@ public class ExcelTemplateUtil {
             checkTemplateHeader(sheet, headerList);
         }
         //模板字段定义
-        IfThrow.trueThenThrowMsg(CollectionUtils.isEmpty(fieldList),"模板(" + templateNo + ")未定义模板字段！");
+        BizException.trueThrow(CollectionUtils.isEmpty(fieldList),"模板(" + templateNo + ")未定义模板字段！");
 
         // 循环遍历表sheet.getLastRowNum()是获取一个表最后一条记录的记录号，
         double maxNum = sheet.getLastRowNum();

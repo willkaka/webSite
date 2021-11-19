@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hyw.webSite.constant.WebConstant;
 import com.hyw.webSite.dbservice.DataService;
-import com.hyw.webSite.exception.IfThrow;
+import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.utils.FileUtil;
@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -50,7 +51,7 @@ public class UploadFile extends RequestFunUnit<String, UploadFile.QryVariable> {
     @Override
     public void checkVariable(UploadFile.QryVariable variable){
         //输入检查
-        IfThrow.trueThenThrowMsg(Objects.isNull(variable.getFileList()),"导入文件不允许为空值!");
+        BizException.trueThrow(Objects.isNull(variable.getFileList()),"导入文件不允许为空值!");
 
     }
 
@@ -145,11 +146,18 @@ public class UploadFile extends RequestFunUnit<String, UploadFile.QryVariable> {
         for(JSONObject jsonObject:jsonObjectList){
             String loanNo = jsonObject.containsKey("loanNo")?jsonObject.getString("loanNo"):"";
             String claimDate = jsonObject.containsKey("claimDate")?new SimpleDateFormat("yyyy-MM-dd").format(jsonObject.getDate("claimDate")):"";
+            String putoutDate = jsonObject.containsKey("putoutDate")?new SimpleDateFormat("yyyy-MM-dd").format(jsonObject.getDate("putoutDate")):"";
             int overdueDays = jsonObject.containsKey("overdueDays")?jsonObject.getInteger("overdueDays"):0;
+            LocalDate dClaimDate = LocalDate.parse(claimDate);
+            LocalDate dPutoutDate = LocalDate.parse(putoutDate);
+            LocalDate overdueDate = dClaimDate.minusDays(overdueDays);
+            if(overdueDate.isBefore(dPutoutDate)){
+                overdueDate = dPutoutDate;
+            }
 
-            updLbrSql.append("UPDATE loanbalance_relative SET current_overdue_date='").append(claimDate)
-                    .append("',corp_current_overdue_date='").append(claimDate)
-                    .append("',fee_current_overdue_date='").append(claimDate)
+            updLbrSql.append("UPDATE loanbalance_relative SET current_overdue_date='").append(overdueDate)
+                    .append("',corp_current_overdue_date='").append(overdueDate)
+                    .append("',fee_current_overdue_date='").append(overdueDate)
                     .append("',current_overdue_days=").append(overdueDays)
                     .append(",corp_current_overdue_days=").append(overdueDays)
                     .append(",fee_current_overdue_days=").append(overdueDays)

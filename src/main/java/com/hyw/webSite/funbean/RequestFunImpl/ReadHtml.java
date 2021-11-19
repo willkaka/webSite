@@ -2,7 +2,6 @@ package com.hyw.webSite.funbean.RequestFunImpl;
 
 import com.hyw.webSite.constant.WebConstant;
 import com.hyw.webSite.exception.BizException;
-import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.model.FieldAttr;
@@ -29,13 +28,13 @@ public class ReadHtml extends RequestFunUnit<List<Map<String,FieldAttr>>, ReadHt
     @Override
     public void checkVariable(ReadHtml.QueryVariable variable){
         //输入检查
-        IfThrow.trueThenThrowMsg(StringUtil.isBlank(variable.getHttpAddress()),"http地址,不允许为空值!");
+        BizException.trueThrow(StringUtil.isBlank(variable.getHttpAddress()),"http地址,不允许为空值!");
 
         if(!variable.getHttpAddress().startsWith("http://") && !variable.getHttpAddress().startsWith("https://")){
             variable.setHttpAddress("http://" + variable.getHttpAddress());
         }
         // (<td( [^="]*="[^="]*")*>(.*?)</td>)  匹配所有<td xxx> xxx </td>
-        IfThrow.trueThenThrowMsg(StringUtil.isBlank(variable.getRegex()),"请输入 正则表达式 !");
+        BizException.trueThrow(StringUtil.isBlank(variable.getRegex()),"请输入 正则表达式 !");
 
     }
 
@@ -51,7 +50,7 @@ public class ReadHtml extends RequestFunUnit<List<Map<String,FieldAttr>>, ReadHt
         List<Map<String,String>> resultListMap = new ArrayList<>();
         resultListMap = HttpUtil.searchAllGroup(variable.getRegex(),
                 HttpUtil.getHttpRequestData(variable.getHttpAddress(),variable.getWebCharset()));
-        IfThrow.trueThenThrowMsg(CollectionUtil.isEmpty(resultListMap),"无匹配数据！");
+        BizException.trueThrow(CollectionUtil.isEmpty(resultListMap),"无匹配数据！");
 
         List<Map<String, FieldAttr>> records = new ArrayList<>();
         for(Map<String,String> map:resultListMap){

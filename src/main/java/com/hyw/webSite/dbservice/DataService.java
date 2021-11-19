@@ -1,28 +1,23 @@
 package com.hyw.webSite.dbservice;
 
-import com.hyw.webSite.constant.Constant;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.dbservice.constant.DbConstant;
-import com.hyw.webSite.dbservice.dto.IPage;
-import com.hyw.webSite.dbservice.dto.MysqlColumnInfo;
-import com.hyw.webSite.dbservice.dto.MysqlTableInfo;
-import com.hyw.webSite.dbservice.dto.TableFieldInfo;
+import com.hyw.webSite.dbservice.dto.*;
 import com.hyw.webSite.dbservice.exception.DbException;
 import com.hyw.webSite.dbservice.utils.JdbcUtil;
 import com.hyw.webSite.dbservice.utils.QFunction;
 import com.hyw.webSite.dbservice.utils.QueryUtil;
 import com.hyw.webSite.utils.DbUtil;
+import com.hyw.webSite.utils.ThreadUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Method;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -37,12 +32,18 @@ public class DataService {
 
     private static Connection springConnection;
 
+    private static List<TransactionalInfo> transactionalInfoList = new ArrayList<>();
+
+    public static List<TransactionalInfo> getTransactionalInfoList(){
+        return transactionalInfoList;
+    }
+
     //************************数据库********************************/
     /**
      * 获取spring数据库连接
-     * @return Connection
+     * @return Connection 数据库连接
      */
-    public Connection getSpringDatabaseConnection(){
+    private Connection getSpringDatabaseConnection(){
         if(springConnection==null) {
             try {
                 springConnection = dataSource.getConnection();
@@ -54,21 +55,47 @@ public class DataService {
         return springConnection;
     }
 
+    public Connection getDatabaseConnection(){
+        Connection connection = getSpringDatabaseConnection();
+        saveTransactionInfo(connection);
+        return connection;
+    }
+
+    private void saveTransactionInfo(Connection connection){
+        List<Method> methodList = ThreadUtil.getLastCallMethodList(Thread.currentThread().getStackTrace());
+        for(TransactionalInfo transactionalInfo:transactionalInfoList){
+            Method trxMethod = transactionalInfo.getMethod();
+            for(Method method:methodList){
+                if(Objects.equals(method,trxMethod)){
+                    try {
+                        connection.setAutoCommit(false);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    transactionalInfo.getConnectionList().add(connection);
+                    break;
+                }
+            }
+        }
+    }
     /**
      * 按传入的db名称取db连接
      * @param dbName    db名称
      * @param libName   数据库名称
-     * @return Connection
+     * @return Connection 数据库连接
      */
     public Connection getDatabaseConnection(String dbName, String libName){
+        Connection connection;
         if(DbConstant.DB_SOURCE_SYS.equals(dbName)) {
-            return getSpringDatabaseConnection();
+            connection = getDatabaseConnection();
         }else {
             ConfigDatabaseInfo configDatabaseInfo = this.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
                     .eq(ConfigDatabaseInfo::getDatabaseName, dbName));
             configDatabaseInfo.setDatabaseLabel(libName);
-            return DbUtil.getConnection(configDatabaseInfo);
+            connection = DbUtil.getConnection(configDatabaseInfo);
         }
+        saveTransactionInfo(connection);
+        return connection;
     }
 
     public void closeConnection(Connection connection){
@@ -116,7 +143,7 @@ public class DataService {
      * @return 新增记录数
      */
     public <T> int save(T object) {
-        return save(getSpringDatabaseConnection(),object);
+        return save(getDatabaseConnection(),object);
     }
 
     /**
@@ -134,7 +161,7 @@ public class DataService {
      * @return 新增记录数
      */
     public <T> int save(List<T> objectList) {
-        return save(getSpringDatabaseConnection(),objectList);
+        return save(getDatabaseConnection(),objectList);
     }
 
     /**
@@ -157,12 +184,12 @@ public class DataService {
         for(T object:objectList){
             newRecords.add(object);
             if(newRecords.size()>=size) {
-                count = count + save(getSpringDatabaseConnection(),newRecords);
+                count = count + save(getDatabaseConnection(),newRecords);
                 newRecords.clear();
             }
         }
         if(newRecords.size()>0)
-            count = count + save(getSpringDatabaseConnection(),newRecords);
+            count = count + save(getDatabaseConnection(),newRecords);
         return count;
     }
 
@@ -179,12 +206,12 @@ public class DataService {
         for(T object:objectList){
             newRecords.add(object);
             if(newRecords.size()>=size) {
-                count = count + save(getSpringDatabaseConnection(),newRecords);
+                count = count + save(getDatabaseConnection(),newRecords);
                 newRecords.clear();
             }
         }
         if(newRecords.size()>0)
-            count = count + save(getSpringDatabaseConnection(),newRecords);
+            count = count + save(getDatabaseConnection(),newRecords);
         return count;
     }
 
@@ -211,11 +238,11 @@ public class DataService {
     //************************删除记录********************************/
     public <T,B> int delete(T object, QFunction<T, B> function){
         String keyFieldName = QueryUtil.toUnderlineStr(QueryUtil.getImplMethodName(function).replace("get", ""));
-        return delete(getSpringDatabaseConnection(),object,keyFieldName);
+        return delete(getDatabaseConnection(),object,keyFieldName);
     }
 
     public <T> int delete(T object,String keyFieldName){
-        return delete(getSpringDatabaseConnection(),object,keyFieldName);
+        return delete(getDatabaseConnection(),object,keyFieldName);
     }
 
     public <T> int delete(Connection connection,T object,String keyFieldName){
@@ -239,18 +266,18 @@ public class DataService {
         if(nUpdateWrapper.getConnection() != null){
             return JdbcUtil.updateBySql(nUpdateWrapper.getConnection(),nUpdateWrapper.getSql());
         }else {
-            return JdbcUtil.updateBySql(getSpringDatabaseConnection(),nUpdateWrapper.getSql());
+            return JdbcUtil.updateBySql(getDatabaseConnection(),nUpdateWrapper.getSql());
         }
     }
 
     //************************更新记录********************************/
     public <T,B> int update(T object,QFunction<T, B> function){
-        String fieldName = QueryUtil.toUnderlineStr(QueryUtil.getImplMethodName(function).replace("get", ""));
-        return updateById(getSpringDatabaseConnection(),object,fieldName);
+        String fieldName = QueryUtil.getImplMethodName(function).replace("get", "");
+        return updateById(getDatabaseConnection(),object,fieldName);
     }
 
     public <T> int updateById(T object,String keyFieldName){
-        return updateById(getSpringDatabaseConnection(),object,keyFieldName);
+        return updateById(getDatabaseConnection(),object,keyFieldName);
     }
 
     public <T> int updateById(Connection connection,T object,String keyFieldName){
@@ -280,7 +307,7 @@ public class DataService {
         if(updateWrapper.getConnection() != null){
             return JdbcUtil.updateBySql(updateWrapper.getConnection(),updateWrapper.getSql());
         }else {
-            return JdbcUtil.updateBySql(getSpringDatabaseConnection(),updateWrapper.getSql());
+            return JdbcUtil.updateBySql(getDatabaseConnection(),updateWrapper.getSql());
         }
     }
 
@@ -293,7 +320,7 @@ public class DataService {
         if(queryWrapper.getConnection() != null){
             list = JdbcUtil.getSqlRecords(queryWrapper.getConnection(),sql);
         }else {
-            list = JdbcUtil.getSqlRecords(getSpringDatabaseConnection(),sql);
+            list = JdbcUtil.getSqlRecords(getDatabaseConnection(),sql);
         }
         for(Map<String, Object> map:list){
             try {
@@ -313,7 +340,7 @@ public class DataService {
     public <T> int count(NQueryWrapper<T> queryWrapper){
         String sql = queryWrapper.getCountSql();
         List<Map<String, Object>> list = JdbcUtil.getSqlRecords(queryWrapper.getConnection()==null?
-                getSpringDatabaseConnection():queryWrapper.getConnection(),sql);
+                getDatabaseConnection():queryWrapper.getConnection(),sql);
         if(QueryUtil.isEmptyList(list)) return 0;//throw new DbException("sql("+sql+")查询无记录！");
         return (int) list.get(0).get("COUNT(1)");
     }
@@ -321,7 +348,7 @@ public class DataService {
     public <T> List<Map<String, Object>> mapList(NQueryWrapper<T> queryWrapper){
         String sql = queryWrapper.getSql();
         List<Map<String, Object>> list = JdbcUtil.getSqlRecords(queryWrapper.getConnection()==null?
-                getSpringDatabaseConnection():queryWrapper.getConnection(),sql);
+                getDatabaseConnection():queryWrapper.getConnection(),sql);
         return list;
     }
 
@@ -330,7 +357,7 @@ public class DataService {
         List<T> rtnList = new ArrayList();
         String sql = queryWrapper.getSql();
         List<Map<String, Object>> list = JdbcUtil.getSqlRecords(queryWrapper.getConnection()==null?
-                getSpringDatabaseConnection():queryWrapper.getConnection(),sql);
+                getDatabaseConnection():queryWrapper.getConnection(),sql);
         for(Map<String, Object> map:list){
             try {
                 Class<T> clazz = queryWrapper.getTableClass();
@@ -349,7 +376,7 @@ public class DataService {
         List<T> rtnList = new ArrayList();
         String sql = queryWrapper.getSql();
         List<Map<String, Object>> list = JdbcUtil.getSqlRecords(queryWrapper.getConnection()==null?
-                getSpringDatabaseConnection():queryWrapper.getConnection(),sql);
+                getDatabaseConnection():queryWrapper.getConnection(),sql);
         for(Map<String, Object> map:list){
             try {
                 Class<T> clazz = queryWrapper.getTableClass();
@@ -403,7 +430,7 @@ public class DataService {
 //    }
 
     public <T> List<TableFieldInfo> getTableFieldList(Class<T> clazz){
-        Connection connection = getSpringDatabaseConnection();
+        Connection connection = getDatabaseConnection();
         return getTableFieldList(clazz,connection);
     }
 
@@ -486,11 +513,11 @@ public class DataService {
     }
 
     public <T> List<String> getTablePrimaryKeys(Class<T> clazz) {
-        return getTablePrimaryKeys(QueryUtil.toUnderlineStr(clazz.getSimpleName()),getSpringDatabaseConnection());
+        return getTablePrimaryKeys(QueryUtil.toUnderlineStr(clazz.getSimpleName()),getDatabaseConnection());
     }
 
     public List<String> getTablePrimaryKeys(String tableName) {
-        return getTablePrimaryKeys(tableName,getSpringDatabaseConnection());
+        return getTablePrimaryKeys(tableName,getDatabaseConnection());
     }
 
     public <T> List<String> getTablePrimaryKeys(Class<T> clazz,Connection connection) {
@@ -499,9 +526,9 @@ public class DataService {
 
     /**
      * 返回表结构显示的内容
-     * @param tableName
-     * @param connection
-     * @return
+     * @param tableName 数据表
+     * @param connection 数据库连接
+     * @return List<String>
      */
     public List<String> getTablePrimaryKeys(String tableName,Connection connection) {
         List<String> primaryKeys = new ArrayList<>();
@@ -518,3 +545,4 @@ public class DataService {
         return primaryKeys;
     }
 }
+

@@ -2,7 +2,6 @@ package com.hyw.webSite.funbean.RequestFunImpl;
 
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
-import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.RequestFun;
 import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.dbservice.NQueryWrapper;
@@ -36,11 +35,11 @@ public class GenClass implements RequestFun {
 
         Map<String,String> inputValue = (Map<String,String>) requestDto.getReqParm().get("inputValue");
         String dbName = inputValue.get("dbName");
-        IfThrow.trueThenThrowMsg(StringUtil.isBlank(dbName),"DB不允许为空值!");
+        BizException.trueThrow(StringUtil.isBlank(dbName),"DB不允许为空值!");
         String libName = inputValue.get("libName");
-        IfThrow.trueThenThrowMsg(StringUtil.isBlank(libName),"数据库,不允许为空值!");
+        BizException.trueThrow(StringUtil.isBlank(libName),"数据库,不允许为空值!");
         String tableName = inputValue.get("tableName");
-        IfThrow.trueThenThrowMsg(StringUtil.isBlank(tableName),"表名,不允许为空值!");
+        BizException.trueThrow(StringUtil.isBlank(tableName),"表名,不允许为空值!");
 
         //连接数据库，查询数据，关闭数据库
 //        Connection connection = DbUtil.getConnection(configDatabaseInfoService.getDatabaseConfig(dbName),libName);

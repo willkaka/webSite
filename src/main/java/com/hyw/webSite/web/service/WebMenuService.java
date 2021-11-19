@@ -3,8 +3,6 @@ package com.hyw.webSite.web.service;
 import com.alibaba.fastjson.JSON;
 import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.dbservice.NQueryWrapper;
-import com.hyw.webSite.model.SpringDatabaseConfig;
-import com.hyw.webSite.service.SpringDataSourceService;
 import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.web.model.*;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +18,6 @@ import java.util.Map;
 @Service
 public class WebMenuService {
 
-    @Autowired
-    private SpringDatabaseConfig springDatabaseConfig;
-    @Autowired
-    private SpringDataSourceService springDataSourceService;
     @Autowired
     private DataService dataService;
 

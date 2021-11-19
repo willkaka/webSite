@@ -10,7 +10,6 @@ import com.hyw.webSite.dao.WebConfigReq;
 import com.hyw.webSite.dao.WebElement;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.WebDataReqFun;
-import com.hyw.webSite.model.SpringDatabaseConfig;
 import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.dbservice.NQueryWrapper;
 import com.hyw.webSite.utils.CollectionUtil;
@@ -35,10 +34,6 @@ import java.util.Map;
 @Service
 public class WebConfigInfoService {
 
-    @Autowired
-    private SpringDatabaseConfig springDatabaseConfig;
-    @Autowired
-    private SpringDataSourceService springDataSourceService;
     @Autowired
     private DataService dataService;
 
@@ -256,7 +251,7 @@ public class WebConfigInfoService {
                             }
                         }
                     }else {
-                        dataMaps = DbUtil.getSqlRecords(springDataSourceService.getSpringDatabaseConnection(), sql);
+                        dataMaps = DbUtil.getSqlRecords(dataService.getDatabaseConnection(), sql);
                     }
                     dataMap = DataUtil.getValueMap(dataMaps);
                 }else if("fun".equals(dataType)) {
@@ -361,7 +356,7 @@ public class WebConfigInfoService {
         switch (dataPre){
             case "sql:":
                 String sql= dataString.substring(4,dataString.length());
-                List<Map<String,Object>> dataMaps = DbUtil.getSqlRecords(springDataSourceService.getSpringDatabaseConnection(),sql);
+                List<Map<String,Object>> dataMaps = DbUtil.getSqlRecords(dataService.getDatabaseConnection(),sql);
                 dataMap = DataUtil.getValueMap(dataMaps);
                 break;
             case "fun:":
@@ -403,15 +398,7 @@ public class WebConfigInfoService {
         if (StringUtil.isNotBlank(enumKey) && enumKey.length() > 4 && enumKey.substring(0, 4).equals("sql:")) {
             String sql = enumKey.substring(4);
 
-            String dbType = "";
-            if (springDatabaseConfig.getDriverClass().toLowerCase().contains("sqlite"))
-                dbType = Constant.DB_TYPE_SQLITE;
-            if (springDatabaseConfig.getDriverClass().toLowerCase().contains("oracle"))
-                dbType = Constant.DB_TYPE_ORACLE;
-            if (springDatabaseConfig.getDriverClass().toLowerCase().contains("mysql")) dbType = Constant.DB_TYPE_MYSQL;
-            Connection connection = DbUtil.getConnection(dbType,
-                    springDatabaseConfig.getDriverClass(), springDatabaseConfig.getUrl(), null, null,
-                    springDatabaseConfig.getUserName(), springDatabaseConfig.getPassword());
+            Connection connection = dataService.getDatabaseConnection();
             rtnListMap = DbUtil.getSqlRecords(connection, sql);
 
             if (rtnListMap != null) {

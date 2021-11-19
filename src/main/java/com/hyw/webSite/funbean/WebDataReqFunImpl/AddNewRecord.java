@@ -28,11 +28,11 @@ public class AddNewRecord implements RequestFun {
 
         Map<String,String> inputValue = (Map<String,String>) requestDto.getReqParm().get("inputValue");
         String dbName = (String) inputValue.get("dbName");
-//        IfThrow.trueThenThrowMsg(StringUtil.isBlank(dbName),"数据库,不允许为空值!");
+//        BizException.trueThrow(StringUtil.isBlank(dbName),"数据库,不允许为空值!");
         String libName = (String) inputValue.get("libName");
-//        IfThrow.trueThenThrowMsg(StringUtil.isBlank(libName),"库名,不允许为空值!");
+//        BizException.trueThrow(StringUtil.isBlank(libName),"库名,不允许为空值!");
         String tableName = (String) inputValue.get("tableName");
-//        IfThrow.trueThenThrowMsg(StringUtil.isBlank(tableName),"表名,不允许为空值!");
+//        BizException.trueThrow(StringUtil.isBlank(tableName),"表名,不允许为空值!");
 
         Connection connection = dataService.getDatabaseConnection(dbName,libName);
 

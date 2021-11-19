@@ -1,6 +1,6 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
-import com.hyw.webSite.exception.IfThrow;
+import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
 import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.dbservice.DataService;
@@ -31,13 +31,13 @@ public class AddRecord implements RequestFun {
 
         Map<String,String> inputValue = (Map<String,String>) requestDto.getReqParm().get("inputValue");
         String dbName = (String) inputValue.get("dbName");
-        IfThrow.trueThenThrowMsg(StringUtil.isBlank(dbName),"数据库,不允许为空值!");
+        BizException.trueThrow(StringUtil.isBlank(dbName),"数据库,不允许为空值!");
 
         String libName = (String) inputValue.get("libName");
-        IfThrow.trueThenThrowMsg(StringUtil.isBlank(libName),"库名,不允许为空值!");
+        BizException.trueThrow(StringUtil.isBlank(libName),"库名,不允许为空值!");
 
         String tableName = (String) inputValue.get("tableName");
-        IfThrow.trueThenThrowMsg(StringUtil.isBlank(tableName),"表名,不允许为空值!");
+        BizException.trueThrow(StringUtil.isBlank(tableName),"表名,不允许为空值!");
 
 
         //建立数据库连接，并执行写入操作

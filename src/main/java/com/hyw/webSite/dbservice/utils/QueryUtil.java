@@ -50,6 +50,11 @@ public class QueryUtil {
         return c;
     }
 
+    public static String firstCharToLowerCase(String c){
+        if(isBlankStr(c)) return c;
+        return c.substring(0,1).toLowerCase() + c.substring(1);
+    }
+
     /**
      * 取对象的所有属性（包括父类属性）
      * @param clazz 对象

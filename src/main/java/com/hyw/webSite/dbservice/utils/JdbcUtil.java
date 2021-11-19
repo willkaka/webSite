@@ -79,6 +79,7 @@ public class JdbcUtil {
             Statement statement = connection.createStatement();
             updateCnt = statement.executeUpdate(sql);
             statement.close();
+//            connection.commit();
         }catch(Exception e){
             log.error("执行sql语句({})出错！",sql,e);
         }
@@ -304,12 +305,14 @@ public class JdbcUtil {
             }
             if(index>0) sql.append(QueryUtil.isBlankStr(sql.toString())?"":", ");
             //拼接字段值
-            sql.append(fieldName).append("=").append(getFieldValue(fieldType, jsonObject.get(fieldName)));
+            sql.append(QueryUtil.toUnderlineStr(fieldName)).append("=")
+                    .append(getFieldValue(fieldType, jsonObject.get(fieldName)));
             index++;
         }
         if(null==keyField) return null;
-        sql.append(" WHERE ").append(keyFieldName).append("=")
-                .append(getFieldValue(keyField.getType().getTypeName(), jsonObject.get(keyFieldName)));
+        sql.append(" WHERE ").append(QueryUtil.toUnderlineStr(keyFieldName)).append("=")
+                .append(getFieldValue(keyField.getType().getTypeName(),
+                        jsonObject.get(QueryUtil.firstCharToLowerCase(keyFieldName))));
         return sql.toString();
     }
 

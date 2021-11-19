@@ -1,7 +1,7 @@
 package com.hyw.webSite.funbean.RequestFunImpl;
 
 import com.hyw.webSite.constant.WebConstant;
-import com.hyw.webSite.exception.IfThrow;
+import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.model.FieldAttr;
@@ -32,11 +32,11 @@ public class QueryTableRecords extends RequestFunUnit<List<Map<String,FieldAttr>
     @Override
     public void checkVariable(QueryVariable variable){
         //输入检查
-        IfThrow.trueThenThrowMsg(StringUtil.isBlank(variable.getDbName()),"DB不允许为空值!");
+        BizException.trueThrow(StringUtil.isBlank(variable.getDbName()),"DB不允许为空值!");
 
-        IfThrow.trueThenThrowMsg(StringUtil.isBlank(variable.getLibName()),"数据库,不允许为空值!");
+        BizException.trueThrow(StringUtil.isBlank(variable.getLibName()),"数据库,不允许为空值!");
 
-        IfThrow.trueThenThrowMsg(StringUtil.isBlank(variable.getTableName()),"表名,不允许为空值!");
+        BizException.trueThrow(StringUtil.isBlank(variable.getTableName()),"表名,不允许为空值!");
 
     }
 
@@ -57,7 +57,7 @@ public class QueryTableRecords extends RequestFunUnit<List<Map<String,FieldAttr>
         Connection connection = dataService.getDatabaseConnection(variable.getDbName(),variable.getLibName());
         totalCount = DbUtil.getTableRecordCount(connection,variable.getDbName(),variable.getLibName(),variable.getTableName());
         List<Map<String,FieldAttr>> records = DbUtil.getTableRecords(connection,variable.getDbName(),variable.getLibName(),variable.getTableName(),(pageNow-1)*pageSize,pageSize);
-        if(!connection.equals(dataService.getSpringDatabaseConnection())) {
+        if(!connection.equals(dataService.getDatabaseConnection())) {
             DbUtil.closeConnection(connection);
         }
 

@@ -1,15 +1,14 @@
-package com.hyw.webSite.annotation;
+package com.hyw.webSite.dbservice.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ ElementType.METHOD, ElementType.TYPE})
+@Target(value = ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface PermissionCheck {
-    /**
-     * 资源key
-     * */
-    String resourceKey();
+public @interface NTransactional {
+
+    Class<? extends Throwable>[] rollbackWhen() default {};
+
 }

@@ -2,7 +2,6 @@ package com.hyw.webSite.funbean.RequestFunImpl;
 
 import com.hyw.webSite.constant.WebConstant;
 import com.hyw.webSite.exception.BizException;
-import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.utils.StringUtil;
@@ -24,8 +23,8 @@ public class PrcStringUtil extends RequestFunUnit<String, PrcStringUtil.QryVaria
     @Override
     public void checkVariable(PrcStringUtil.QryVariable variable){
         //输入检查
-        IfThrow.trueThenThrowMsg(StringUtil.isBlank(variable.getInputStr()),"输入字符串不允许为空值!");
-        IfThrow.trueThenThrowMsg(StringUtil.isBlank(variable.getColNum()),"列数不允许小于0!");
+        BizException.trueThrow(StringUtil.isBlank(variable.getInputStr()),"输入字符串不允许为空值!");
+        BizException.trueThrow(StringUtil.isBlank(variable.getColNum()),"列数不允许小于0!");
         try {
             int num = Integer.parseInt(variable.colNum);
         }catch (Exception e){
