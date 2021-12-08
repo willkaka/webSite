@@ -1,9 +1,8 @@
-package com.hyw.webSite.web.model;
+package com.hyw.webSite.web.dto;
 
 import lombok.Data;
 
 import java.util.List;
-import java.util.Map;
 
 @Data
 public class WebDivDto {

@@ -77,7 +77,6 @@ public class ExcelTemplateUtil {
                 .selectFields(TemplateDefine::getSheetNo)
                 .groupBy(TemplateDefine::getSheetNo)
         );
-
         //打开excel
         Workbook wb = null;
         try {
@@ -153,6 +152,30 @@ public class ExcelTemplateUtil {
             try { result.addAll(future.get()); } catch (Exception e) { log.error("取线程返回值异常！", e); }
         }
         return result;
+    }
+
+    public List<JSONObject> getExcelRecordsWithJsonFieldInfo(File file,int sheetNo,int begLine,List<TemplateDefine> fieldList){
+        //打开excel
+        Workbook wb = null;
+        try {
+            if (file.getName().toUpperCase().endsWith("XLS")) {
+                wb = new HSSFWorkbook(new FileInputStream(file));
+            } else if (file.getName().toUpperCase().endsWith("XLSX")) {
+                wb = new XSSFWorkbook(new FileInputStream(file));
+            } else {
+                throw new BizException("上传文件文件(" + file.getName() + ")暂不支持，目前仅支持后缀为.xls/.xlsx的文件！");
+            }
+        } catch (Exception e) {
+            log.error("读取本地文件({})异常！", file.getPath(), e);
+            throw new BizException("读取本地文件(" + file.getPath() + ")异常！");
+        } finally {
+            try { if (wb != null) wb.close(); } catch (Exception ignored) { }
+        }
+        //取excel sheet.
+        Sheet sheet = wb.getSheetAt(sheetNo);
+        int maxNum = sheet.getLastRowNum();
+
+        return readRecords(sheet,begLine,maxNum,fieldList);
     }
 
     /**

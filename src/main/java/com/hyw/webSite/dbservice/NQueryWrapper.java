@@ -2,6 +2,7 @@ package com.hyw.webSite.dbservice;
 
 import com.hyw.webSite.dbservice.utils.QFunction;
 import com.hyw.webSite.dbservice.utils.QueryUtil;
+import com.hyw.webSite.utils.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -28,6 +29,7 @@ public class NQueryWrapper<T> {
     private List<GroupInfo> groupInfoList = new ArrayList<>();
     private List<OrderInfo> orderInfoList = new ArrayList<>();
     private String lastString;
+    private String sql = null;
 
     private int totalCnt=0;  //总记录
     private int pageSize=0;  //每页记录数
@@ -36,6 +38,7 @@ public class NQueryWrapper<T> {
     private int curPage=0;   //当前页数
 
     public String getSql(){
+        if(StringUtil.isNotBlank(this.sql)) return this.sql;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ");
         int condIndex=0;
@@ -323,8 +326,18 @@ public class NQueryWrapper<T> {
 
     private void putCondition(String fieldName,String symbol,Object value){
         UpdCondition condition = new UpdCondition();
-        condition.setColumn(fieldName).setSymbol(symbol).setValue(value);
+        condition.setColumn(fieldName).setSymbol(getSymbol(symbol,value)).setValue(value);
         conditionList.add(condition);
+    }
+
+    private String getSymbol(String curSymbol,Object value){
+        if("=".equals(curSymbol) && (value == null ||"null".equalsIgnoreCase(value.toString()))){
+            return "is";
+        }else if("<>".equals(curSymbol) && (value == null ||"null".equalsIgnoreCase(value.toString()))){
+            return "not is";
+        }else{
+            return curSymbol;
+        }
     }
 
     private <A,B> void putTable(Function<A, B> function){
@@ -363,7 +376,9 @@ public class NQueryWrapper<T> {
 
 
     private String getValue(Object value){
-        if(value instanceof Integer){
+        if(value == null){
+            return "null";
+        }else if(value instanceof Integer){
             return String.valueOf(value);
         }else if(value instanceof String){
             return "'"+String.valueOf(value)+"'";

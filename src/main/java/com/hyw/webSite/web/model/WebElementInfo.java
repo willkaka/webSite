@@ -61,4 +61,10 @@ public class WebElementInfo {
     //element_desc
     private String elementDesc;
 
+    /**
+     * null
+     */
+    //element_attr
+    private String elementAttr;
+
 }

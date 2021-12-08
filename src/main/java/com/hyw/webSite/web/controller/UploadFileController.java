@@ -27,13 +27,14 @@ public class UploadFileController {
      * 上传文件
      * @param multipartFiles 上传的文件
      */
-    @RequestMapping(value = "/fileReq/uploadFile")
-    public ReturnDto uploadFile(@RequestParam("fileList") List<MultipartFile> multipartFiles, HttpServletRequest request){
+    @RequestMapping(value = "/fileReq/{fileUploadEventId}")
+    public ReturnDto uploadFile(@PathVariable String fileUploadEventId,
+                                @RequestParam("fileList") List<MultipartFile> multipartFiles, HttpServletRequest request){
         ReturnDto returnDto = new ReturnDto();
 
         String dto = request.getParameter("requestDto");
         RequestDto requestDto = JSONObject.parseObject(dto,RequestDto.class);
-        log.info("后台收到请求/fileReq/uploadFile");
+        log.info("后台收到请求/fileReq/"+ fileUploadEventId);
         log.info("请求报文内容{}",JSON.toJSONString(requestDto));
 
         //文件无法与参数一起传输

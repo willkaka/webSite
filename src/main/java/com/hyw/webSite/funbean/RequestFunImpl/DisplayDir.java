@@ -6,7 +6,7 @@ import com.hyw.webSite.utils.FileUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.ReturnDto;
-import com.hyw.webSite.web.model.WebElementDto;
+import com.hyw.webSite.web.dto.WebElementDto;
 import com.hyw.webSite.utils.ImageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

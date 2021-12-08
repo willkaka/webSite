@@ -1,6 +1,5 @@
 package com.hyw.webSite.web.dto;
 
-import com.hyw.webSite.web.model.EventInfo;
 import lombok.Data;
 
 import java.util.Map;

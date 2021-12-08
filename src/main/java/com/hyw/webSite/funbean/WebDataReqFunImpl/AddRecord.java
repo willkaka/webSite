@@ -9,7 +9,7 @@ import com.hyw.webSite.utils.SqlUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.ReturnDto;
-import com.hyw.webSite.web.model.EventInfo;
+import com.hyw.webSite.web.dto.EventInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

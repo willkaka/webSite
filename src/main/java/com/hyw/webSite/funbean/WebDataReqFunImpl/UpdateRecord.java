@@ -1,19 +1,16 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
-import com.hyw.webSite.constant.Constant;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.dbservice.constant.DbConstant;
-import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
 import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.dbservice.NQueryWrapper;
 import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.SqlUtil;
-import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.ReturnDto;
-import com.hyw.webSite.web.model.EventInfo;
+import com.hyw.webSite.web.dto.EventInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

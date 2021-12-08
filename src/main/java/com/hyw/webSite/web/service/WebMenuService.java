@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.dbservice.NQueryWrapper;
 import com.hyw.webSite.utils.CollectionUtil;
+import com.hyw.webSite.web.dto.EventInfo;
+import com.hyw.webSite.web.dto.WebElementDto;
 import com.hyw.webSite.web.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +31,9 @@ public class WebMenuService {
         List<WebElementDto> webElementDtoList = new ArrayList<>();
 
         //取菜单集
+        int seq = 0;
         List<WebMenuGroupInfo> webMenuGroupInfoList = dataService.list(new NQueryWrapper<WebMenuGroupInfo>()
                 .orderByAsc(WebMenuGroupInfo::getWebMenuGroupInfoId));
-
-        int seq = 0;
         for(WebMenuGroupInfo webMenuGroupInfo : webMenuGroupInfoList){
             WebElementDto webElementDto = new WebElementDto();
             webElementDto.setWebElementId(webMenuGroupInfo.getWebMenuGroupInfoId());
@@ -44,7 +45,10 @@ public class WebMenuService {
             webElementDto.setType("menu");
             webElementDto.setPrompt(webMenuGroupInfo.getGroupDesc());
 
-            List<WebMenuInfo> webMenuInfoList = getMenuInfo(webMenuGroupInfo.getMenuGroup());
+            //菜单信息
+            List<WebMenuInfo> webMenuInfoList = dataService.list(new NQueryWrapper<WebMenuInfo>()
+                    .eq(WebMenuInfo::getMenuGroup,webMenuGroupInfo.getMenuGroup())
+                    .orderByAsc(WebMenuInfo::getMenuSeq));
             List<WebElementDto> subWebElementList = new ArrayList<>();
             for(WebMenuInfo webMenuInfo:webMenuInfoList){
                 WebElementDto subWebElement = new WebElementDto();
@@ -57,7 +61,7 @@ public class WebMenuService {
                 subWebElement.setType("menu");
                 subWebElement.setPrompt(webMenuInfo.getMenuDesc());
 
-                List<EventInfo> webEventInfoList = getEventInfoList("menu",webMenuInfo.getMenu());
+                List<EventInfo> webEventInfoList = getEventInfoList(webMenuInfo.getMenu(),null);
                 subWebElement.setEventInfoList(webEventInfoList);
 
                 subWebElementList.add(subWebElement);
@@ -68,13 +72,6 @@ public class WebMenuService {
         return webElementDtoList;
     }
 
-    @SuppressWarnings("unchecked")
-    private List<WebMenuInfo> getMenuInfo(String menuGroup){
-        //取菜单
-        return dataService.list(new NQueryWrapper<WebMenuInfo>()
-                .eq(WebMenuInfo::getMenuGroup,menuGroup)
-                .orderByAsc(WebMenuInfo::getMenuSeq));
-    }
 
     private List<EventInfo> getEventInfoList(String menu, String element){
         List<EventInfo> eventInfoList = new ArrayList<>();
@@ -89,9 +86,6 @@ public class WebMenuService {
             eventInfo.setType(webEventInfo.getRequestType());
             eventInfo.setId(webEventInfo.getRequestNo());
 //            eventInfo.setTriggerElement(webEventInfo.);
-
-
-
 //            eventInfo.setSelectedValue(CollectionUtil.getMapFirstOrNull(webElementDto.getDataMap()));
 
             //事件参数

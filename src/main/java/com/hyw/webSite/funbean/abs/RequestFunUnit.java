@@ -6,12 +6,16 @@ import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.utils.ObjectUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.ReturnDto;
-import com.hyw.webSite.web.model.WebDivDto;
+import com.hyw.webSite.web.dto.WebDivDto;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 /**
@@ -58,13 +62,33 @@ public abstract class RequestFunUnit<D, V extends RequestPubDto> implements Requ
             if(inputValue.containsKey(fieldName)){
                 try {
                     if (!field.isAccessible()) { field.setAccessible(true); }
-                    field.set(var, value);
+                    field.set(var, valueConvert(field,value));
                 } catch (Exception e) {
                     throw new BizException("给对象(" + var.getClass().getName() + ")属性(" + fieldName + ")赋值(" + value + ")失败!");
                 }
             }
         }
         return var;
+    }
+
+    private Object valueConvert(Field field,Object value){
+        if(field.getType() == Integer.class) {
+            return Integer.parseInt(value.toString());
+        }else if(field.getType() == Double.class) {
+            return Double.parseDouble(value.toString());
+        }else if(field.getType() == Long.class) {
+            return Long.parseLong(value.toString());
+        }else if(field.getType() == BigDecimal.class) {
+            return new BigDecimal(value.toString());
+        }else if(field.getType() == LocalDate.class) {
+            return LocalDate.parse(value.toString());
+        }else if(field.getType() == LocalTime.class) {
+            return LocalTime.parse(value.toString());
+        }else if(field.getType() == LocalDateTime.class) {
+            return LocalDateTime.parse(value.toString());
+        }else{
+            return value;
+        }
     }
 
     /**

@@ -3,6 +3,7 @@ package com.hyw.webSite.dbservice.annotation;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -10,11 +11,12 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-@Aspect// 申明为切面
-@Component
 /**
  * 切面类封装事务逻辑
  */
+@Aspect// 申明为切面
+@Component
+@Slf4j
 public class AopTransaction {
 
     private TransactionStatus transactionStatus;
@@ -24,6 +26,7 @@ public class AopTransaction {
      */
     @Around("@annotation(com.hyw.webSite.dbservice.annotation.NTransactional)")
     public Object around(ProceedingJoinPoint pjp) throws Throwable {
+        log.info("进入AopTransaction.around()");
         // 1.获取方法的注解
         //1. 获取代理对对象的方法
         String methodName = pjp.getSignature().getName();

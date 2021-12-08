@@ -1,4 +1,4 @@
-package com.hyw.webSite.web.model;
+package com.hyw.webSite.web.dto;
 
 import lombok.Data;
 

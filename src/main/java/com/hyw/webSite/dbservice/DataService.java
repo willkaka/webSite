@@ -62,6 +62,7 @@ public class DataService {
     }
 
     private void saveTransactionInfo(Connection connection){
+        if(QueryUtil.isEmptyList(transactionalInfoList)) return;
         List<Method> methodList = ThreadUtil.getLastCallMethodList(Thread.currentThread().getStackTrace());
         for(TransactionalInfo transactionalInfo:transactionalInfoList){
             Method trxMethod = transactionalInfo.getMethod();
