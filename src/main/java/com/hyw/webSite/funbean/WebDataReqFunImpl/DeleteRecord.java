@@ -67,18 +67,19 @@ public class DeleteRecord implements RequestFun {
 
         dataService.closeConnection(connection);
 
-        Map<String,Object> webNextOprMap = new HashMap<>();
-        webNextOprMap.put("alert","true");//是否提示成功
-        webNextOprMap.put("sucMsg","数据已删除成功！"); //提示信息
-        webNextOprMap.put("type","hide");//执行任务类型
-        webNextOprMap.put("hideEle","swBackGround"); //更新成功后关闭更新子窗口。
-        //{"eventList":[{"event":"click","type":"buttonReq","id":"queryTableRecords"}]}
-        EventInfo eventInfo = new EventInfo();
-        eventInfo.setEvent("click");
-        eventInfo.setType("buttonReq");
-        eventInfo.setId("queryTableRecords");
-        webNextOprMap.put("callEven",eventInfo);//重新查询数据，实现自动刷新功能
-        returnDto.setWebNextOpr(webNextOprMap);
+//        Map<String,Object> webNextOprMap = new HashMap<>();
+//        webNextOprMap.put("alert","true");//是否提示成功
+//        webNextOprMap.put("sucMsg","数据已删除成功！"); //提示信息
+//        webNextOprMap.put("type","hide");//执行任务类型
+//        webNextOprMap.put("hideEle","swBackGround"); //更新成功后关闭更新子窗口。
+//        //{"eventList":[{"event":"click","type":"buttonReq","id":"queryTableRecords"}]}
+//        EventInfo eventInfo = new EventInfo();
+//        eventInfo.setEvent("click");
+//        eventInfo.setType("buttonReq");
+//        eventInfo.setId("queryTableRecords");
+//        webNextOprMap.put("callEven",eventInfo);//重新查询数据，实现自动刷新功能
+//        returnDto.setWebNextOpr(webNextOprMap);
+        returnDto.setWebNextOpr(requestDto.getEventInfo().getParamMap());//页面在收到响应报文后处理方式
         return returnDto;
     }
 }

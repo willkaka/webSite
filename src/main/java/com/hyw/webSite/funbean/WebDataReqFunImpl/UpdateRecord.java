@@ -1,5 +1,6 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.dbservice.constant.DbConstant;
 import com.hyw.webSite.funbean.RequestFun;
@@ -61,21 +62,9 @@ public class UpdateRecord implements RequestFun {
         log.info("准备执行sql:"+updateSql);
         DbUtil.executeSql(connection,updateSql);
         log.info("已执行sql:"+updateSql);
-
         dataService.closeConnection(connection);
 
-        Map<String,Object> webNextOprMap = new HashMap<>();
-        webNextOprMap.put("type","hide");
-        webNextOprMap.put("alert","true");
-        webNextOprMap.put("hideEle","swBackGround"); //更新成功后关闭更新子窗口。
-        webNextOprMap.put("sucMsg","数据已更新成功！"); //更新成功后关闭更新子窗口。
-        //{"eventList":[{"event":"click","type":"buttonReq","id":"queryTableRecords"}]}
-        EventInfo eventInfo2 = new EventInfo();
-        eventInfo2.setEvent("click");
-        eventInfo2.setType("buttonReq");
-        eventInfo2.setId("queryTableRecords");
-        webNextOprMap.put("callEven",eventInfo2);
-        returnDto.setWebNextOpr(webNextOprMap);
+        returnDto.setWebNextOpr(eventInfo.getParamMap());//页面在收到响应报文后处理方式
         return returnDto;
     }
 }

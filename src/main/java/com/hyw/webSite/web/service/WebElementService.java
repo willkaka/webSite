@@ -59,7 +59,8 @@ public class WebElementService {
             // 属性 eg. class="xxx",width=100px,height=200px
             webElementDto.setAttrMap(getAttrMap(webElementInfo.getElementAttr(), ",", "="));
 
-            List<EventInfo> webEventInfoList = getEventInfoList(webElementInfo.getMenu(),webElementInfo.getElement());
+            List<EventInfo> webEventInfoList = getEventInfoList(webElementInfo.getMenu(),
+                    webElementInfo.getArea(),webElementInfo.getElement());
             webElementDto.setEventInfoList(webEventInfoList);
 
             webElementDtoList.add(webElementDto);
@@ -134,20 +135,23 @@ public class WebElementService {
     /**
      * 取事件信息
      * @param menu 菜单
+     * @param area 区域
      * @param element 元素
      * @return List<EventInfo>
      */
-    private List<EventInfo> getEventInfoList(String menu, String element){
+    private List<EventInfo> getEventInfoList(String menu, String area, String element){
         List<EventInfo> eventInfoList = new ArrayList<>();
 
         //取配置的事件
         List<WebEventInfo> webEventInfoList = dataService.list(new NQueryWrapper<WebEventInfo>()
             .eq(WebEventInfo::getMenu,menu)
+            .eq(WebEventInfo::getArea,area)
             .eq(WebEventInfo::getElement,element));
         for(WebEventInfo webEventInfo:webEventInfoList){
             //取由该事件触发的事件
             List<WebTriggerInfo> webTriggerInfoList = dataService.list(new NQueryWrapper<WebTriggerInfo>()
                 .eq(WebTriggerInfo::getSourceMenu,webEventInfo.getMenu())
+                .eq(WebTriggerInfo::getSourceArea,webEventInfo.getArea())
                 .eq(WebTriggerInfo::getSourceElement,webEventInfo.getElement()));
             if(CollectionUtil.isEmpty(webTriggerInfoList)) {
                 eventInfoList.add(createEventInfo(webEventInfo,null));
@@ -182,7 +186,7 @@ public class WebElementService {
         eventInfo.setRelEleChgType(webTriggerInfo.getTriggerElementType());
         eventInfo.setRelEleType(webTriggerInfo.getTriggerType());
         eventInfo.setRelEleId(webTriggerInfo.getTriggerElement());
-        eventInfo.setParamMap(JSON.parseObject(webTriggerInfo.getParam()));
+        eventInfo.setTriggerParamMap(JSON.parseObject(webTriggerInfo.getParam()));
         return eventInfo;
     }
 

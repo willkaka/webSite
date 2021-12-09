@@ -3,9 +3,13 @@ package com.hyw.webSite.web.dto;
 import com.hyw.webSite.model.FieldAttr;
 import lombok.Data;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+/**
+ * 事件信息
+ *
+ * 该数据会在触发事件后的请求中带回
+ */
 @Data
 public class EventInfo {
     // {"eventList":[{"event":"change","type":"webDataReq","id":"getLibFromDb","relEleId":"libName"}]}
@@ -26,4 +30,5 @@ public class EventInfo {
     private int reqPage; //请求页码
     private Map<String, FieldAttr> recordMap;
     private Map<String,Object> paramMap; //放置参数
+    private Map<String,Object> triggerParamMap; //放置参数
 }

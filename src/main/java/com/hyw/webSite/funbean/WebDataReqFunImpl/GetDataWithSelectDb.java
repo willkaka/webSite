@@ -32,10 +32,10 @@ public class GetDataWithSelectDb implements WebDataReqFun {
         Map<String,String> inputValue = (Map<String,String>) requestDto.getReqParm().get("inputValue");
         String selectedDb = inputValue.get("dbName");
         String selectedLib = inputValue.get("libName");
-        Map<String,Object> specialValue = (Map<String, Object>) eventInfo.getParamMap().get("specialValue");
+        Map<String,Object> specialValue = (Map<String, Object>) eventInfo.getTriggerParamMap().get("specialValue");
 
         //处理sql
-        if(null == eventInfo.getParamMap()) return changedEleMap;
+        if(null == eventInfo.getTriggerParamMap()) return changedEleMap;
         if(StringUtil.isBlank(selectedDb) || StringUtil.isBlank(selectedLib)) return changedEleMap;
 
         String sql = getSqlStm(eventInfo,inputValue);
@@ -72,10 +72,10 @@ public class GetDataWithSelectDb implements WebDataReqFun {
      * @return sql
      */
     private String getSqlStm(EventInfo eventInfo,Map<String,String> inputValue){
-        String sql = (String) eventInfo.getParamMap().get("sql");
+        String sql = (String) eventInfo.getTriggerParamMap().get("sql");
 
         //在where条件中增加定义的条件
-        Map<String,Object> sqlParamMap = (Map<String, Object>) eventInfo.getParamMap().get("sqlParam");
+        Map<String,Object> sqlParamMap = (Map<String, Object>) eventInfo.getTriggerParamMap().get("sqlParam");
         if(CollectionUtil.isNotEmpty(sqlParamMap)){
             for(String key:sqlParamMap.keySet()){
                 String paramValueId = (String) sqlParamMap.get(key);
@@ -90,13 +90,13 @@ public class GetDataWithSelectDb implements WebDataReqFun {
         }
 
         //group by
-        String sqlGroup = (String) eventInfo.getParamMap().get("sqlGroup");
+        String sqlGroup = (String) eventInfo.getTriggerParamMap().get("sqlGroup");
         if(StringUtil.isNotBlank(sqlGroup)){
             sql = sql + " " + sqlGroup;
         }
 
         //order by
-        String sqlOrder = (String) eventInfo.getParamMap().get("sqlOrder");
+        String sqlOrder = (String) eventInfo.getTriggerParamMap().get("sqlOrder");
         if(StringUtil.isNotBlank(sqlOrder)){
             sql = sql + " " + sqlOrder;
         }

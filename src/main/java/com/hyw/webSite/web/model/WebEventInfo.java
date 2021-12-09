@@ -28,6 +28,12 @@ public class WebEventInfo {
     /**
      * null
      */
+    //area
+    private String area;
+
+    /**
+     * null
+     */
     //element
     private String element;
 

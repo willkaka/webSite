@@ -11,6 +11,7 @@ import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
+import com.hyw.webSite.web.model.WebMenuInfo;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -35,7 +36,7 @@ public class QueryWebElement extends RequestFunUnit<List<Map<String,FieldAttr>>,
     @Override
     public void checkVariable(QueryVariable variable){
         //输入检查
-        BizException.trueThrow(StringUtil.isBlank(variable.getFunction()),"function不允许为空值!");
+        //BizException.trueThrow(StringUtil.isBlank(variable.getFunction()),"function不允许为空值!");
     }
 
     /**
@@ -52,12 +53,11 @@ public class QueryWebElement extends RequestFunUnit<List<Map<String,FieldAttr>>,
         int totalCount;      //表中记录的总行数
 
         //连接数据库，查询数据，关闭数据库
-        List<TableFieldInfo> webElementFieldList = dataService.getTableFieldList(WebElement.class);
-        totalCount = dataService.count(new NQueryWrapper<WebElement>()
+        List<TableFieldInfo> webElementFieldList = dataService.getTableFieldList(WebMenuInfo.class);
+        totalCount = dataService.count(new NQueryWrapper<WebMenuInfo>()
                 .eq(WebElement::getFunction,variable.getFunction()));
-        List<Map<String,Object>> webElementMapList = dataService.mapList(new NQueryWrapper<WebElement>()
-                .eq(WebElement::getFunction,variable.getFunction())
-                .orderByAsc(WebElement::getSeq)
+        List<Map<String,Object>> webElementMapList = dataService.mapList(new NQueryWrapper<WebMenuInfo>()
+                .orderByAsc(WebMenuInfo::getMenuGroup,WebMenuInfo::getMenuSeq)
                 .setPageSize(pageSize)
                 .setCurRecord((pageNow-1)*pageSize)
         );

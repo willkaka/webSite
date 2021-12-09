@@ -1,14 +1,14 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
+import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
 import com.hyw.webSite.model.FieldAttr;
-import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
+import com.hyw.webSite.web.dto.EventInfo;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.ReturnDto;
-import com.hyw.webSite.web.dto.EventInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,16 +17,19 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
-@Service("addNewRecord")
+/**
+ * 取新建菜单，需要录入的数据结构
+ */
+@Service("getMenuStructure")
 @Slf4j
-public class AddNewRecord implements RequestFun {
+public class GetMenuStructure implements RequestFun {
 
     @Autowired
     private DataService dataService;
 
     @Override
     public ReturnDto execute(RequestDto requestDto){
-        ReturnDto returnDto = new ReturnDto();
+
 
         Map<String,String> inputValue = (Map<String,String>) requestDto.getReqParm().get("inputValue");
         String dbName = (String) inputValue.get("dbName");
@@ -41,12 +44,14 @@ public class AddNewRecord implements RequestFun {
         Map<String,FieldAttr> recordMap = DbUtil.getFieldAttrMap(connection,dbName,libName,tableName);
         dataService.closeConnection(connection);
 
+        //输出
         Map<String,Object> webNextOprMap = new HashMap<>();
         EventInfo eventInfo = new EventInfo();
         eventInfo.setId("addNewRecord");
-        eventInfo.setType("webButtonShowModal");
-        eventInfo.setRecordMap(recordMap);
-        webNextOprMap.put("callEven",eventInfo);
+        eventInfo.setType("webButtonShowModal");//显示modal
+        eventInfo.setRecordMap(recordMap);//显示
+        webNextOprMap.put("callEven",eventInfo);//返回后页面的下一步处理
+        ReturnDto returnDto = new ReturnDto();
         returnDto.setWebNextOpr(webNextOprMap);
         return returnDto;
     }

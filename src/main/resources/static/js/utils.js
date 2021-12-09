@@ -75,3 +75,7 @@ function showLoginWindow(){
 function setUserNameIntoCookie(cvalue){
     setCookie(userNameKey,cvalue,1)
 }
+
+function copy(obj){
+    return Object.assign({},obj);
+}

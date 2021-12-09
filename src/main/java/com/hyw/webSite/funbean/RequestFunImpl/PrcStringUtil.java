@@ -75,7 +75,7 @@ public class PrcStringUtil extends RequestFunUnit<String, PrcStringUtil.QryVaria
             outString.append(s);
             if ("single".equals(variable.getAddString())) outString.append("'");
             if ("double".equals(variable.getAddString())) outString.append("\"");
-            if("comma".equals(variable.getSeparator())) outString.append(",");
+            if("comma".equals(variable.getSeparator()) && colNum!=list.length) outString.append(",");
             if("semicolon".equals(variable.getSeparator())) outString.append(";");
             if(colNum % Integer.parseInt(variable.getColNum()) == 0) outString.append("\n");
         }

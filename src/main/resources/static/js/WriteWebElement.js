@@ -248,14 +248,16 @@ function setEventListener(element,eventInfoList){
     if(eventInfoList != null && eventInfoList.length > 0 ){
         for (let i=0;i<eventInfoList.length;i++){
             let eventInfo = eventInfoList[i];
-            let triggerInfoList = eventInfo.triggerInfoList;
-            if( triggerInfoList != null){
-                for (let j=0;i<triggerInfoList.length;j++){
-                    element.addEventListener(eventInfo.event,executeEventMethod.bind(this,eventInfo,eventInfo.recordMap),false);
-                }
-            }else{
-                element.addEventListener(eventInfo.event,executeEventMethod.bind(this,eventInfo,eventInfo.recordMap),false);
-            }
+//            let triggerInfoList = eventInfo.triggerInfoList;
+//            if( triggerInfoList != null){
+//                for (let j=0;i<triggerInfoList.length;j++){
+//                    element.addEventListener(eventInfo.relEleType,executeEventMethod.bind(this,eventInfo,eventInfo.recordMap),false);
+//                }
+//            }else{
+//                element.addEventListener(eventInfo.event,executeEventMethod.bind(this,eventInfo,eventInfo.recordMap),false);
+                //由于bind的特性，需要copy对象绑定。
+                element.addEventListener(eventInfo.event,executeEventMethod.bind(this,copy(eventInfo)),false);
+//            }
         }
     }
 }

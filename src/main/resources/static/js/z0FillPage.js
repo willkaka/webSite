@@ -1,3 +1,6 @@
+/**
+ * 进入index.html自动执行initPageInfo()
+ **/
 
 //全局变量，保存页面信息
 var titleInfoMap = {"isChanged":false,"webName":""}; /* 网点名称 */
@@ -27,6 +30,13 @@ function initPageInfo(){
     requestObj.reqParm = new Map();
     let requestJsonStr = JSON.stringify(requestObj); // obj -> string
     sendJsonByAjax("initPageInfo","post",requestJsonStr,"application/json;charset=utf-8",null,sucFreshAll);//刷新输出区域
+}
+function initPageInfo2(){
+    let requestParm = '{"reqParm":{}}';
+    let requestObj = JSON.parse(requestParm);  //string -> obj
+    requestObj.reqParm = new Map();
+    let requestJsonStr = JSON.stringify(requestObj); // obj -> string
+    sendJsonByAjax("initPageInfo2","post",requestJsonStr,"application/json;charset=utf-8",null,sucFreshAll);//刷新输出区域
 }
 
 

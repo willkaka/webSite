@@ -28,6 +28,12 @@ public class WebTriggerInfo {
     /**
      * null
      */
+    //source_area
+    private String sourceArea;
+
+    /**
+     * null
+     */
     //source_element
     private String sourceElement;
 

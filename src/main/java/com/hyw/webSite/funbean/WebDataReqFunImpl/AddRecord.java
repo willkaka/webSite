@@ -63,17 +63,18 @@ public class AddRecord implements RequestFun {
         dataService.closeConnection(connection);
 
         //设置成功写入后的自动刷新
-        Map<String,Object> webNextOprMap = new HashMap<>();
-        webNextOprMap.put("type","hide");
-        webNextOprMap.put("alert","true");
-        webNextOprMap.put("hideEle","swBackGround"); //更新成功后关闭更新子窗口。
-        webNextOprMap.put("sucMsg","数据成功写入！"); //更新成功后关闭更新子窗口。
-        EventInfo eventInfo = new EventInfo();
-        eventInfo.setEvent("click");
-        eventInfo.setType("buttonReq");
-        eventInfo.setId("queryTableRecords");
-        webNextOprMap.put("callEven",eventInfo);
-        returnDto.setWebNextOpr(webNextOprMap);
+//        Map<String,Object> webNextOprMap = new HashMap<>();
+//        webNextOprMap.put("type","hide");
+//        webNextOprMap.put("alert","true");
+//        webNextOprMap.put("hideEle","swBackGround"); //更新成功后关闭更新子窗口。
+//        webNextOprMap.put("sucMsg","数据成功写入！"); //更新成功后关闭更新子窗口。
+//        EventInfo eventInfo = new EventInfo();
+//        eventInfo.setEvent("click");
+//        eventInfo.setType("buttonReq");
+//        eventInfo.setId("queryTableRecords");
+//        webNextOprMap.put("callEven",eventInfo);
+//        returnDto.setWebNextOpr(webNextOprMap);
+        returnDto.setWebNextOpr(requestDto.getEventInfo().getParamMap());//页面在收到响应报文后处理方式
         return returnDto;
     }
 }

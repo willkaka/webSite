@@ -4,7 +4,8 @@
  * @param eventInfo
  * @param recordMap
  */
-function executeEventMethod(eventInfo,recordMap) {
+//function executeEventMethod(eventInfo,recordMap) {
+function executeEventMethod(eventInfo) {
     //需要取出当前页面的所有数据传给后台：
     //1.选择的菜单/导航
     //2.输入信息
@@ -18,9 +19,9 @@ function executeEventMethod(eventInfo,recordMap) {
 
     //仅页面处理即可，不需要请求主机
     if(eventInfo.type == "webButtonShowModal"){
-        if(recordMap != null){
-            eventInfo.recordMap = recordMap;
-        }
+//        if(recordMap != null){
+//            eventInfo.recordMap = recordMap;
+//        }
         if( eventInfo.id == "addNewRecord"){
             showAddModal(eventInfo);
         }else{
