@@ -68,7 +68,6 @@ public class QueryTableWithCond extends RequestFunUnit<List<Map<String,FieldAttr
         sql = sql + " FROM " + variable.tableName;
 
         //连接数据库，查询数据，关闭数据库
-//        Connection connection = DbUtil.getConnection(configDatabaseInfoService.getDatabaseConfig(variable.getDbName()), variable.getLibName());
         Connection connection = DbUtil.getConnection(dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
                 .eq(ConfigDatabaseInfo::getDatabaseName,variable.getDbName())),variable.getLibName());
         String whereCondition = null;

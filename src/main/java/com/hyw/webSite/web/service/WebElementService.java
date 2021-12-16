@@ -173,6 +173,9 @@ public class WebElementService {
         eventInfo.setEvent(webEventInfo.getEventType());
         eventInfo.setType(webEventInfo.getRequestType());
         eventInfo.setId(webEventInfo.getRequestNo());
+        eventInfo.setMenu(webEventInfo.getMenu());
+        eventInfo.setArea(webEventInfo.getArea());
+        eventInfo.setElement(webEventInfo.getElement());
         //事件参数
         Map<String, Object> eventParam = JSON.parseObject(webEventInfo.getParam());//json转map
         eventInfo.setParamMap(eventParam);

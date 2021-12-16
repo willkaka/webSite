@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -19,5 +20,11 @@ public class ReturnDto {
     private Map<String,Object> inputMap = new HashMap<>();
     private Map<String,Object> outputMap = new HashMap<>();
     private Map<String,Object> changedMap = new HashMap<>(); //key:element id,value: info
+    private Map<String,Object> modalMap = new HashMap<>(); //modalMap
     private Map<String,Object> webNextOpr = new HashMap<>(); //后台执行完请求后，前台的下一操作
+
+    private List<WebElementDto> webElementDtoList;
+
 }
+
+

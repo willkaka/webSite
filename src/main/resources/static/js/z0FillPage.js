@@ -11,6 +11,7 @@ var inputMap = {"isChanged":false,"inputList":{}}; /* 输入区域内容，eg.�
 var outputMap = {"isChanged":false,"outputList":{}}; /* 输出区域内容，eg.查询返回的信息显示在表格 */
 var changedMap ={"isChanged":false,"changedEleMap":{}}; /* 部分刷新内容，eg.刷新下拉菜单内容等 */
 var nextOprMap ={}; /* 请求完成后，页面的操作内容，eg.自动刷新/提示操作成功等 */
+var modalMap ={"isChanged":false,"modalDataInfo":{}}; /* 请求完成后，页面的操作内容，eg.自动刷新/提示操作成功等 */
 
 var menuArea = "menuArea";      //菜单
 var navArea = "navArea";        //导航
@@ -120,6 +121,10 @@ function fillPageInfo() {
     if(outputMap.isChanged) {
         fillOutputArea();
         outputMap.isChanged = false;
+    }
+    if(modalMap.isChanged) {
+        showModal();
+        modalMap.isChanged = false;
     }
 
     if(changedMap != null) {

@@ -4,10 +4,10 @@ import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
 import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.utils.ObjectUtil;
-import com.hyw.webSite.web.dto.RequestDto;
-import com.hyw.webSite.web.dto.ReturnDto;
-import com.hyw.webSite.web.dto.WebDivDto;
+import com.hyw.webSite.web.dto.*;
+import com.hyw.webSite.web.service.WebElementService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -23,6 +23,9 @@ import java.util.*;
  */
 @Slf4j
 public abstract class RequestFunUnit<D, V extends RequestPubDto> implements RequestFun {
+
+    @Autowired
+    private WebElementService webElementService;
 
     /**
      * 执行入口
@@ -41,7 +44,7 @@ public abstract class RequestFunUnit<D, V extends RequestPubDto> implements Requ
         D data = execLogic(requestDto,var);
 
         //返回数据处理
-        return returnData(data,var);
+        return returnData(requestDto,data,var);
     }
 
     /**
@@ -113,9 +116,9 @@ public abstract class RequestFunUnit<D, V extends RequestPubDto> implements Requ
      * @param variable 参数
      * @return ReturnDto
      */
-    public ReturnDto returnData(D data, V variable){
+    public ReturnDto returnData(RequestDto requestDto, D data, V variable){
         ReturnDto returnDto = new ReturnDto();
-
+        EventInfo eventInfo = requestDto.getEventInfo();
         returnDto.getOutputMap().put("showType", variable.getOutputShowType()); //以表格形式显示
         returnDto.getOutputMap().put("withPage",variable.isWithPage()); //表格内容分页显示
         returnDto.getOutputMap().put("isChanged",true); //标识输出区域已改变需要刷新
@@ -146,10 +149,15 @@ public abstract class RequestFunUnit<D, V extends RequestPubDto> implements Requ
         }
 
         if(isListMapFieldAttr){
-            returnDto.getOutputMap().put("tableRecordList", data);
-            returnDto.getOutputMap().put("totalCount", variable.getTotalCount());
-            returnDto.getOutputMap().put("pageNow", variable.getPageNow());
-            returnDto.getOutputMap().put("pageSize", variable.getPageSize());
+            WebTableInfo webTableInfo = new WebTableInfo();
+            webTableInfo.setRecordList((List<Map<String, FieldAttr>>) data);
+            webTableInfo.setTotalCount(variable.getTotalCount());
+            webTableInfo.setPageNow(variable.getPageNow());
+            webTableInfo.setPageSize(variable.getPageSize());
+            webTableInfo.setWithPage(variable.isWithPage());
+            webTableInfo.setFormatInfoList(webElementService.getMenuElements(eventInfo.getMenu(), "outputArea"));
+
+            returnDto.getOutputMap().put("webTableInfo",webTableInfo);
         }
         if(isDivMap){
             returnDto.getOutputMap().put("mapData", data);

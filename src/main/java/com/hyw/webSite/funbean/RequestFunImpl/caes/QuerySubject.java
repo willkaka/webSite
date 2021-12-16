@@ -1,15 +1,19 @@
 package com.hyw.webSite.funbean.RequestFunImpl.caes;
 
+import com.hyw.webSite.constant.WebConstant;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
 import com.hyw.webSite.exception.BizException;
-import com.hyw.webSite.funbean.RequestFun;
+import com.hyw.webSite.funbean.abs.RequestFunUnit;
+import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.model.FieldAttr;
 import com.hyw.webSite.dbservice.NQueryWrapper;
 import com.hyw.webSite.dbservice.DataService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
-import com.hyw.webSite.web.dto.ReturnDto;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,58 +23,55 @@ import java.util.List;
 import java.util.Map;
 
 @Service("querySubject")
-public class QuerySubject implements RequestFun {
+public class QuerySubject extends RequestFunUnit<List<Map<String,FieldAttr>>, QuerySubject.QueryVariable> {
 
     @Autowired
     private DataService dataService;
 
+    /**
+     * 输入参数检查
+     * @param variable 参数
+     */
     @Override
-    public ReturnDto execute(RequestDto requestDto){
-        ReturnDto returnDto = new ReturnDto();
-        returnDto.getOutputMap().put("showType","table");//以表格形式显示
-        returnDto.getOutputMap().put("isChanged",true); //标识输出区域已改变需要刷新
-        returnDto.getOutputMap().put("isClear",true);//清除原有输出内容
+    public void checkVariable(QueryVariable variable){
+        //输入检查
+        BizException.trueThrow(StringUtil.isBlank(variable.getDbName()),"DB不允许为空值!");
 
-        Map<String,String> inputValue = (Map<String,String>) requestDto.getReqParm().get("inputValue");
-        String dbName = (String) inputValue.get("dbName");
-        BizException.trueThrow(StringUtil.isBlank(dbName),"DB不允许为空值!");
+        BizException.trueThrow(StringUtil.isBlank(variable.getLibName()),"数据库,不允许为空值!");
+    }
 
-        String modelId = (String) inputValue.get("modelId");
-        String orgId   = (String) inputValue.get("orgId");
-        String owner   = (String) inputValue.get("owner");
-        String channel = (String) inputValue.get("channel");
-        String freeTax = (String) inputValue.get("freeTax");
-        String transId = (String) inputValue.get("transId");
-        String libName = "caes";
-
-//        ConfigDatabaseInfo configDatabaseInfo = configDatabaseInfoService.getDatabaseConfig(dbName);
+    @Override
+    public List<Map<String,FieldAttr>> execLogic(RequestDto requestDto,QueryVariable variable){
         ConfigDatabaseInfo configDatabaseInfo = dataService.getOne(new NQueryWrapper<ConfigDatabaseInfo>()
-                .eq(ConfigDatabaseInfo::getDatabaseName,dbName));
-        configDatabaseInfo.setDatabaseLabel(libName);
+                .eq(ConfigDatabaseInfo::getDatabaseName,variable.getDbName()));
+        configDatabaseInfo.setDatabaseLabel(variable.getLibName());
         Connection connection = DbUtil.getConnection(configDatabaseInfo);
 
         //取trans_entry
-        String sql = "select trans_id 交易码,sort_id 序号,direction 方向,subject_no 核算科目,'' 金蝶科目号,'' 金蝶辅助科目,group_cd 分组,digest 摘要,expression 表达式 from trans_entry WHERE record_ind='A'";
-        if(StringUtil.isNotBlank(modelId)){
-            sql = sql + " AND model_id='"+modelId+"'";
+        String sql = "select trans_id 交易码,sort_id 序号,direction 方向,subject_no 核算科目," +
+                "'' 金蝶科目号,'' 金蝶辅助科目,group_cd 分组,digest 摘要," +
+                "expression 表达式 from trans_entry WHERE record_ind='A'";
+        if(StringUtil.isNotBlank(variable.getModelId())){
+            sql = sql + " AND model_id='"+variable.getModelId()+"'";
         }
-        if(StringUtil.isNotBlank(transId) && !"all".equals(transId)){
-            sql = sql + " AND trans_id='" + transId + "'";
+        if(StringUtil.isNotBlank(variable.getTransId()) && !"all".equals(variable.getTransId())){
+            sql = sql + " AND trans_id='" + variable.getTransId() + "'";
         }
         sql = sql +  "order by trans_id,group_cd asc,expression,direction desc";
         List<Map<String,FieldAttr>> transEntryList = DbUtil.getSqlRecordsWithFieldAttr(connection,sql);
         //取subject_map_eas
-        sql = "select subject_no,business_channel,line_id,org_id,company_num,account_num,asstact_first_num,tax_type from subject_map_eas WHERE record_ind='A'";
+        sql = "select subject_no,business_channel,line_id,org_id,company_num,account_num," +
+                "asstact_first_num,tax_type from subject_map_eas WHERE record_ind='A'";
         List<Map<String, FieldAttr>> subjectMapList = DbUtil.getSqlRecordsWithFieldAttr(connection,sql);
         DbUtil.closeConnection(connection);
 
         String company;
-        if("DSRD".equals(owner)) company = "02.100";
-        else if("RSRD".equals(owner)) company = "02.103";
-        else if("100500".equals(orgId)) company = "03.001";
-        else if("100200".equals(orgId)) company = "03.002";
-        else if("100300".equals(orgId)) company = "03.003";
-        else if("100600".equals(orgId)) company = "03.004";
+        if("DSRD".equals(variable.getOwner())) company = "02.100";
+        else if("RSRD".equals(variable.getOwner())) company = "02.103";
+        else if("100500".equals(variable.getOrgId())) company = "03.001";
+        else if("100200".equals(variable.getOrgId())) company = "03.002";
+        else if("100300".equals(variable.getOrgId())) company = "03.003";
+        else if("100600".equals(variable.getOrgId())) company = "03.004";
         else company = "01";
 
         for(Map<String,FieldAttr> transEntry:transEntryList){
@@ -82,13 +83,16 @@ public class QuerySubject implements RequestFun {
                     subjectMapList2.add(subjectMap);
                 }
             }
-            Map<String,FieldAttr> subjectMap = getMatchModel(subjectMapList2,channel,modelId,orgId,company);
+            Map<String,FieldAttr> subjectMap = getMatchModel(subjectMapList2,
+                    variable.getChannel(),variable.getModelId(),variable.getOrgId(),company);
             transEntry.put("金蝶科目号",subjectMap.get("account_num"));
             transEntry.put("金蝶辅助科目",subjectMap.get("asstact_first_num"));
         }
-        returnDto.getOutputMap().put("tableRecordList", transEntryList);
 
-        return returnDto;
+        //参数配置
+        variable.setOutputShowType(WebConstant.OUTPUT_SHOW_TYPE_TABLE); //以表格形式显示
+
+        return transEntryList;
     }
 
     public static final double WEIGH_FIRST = 0.5;
@@ -113,5 +117,22 @@ public class QuerySubject implements RequestFun {
             }
         }
         return list.get(index);
+    }
+
+    /**
+     * 输入输出参数
+     */
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    public static class QueryVariable extends RequestPubDto {
+        private String dbName;
+        private String libName;
+        private String modelId;
+        private String orgId;
+        private String owner;
+        private String channel;
+        private String freeTax;
+        private String transId;
     }
 }

@@ -16,6 +16,9 @@ public class EventInfo {
     private String event; // click
     private String type; // menuReq/buttonReq
     private String id; // MR001/BR001
+    private String menu;
+    private String area;
+    private String element;
 
     private String RelEleId;
     private String RelEleType;

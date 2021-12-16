@@ -1,3 +1,10 @@
+
+function showModal(){
+    if(!modalMap.isChanged) return;
+    let modalDataInfo = modalMap.modalDataInfo;
+
+}
+
 /**
  * 显示编辑模态框
  * @param recordMap 点选的记录内容

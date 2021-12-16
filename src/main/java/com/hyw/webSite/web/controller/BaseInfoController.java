@@ -109,7 +109,7 @@ public class BaseInfoController {
 
         //取菜单输出格式信息,例如：输出区域记录编辑按钮，可加在此处。
         List<WebElementDto> formatInfoList = webElementService.getMenuElements(eventId, "outputArea");
-        formatInfoList.addAll(webElementService.getMenuElements(eventId, "modalArea"));
+//        formatInfoList.addAll(webElementService.getMenuElements(eventId, "modalArea"));
         returnDto.getFormatInfoMap().put("isChanged", true);
         returnDto.getFormatInfoMap().put("formatInfoList", formatInfoList);
 

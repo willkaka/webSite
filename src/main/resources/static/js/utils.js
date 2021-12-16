@@ -79,3 +79,41 @@ function setUserNameIntoCookie(cvalue){
 function copy(obj){
     return Object.assign({},obj);
 }
+
+/**
+ * 获取表格某一行列数
+ * @param  Int id    表格id
+ * @param  Int index 行数
+ * @return Int
+ */
+function getTableRowCellsLength(tableId, rowNo){
+    var table = document.getElementById(tableId);
+    if(rowNo<table.rows.length){
+        return table.rows[rowNo].cells.length;
+    }else{
+        return 0;
+    }
+}
+
+/**
+ * 遍历表格内容返回数组
+ * @param  Int   id 表格id
+ * @return Array
+ */
+function getTableContent(tableId){
+    var table = document.getElementById(tableId);
+    var data = [];
+    for(var i=0,rows=table.rows.length; i<rows; i++){
+        for(var j=0,cells=table.rows[i].cells.length; j<cells; j++){
+            if(!data[i]){
+                data[i] = new Array();
+            }
+            data[i][j] = table.rows[i].cells[j].innerHTML;
+        }
+    }
+    return data;
+}
+
+function getTableInfo(tableId){
+
+}

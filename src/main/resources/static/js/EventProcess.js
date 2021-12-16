@@ -5,7 +5,7 @@
  * @param recordMap
  */
 //function executeEventMethod(eventInfo,recordMap) {
-function executeEventMethod(eventInfo) {
+function executeEventMethod(eventInfo,sourceElement) {
     //需要取出当前页面的所有数据传给后台：
     //1.选择的菜单/导航
     //2.输入信息
@@ -19,17 +19,12 @@ function executeEventMethod(eventInfo) {
 
     //仅页面处理即可，不需要请求主机
     if(eventInfo.type == "webButtonShowModal"){
-//        if(recordMap != null){
-//            eventInfo.recordMap = recordMap;
-//        }
         if( eventInfo.id == "addNewRecord"){
             showAddModal(eventInfo);
         }else{
             showEditModal(eventInfo);
         }
     }else{
-//        eventInfo.type == "buttonReq";
-
         let data;        //请求数据
         let contentType;
         let processData;
@@ -69,7 +64,21 @@ function executeEventMethod(eventInfo) {
  * 取事件源信息，并保存在eventInfo中
  */
 function getSourceElementInfo(eventEle, eventInfo){
-    // input 输入框，change等事件
+
+    if(eventEle.parentElement != undefined && eventEle.parentElement != null && eventEle.parentElement.nodeName == 'TD'){
+        let tableElement = eventEle.parentElement.parentElement.parentElement.parentElement; // table
+        let rowNo = eventEle.parentElement.parentElement.rowIndex; //行号
+        let headTitleList = eventEle.parentElement.parentElement.parentElement.parentElement.children[0].innerText.split('\t');
+        let rowValueList = eventEle.parentElement.parentElement.innerText.split('\t');//['3', '3', '33', '3', '3', '3', '', '4445', '', 'edit']
+
+        let rowValueMap = {};
+        for (let i=0;i<headTitleList.length;i++){
+            rowValueMap[headTitleList[i]] = rowValueList[i];
+        }
+
+        eventInfo.paramMap = rowValueMap;
+    }
+
     if(eventEle.tagName == "INPUT"){
         // 当没有值时不
         if(eventEle.value == undefined || eventEle.value == "" || eventEle.value == null){
