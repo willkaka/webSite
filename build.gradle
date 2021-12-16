@@ -56,18 +56,10 @@ dependencies {
 
 
 	// 动态数据源使用
-	compile group: 'org.apache.tomcat', name: 'tomcat-jdbc', version: '9.0.35'
+//	compile group: 'org.apache.tomcat', name: 'tomcat-jdbc', version: '9.0.35'
 
 	// https://mvnrepository.com/artifact/org.wso2.apache.httpcomponents/httpclient
 	implementation group: 'org.wso2.apache.httpcomponents', name: 'httpclient', version: '4.3.1.wso2v1'
-
-	// https://mvnrepository.com/artifact/com.baomidou/mybatis-plus
-	// QueryWrapper
-	compile group: 'com.baomidou', name: 'mybatis-plus', version: '3.3.1'
-
-	// https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-generator
-	compile group: 'com.baomidou', name: 'mybatis-plus-generator', version: '3.4.1'
-
 
 	//JGIT
 	compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.5.1.201910021850-r'
@@ -83,8 +75,13 @@ dependencies {
 	compile 'org.apache.poi:poi-ooxml:3.15'
 	compile 'xerces:xercesImpl:2.11.0'
 
-	// Java解析
+	// Java代码解析
 	implementation group: 'com.github.javaparser', name: 'javaparser-core', version: '3.23.0'
+
+	// https://mvnrepository.com/artifact/org.aspectj/aspectjweaver
+	compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.7'
+	// https://mvnrepository.com/artifact/org.aspectj/aspectjrt
+	compile group: 'org.aspectj', name: 'aspectjrt', version: '1.9.7'
 
 }
 
