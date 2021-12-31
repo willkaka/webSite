@@ -33,7 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 /**
- * Git²Ö¿â²éÑ¯¹¦ÄÜ
+ * Gitä»“åº“æŸ¥è¯¢åŠŸèƒ½
  * @author huangyuanwei
  */
 @Service
@@ -75,8 +75,8 @@ public class JGitService {
 //	}
 
 	/**
-	 * È¡³ÌĞòÌá½»ĞÅÏ¢
-	 * @param gitLocalPath gitÂ·¾¶
+	 * å–ç¨‹åºæäº¤ä¿¡æ¯
+	 * @param gitLocalPath gitè·¯å¾„
 	 * @return Map<String,List<GitCommitInfoDto>>
 	 */
 	public Map<String,List<GitCommitInfoDto>> getFileCommintInfo(String gitLocalPath,String user,LocalDateTime begTime,LocalDateTime endTime){
@@ -115,11 +115,11 @@ public class JGitService {
 	}
 
 	/**
-	 * È¡Ìá½»ÀúÊ·¼ÇÂ¼
-	 * @param gitLocalPath git±¾µØÎÄ¼şÂ·¾¶
-	 * @param commitUser Ìá½»ÓÃ»§Ãû
-	 * @param begDateTime ²éÑ¯¿ªÊ¼ÈÕÆÚ
-	 * @param endDateTime ²éÑ¯½áÊøÈÕÆÚ
+	 * å–æäº¤å†å²è®°å½•
+	 * @param gitLocalPath gitæœ¬åœ°æ–‡ä»¶è·¯å¾„
+	 * @param commitUser æäº¤ç”¨æˆ·å
+	 * @param begDateTime æŸ¥è¯¢å¼€å§‹æ—¥æœŸ
+	 * @param endDateTime æŸ¥è¯¢ç»“æŸæ—¥æœŸ
 	 * @return ArrayList<HashMap<String,Object>>
 	 */
 	public List<GitCommitInfoDto> getCommitList(String gitLocalPath, String commitUser,
@@ -131,7 +131,7 @@ public class JGitService {
 			Git git = Git.open(gitDir);
 
 			int c = 0;
-			//ListModeÉèÖÃÎªALL»òREMOTE.Ä¬ÈÏµÄListMode(null)½ö·µ»Ø±¾µØ·ÖÖ§
+			//ListModeè®¾ç½®ä¸ºALLæˆ–REMOTE.é»˜è®¤çš„ListMode(null)ä»…è¿”å›æœ¬åœ°åˆ†æ”¯
 //			List<Ref> call = git.branchList().setListMode( ListBranchCommand.ListMode.REMOTE ).call();
 //			for (Ref ref : call) {
 //				System.out.println("Branch: " + ref + " " + ref.getName() + " "
@@ -153,18 +153,18 @@ public class JGitService {
 			for (RevCommit revCommit : gitlog) {
 				LocalDateTime commitTime = TimeUtil.intTime2LocalDateTime(revCommit.getCommitTime());
 				String sCommitByUser = revCommit.getAuthorIdent().getName();
-				//Ìá½»ÓÃ»§É¸Ñ¡
+				//æäº¤ç”¨æˆ·ç­›é€‰
 				if(StringUtils.isNotBlank(commitUser) &&
 				   !"ALL".equals(commitUser.toUpperCase()) &&
 				   !commitUser.equals(sCommitByUser)) continue;
-				//Ìá½»Ê±¼äÉ¸Ñ¡
+				//æäº¤æ—¶é—´ç­›é€‰
 				if(null != begDateTime && commitTime.compareTo(begDateTime) < 0) continue;
 				if(null != endDateTime && commitTime.compareTo(endDateTime) > 0) continue;
 				if(commitUser.equals(sCommitByUser) &&
 						revCommit.getShortMessage().length() > 5 &&
 						revCommit.getShortMessage().substring(0, 5).equals("Merge")) continue;
 
-				//Âú×ãÌõ¼ş·µ»ØÊı¾İ
+				//æ»¡è¶³æ¡ä»¶è¿”å›æ•°æ®
 				GitCommitInfoDto gitCommitInfoDto = new GitCommitInfoDto();
 				gitCommitInfoDto.setCommitId(revCommit.getName());
 				gitCommitInfoDto.setAuthorIdent(revCommit.getAuthorIdent());
@@ -194,9 +194,9 @@ public class JGitService {
     }  
 	
     /**
-     * ²éÑ¯±¾´ÎÌá½»µÄÈÕÖ¾
-     * @param git git²Ö¿â
-     * @param commitId  °æ±¾ºÅ
+     * æŸ¥è¯¢æœ¬æ¬¡æäº¤çš„æ—¥å¿—
+     * @param git gitä»“åº“
+     * @param commitId  ç‰ˆæœ¬å·
      * @return List<DiffEntry>
      */
     public static List<DiffEntry> getDifEntLst(Git git, String commitId) throws Exception {
@@ -217,13 +217,13 @@ public class JGitService {
     }
 
     public Git getGit(String projectName, String branchName) throws GitAPIException {
-		// Èç¹ûÄ¿Â¼´æÔÚ¾ÍÏÈ¸üĞÂºóopen
+		// å¦‚æœç›®å½•å­˜åœ¨å°±å…ˆæ›´æ–°åopen
 		// "D:\\Java\\DaShuSource\\caes_develop_01";
 		return Git.cloneRepository().setURI("http://gitlab.dashuf.com/ds2/caes.git")
 			.setCredentialsProvider(new UsernamePasswordCredentialsProvider("huangyuanwei", "Dashuf0930"))
 			.setBranch(branchName)
-			//.setCloneAllBranches(true)//»ñÈ¡ËùÓĞ·ÖÖ§
-			.setDirectory(new File("D:/repo" + File.separator + projectName))//Ö¸¶¨±¾µØclone¿â
+			//.setCloneAllBranches(true)//è·å–æ‰€æœ‰åˆ†æ”¯
+			.setDirectory(new File("D:/repo" + File.separator + projectName))//æŒ‡å®šæœ¬åœ°cloneåº“
 			.call();
 	}
 }

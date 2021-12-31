@@ -367,6 +367,7 @@ public class DataService {
                 e.printStackTrace();
             }
         }
+        log.info(sql+",查询记录数："+rtnList.size());
         return rtnList;
     }
 

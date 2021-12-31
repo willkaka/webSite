@@ -2,12 +2,12 @@ package com.hyw.webSite.utils;
 
 public class StringUtil {
 
-    public static boolean isBlank(String s){
-        return null==s || "".equals(s);
+    public static boolean isBlank(String s) {
+        return null == s || "".equals(s);
     }
 
-    public static boolean isNotBlank(String s){
-        return !(null==s || "".equals(s));
+    public static boolean isNotBlank(String s) {
+        return !(null == s || "".equals(s));
     }
 
     /***
@@ -43,33 +43,38 @@ public class StringUtil {
         return c;
     }
 
-    public static String String2JsonString(String s)
-    {
+    public static String String2JsonString(String s) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < s.length(); i++)
-        {
+        for (int i = 0; i < s.length(); i++) {
             char c = s.toCharArray()[i];
             switch (c) {
                 case '\"':
-                    sb.append("\\\""); break;
+                    sb.append("\\\"");
+                    break;
                 case '\\':
-                    sb.append("\\\\"); break;
+                    sb.append("\\\\");
+                    break;
                 case '/':
-                    sb.append("\\/"); break;
+                    sb.append("\\/");
+                    break;
                 case '\b':
-                    sb.append("\\b"); break;
+                    sb.append("\\b");
+                    break;
                 case '\f':
-                    sb.append("\\f"); break;
+                    sb.append("\\f");
+                    break;
                 case '\n':
-                    sb.append("\\n"); break;
+                    sb.append("\\n");
+                    break;
                 case '\r':
-                    sb.append("\\r"); break;
+                    sb.append("\\r");
+                    break;
                 case '\t':
-                    sb.append("\\t"); break;
+                    sb.append("\\t");
+                    break;
                 default:
-                    if ((c >= 0 && c <= 31)||c == 127) {//在ASCⅡ码中，第0～31号及第127号(共33个)是控制字符或通讯专用字符
-                    }
-                    else {
+                    if ((c >= 0 && c <= 31) || c == 127) {//在ASCⅡ码中，第0～31号及第127号(共33个)是控制字符或通讯专用字符
+                    } else {
                         sb.append(c);
                     }
                     break;

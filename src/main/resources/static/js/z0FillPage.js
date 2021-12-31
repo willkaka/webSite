@@ -42,50 +42,50 @@ function initPageInfo2(){
 
 
 /*请求成功后，刷新所有页面信息*/
-function sucFreshAll(ReturnDto){
+function sucFreshAll(returnDto){
     let isChanged = false;
-    if(ReturnDto.titleInfoMap != null){
-        if(ReturnDto.titleInfoMap.isChanged){
-            titleInfoMap = ReturnDto.titleInfoMap;
+    if(returnDto.titleInfoMap != null){
+        if(returnDto.titleInfoMap.isChanged){
+            titleInfoMap = returnDto.titleInfoMap;
             isChanged = true;
         }
     }
-    if(ReturnDto.menuMap != null){
-        if(ReturnDto.menuMap.isChanged){
-            menuMap = ReturnDto.menuMap;
+    if(returnDto.menuMap != null){
+        if(returnDto.menuMap.isChanged){
+            menuMap = returnDto.menuMap;
             isChanged = true;
         }
     }
-    if(ReturnDto.navMap != null){
-        if(ReturnDto.navMap.isChanged){
-            navMap = ReturnDto.navMap;
+    if(returnDto.navMap != null){
+        if(returnDto.navMap.isChanged){
+            navMap = returnDto.navMap;
             isChanged = true;
         }
     }
-    if(ReturnDto.formatInfoMap != null){
-        if(ReturnDto.formatInfoMap.isChanged){
-            formatInfoMap = ReturnDto.formatInfoMap;
+    if(returnDto.formatInfoMap != null){
+        if(returnDto.formatInfoMap.isChanged){
+            formatInfoMap = returnDto.formatInfoMap;
             isChanged = true;
         }
     }
-    if(ReturnDto.inputMap != null){
-        if(ReturnDto.inputMap.isChanged){
-            inputMap = ReturnDto.inputMap;
+    if(returnDto.inputMap != null){
+        if(returnDto.inputMap.isChanged){
+            inputMap = returnDto.inputMap;
             isChanged = true;
         }
     }
-    if(ReturnDto.outputMap != null){
-        if(ReturnDto.outputMap.isChanged){
-            outputMap = ReturnDto.outputMap;
+    if(returnDto.outputMap != null){
+        if(returnDto.outputMap.isChanged){
+            outputMap = returnDto.outputMap;
             isChanged = true;
         }
-        if(ReturnDto.outputMap.isClear) clearChildren(outputArea);//清空已有的输出区域标签
+        if(returnDto.outputMap.isClear) clearChildren(outputArea);//清空已有的输出区域标签
     }
 
     //部分刷新返回数据包
-    if(ReturnDto.changedMap != null){
-        if(ReturnDto.changedMap.isChanged){
-            changedMap = ReturnDto.changedMap;
+    if(returnDto.changedMap != null){
+        if(returnDto.changedMap.isChanged){
+            changedMap = returnDto.changedMap;
             isChanged = true;
         }
     }
@@ -95,8 +95,8 @@ function sucFreshAll(ReturnDto){
     }
 
     //退出弹窗
-    if(ReturnDto.webNextOpr != null){
-        afterRequest(ReturnDto);
+    if(returnDto.webNextOpr != null){
+        afterRequest(returnDto);
     }
 }
 

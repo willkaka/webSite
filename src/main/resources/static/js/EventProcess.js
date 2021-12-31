@@ -2,10 +2,9 @@
 /**
  * 设置点击事件处理方法
  * @param eventInfo
- * @param recordMap
- */
+  */
 //function executeEventMethod(eventInfo,recordMap) {
-function executeEventMethod(eventInfo,sourceElement) {
+function executeEventMethod(eventInfo) {
     //需要取出当前页面的所有数据传给后台：
     //1.选择的菜单/导航
     //2.输入信息
