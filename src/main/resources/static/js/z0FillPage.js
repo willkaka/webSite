@@ -79,6 +79,13 @@ function sucFreshAll(returnDto){
             outputMap = returnDto.outputMap;
             isChanged = true;
         }
+        if(returnDto.outputMap.fileStreamMap != null){
+            let fileStreamMap = returnDto.outputMap.fileStreamMap;
+            for(let fileName in fileStreamMap){
+                downloadExcel(fileStreamMap[fileName],fileName);
+//                downloadExcelFile(fileStreamMap[fileName],fileName);
+            }
+        }
         if(returnDto.outputMap.isClear) clearChildren(outputArea);//清空已有的输出区域标签
     }
 

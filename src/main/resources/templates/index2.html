@@ -3,29 +3,60 @@
 <head>
     <title>hlhome</title>
     <meta charset="utf-8">
+
     <link rel="stylesheet" href="../css/webSite.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css"/>
+    <link rel="stylesheet" href="../css/bootstrap-multiselect.css" type="text/css"/>
+
     <script src="../jstools/jquery.min.js"></script>
+    <script src="../jstools/jquery-ui.min.js"></script><!--用户拖动元素-->
+
+    <script src="../jstools/popper.min.js"></script>
+    <script src="../jstools/bootstrap.min.js" type="text/javascript" ></script>
+    <script src="../jstools/multiple-select.min.js"></script>
+
     <script src="../js/utils.js"></script>
-    <script src="../js/fillHtmlModal.js"></script>
-    <script src="../js/fillHtmlOutputArea.js"></script>
-    <script src="../js/fillHtmlInputArea.js"></script>
-    <script src="../js/fillPageInfo.js"></script>
+    <script src="../js/EventProcess.js"></script>
+    <script src="../js/GetWebValue.js"></script>
+    <script src="../js/SendRequest.js"></script>
+    <script src="../js/WriteWebElement.js"></script>
+
+    <script src="../js/z8AfterReq.js"></script>
+    <script src="../js/z7FillModal.js"></script>
+    <script src="../js/z6FillChange.js"></script>
+    <script src="../js/z5FillOutput.js"></script>
+    <script src="../js/z4FillInput.js"></script>
+    <script src="../js/z3FillNav.js"></script>
+    <script src="../js/z2FillMenu.js"></script>
+    <script src="../js/z1FillBase.js"></script>
+    <script src="../js/z0FillPage.js"></script>
+
+    <!--    <script src="../js/fillHtmlModal.js"></script>-->
+    <!--    <script src="../js/fillHtmlOutputArea.js"></script>-->
+    <!--    <script src="../js/fillHtmlInputArea.js"></script>-->
+    <!--    <script src="../js/fillPageInfo.js"></script>-->
     <!-- 后加载的可以用前加载的函数 -->
 </head>
-<body onload="initPageInfo()">
+<body onload="initPageInfo2()">
+
+<div id="logArea" class="top_log_div">
+    <a id="loginA" class="login_Button" onClick="showLoginWindow()">登录</a>
+</div>
 
 <!-- 菜单区域 -->
 <div id="menuArea" class="menu_div">
-    <div class="dropbtn" href="/">主页</div>
-    <div class="dropdown">
-        <a class="dropbtn" href="#">下拉菜单</a>
-        <div class="dropdown-content">
+    <div class="menuDropButton" href="/">主页</div>
+    <div class="menuDropDown">
+        <a class="menuDropButton" href="#">下拉菜单</a>
+        <div class="menuDropDown-content">
             <a href="#">链接 1</a>
             <a href="#">链接 2</a>
             <a href="#">链接 3</a>
         </div>
     </div>
-    <div class="dropbtn" href="#about" style="float:right">关于</div>
+    <div class="menuDropButton" href="#about" style="float:right">关于</div>
+
+
 </div>
 
 <div class="contentArea">
@@ -34,9 +65,22 @@
         <span id="navSpan"></span>
     </div>
 
+    <!--    <div>-->
+    <!--        <form>-->
+    <!--            <div class="inputArea_div_grp">-->
+    <!--                <label class="inputArea_sub_label">用户名</label>-->
+    <!--                <input class="inputArea_sub_input" placeholder="用户名">-->
+    <!--            </div>-->
+    <!--            <div class="inputArea_div_grp">-->
+    <!--                <label class="inputArea_sub_label">密码</label>-->
+    <!--                <input class="inputArea_sub_input" type="password" placeholder="密码">-->
+    <!--            </div>-->
+    <!--            <button class="inputArea_sub_button"><span>登录</span></button>-->
+    <!--        </form>-->
+    <!--    </div>-->
+
     <!-- 条件输入区域 -->
     <div id="inputArea" class="inputArea"><!-- 条件输入框填充区 -->
-
         <div class="inputArea_div_grp">
             <label class="inputArea_sub_label">输入1</label>
             <input class="inputArea_sub_input" placeholder="输入1...">
@@ -61,12 +105,6 @@
     <!-- 数据输出区域 -->
     <div id="outputArea" class="outputArea">
         <div class="page-box">
-            <a class="page-button" href="#">« Previous</a>
-            <strong>1</strong>
-            <a class="page-button" href="#">2</a>
-            ...
-            <a class="page-button" href="#">10</a>
-            <a class="page-button" href="#">Next »</a>
         </div>
         <table class="output_table">
             <tr>
@@ -93,9 +131,9 @@
     </div>
 </div>
 
-<div class="bottomContent">
-    <p>底部内容</p>
-</div>
+<!--<div class="bottomContent">-->
+<!--    <p>底部内容</p>-->
+<!--</div>-->
 
 <!-- test -->
 <!--<div>-->

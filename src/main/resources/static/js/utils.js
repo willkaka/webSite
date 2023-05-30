@@ -117,3 +117,32 @@ function getTableContent(tableId){
 function getTableInfo(tableId){
 
 }
+
+function downloadExcel(fileStream,fileName) {
+    let blob = new Blob([fileStream], {type: 'application/vnd.ms-excel'});
+    if('msSaveOrOpenBlob' in navigator){
+        window.navigator.msSaveOrOpenBlob(blob,fileName);
+    } else {
+        var eleLink = document.createElement('a');
+        eleLink.download = fileName;
+        // 字符内容转变成blob地址
+        eleLink.href = URL.createObjectURL(blob);
+        // 自动触发点击
+        document.body.appendChild(eleLink);
+        eleLink.click();
+        // 然后移除
+        document.body.removeChild(eleLink);
+    }
+}
+function downloadExcelFile(file,fileName) {
+    var eleLink = document.createElement('a');
+    eleLink.download = fileName;
+    eleLink.style.display = 'none';
+    // 字符内容转变成blob地址
+    eleLink.href = URL.createObjectURL(file);
+    // 自动触发点击
+    document.body.appendChild(eleLink);
+    eleLink.click();
+    // 然后移除
+    document.body.removeChild(eleLink);
+}

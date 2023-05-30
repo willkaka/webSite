@@ -33,6 +33,7 @@ function writeInput(parentEle,elementInfo){
     if(null != elementInfo.attrMap){
         setAttr(input,elementInfo.attrMap);
     }
+    setEventListener(input,elementInfo.eventInfoList); //事件
     groupDiv.appendChild(input);
 
     parentEle.appendChild(groupDiv);

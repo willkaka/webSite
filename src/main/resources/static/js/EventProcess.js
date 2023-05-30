@@ -55,7 +55,13 @@ function executeEventMethod(eventInfo) {
             contentType = "application/json;charset=utf-8";
             processData = null;
         }
-        sendJsonByAjax(eventInfo.type+'/'+eventInfo.id,'post', data,contentType,processData,sucFreshAll);
+
+        if(eventInfo.id == "exportExcel"){
+            processData = false;
+            sendJsonByAjax(eventInfo.type+'/'+eventInfo.id,'post', data,contentType,processData,sucFreshAll);
+        }else{
+            sendJsonByAjax(eventInfo.type+'/'+eventInfo.id,'post', data,contentType,processData,sucFreshAll);
+        }
     }
 }
 

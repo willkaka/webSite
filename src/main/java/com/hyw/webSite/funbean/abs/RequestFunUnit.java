@@ -1,5 +1,6 @@
 package com.hyw.webSite.funbean.abs;
 
+import com.hyw.webSite.constant.WebConstant;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
 import com.hyw.webSite.model.FieldAttr;
@@ -7,12 +8,19 @@ import com.hyw.webSite.utils.ObjectUtil;
 import com.hyw.webSite.web.dto.*;
 import com.hyw.webSite.web.service.WebElementService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -162,10 +170,43 @@ public abstract class RequestFunUnit<D, V extends RequestPubDto> implements Requ
         if(isDivMap){
             returnDto.getOutputMap().put("mapData", data);
         }
+        if(WebConstant.OUTPUT_DOWNLOAD_FILE.equals(variable.getOutputShowType())){
+            returnDto.getOutputMap().put("uriList",data);
+//            Map<String,byte[]> fileStreamMap = new HashMap<>();
+            Map<String,char[]> fileStreamMap = new HashMap<>();
+//            Map<String,File> fileStreamMap = new HashMap<>();
+            List<String> filePathList = (List<String>) data;
+            for(String filePath:filePathList) {
+                File file = new File(filePath);
+                byte[] fileByte;
+                try {
+                    fileByte = FileUtils.readFileToByteArray(file);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+//                fileStreamMap.put(file.getName(),fileByte);
+                fileStreamMap.put(file.getName(),getChars(fileByte));
+//                fileStreamMap.put(file.getName(),file);
+            }
+            returnDto.getOutputMap().put("fileStreamMap",fileStreamMap);
+            returnDto.getOutputMap().put("isChanged",false); //标识输出区域已改变需要刷新
+        }
 
         return returnDto;
     }
 
+    /**
+     * 字节流转字符流
+     * @param bytes
+     * @return
+     */
+    private char[] getChars(byte[] bytes) {
+        Charset cs = Charset.forName("UTF-8");
+        ByteBuffer bb = ByteBuffer.allocate(bytes.length);
+        bb.put(bytes).flip();
+        CharBuffer cb = cs.decode(bb);
+        return cb.array();
+    }
 
     /**
      * 实例化变量

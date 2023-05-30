@@ -367,7 +367,7 @@ public class DataService {
                 e.printStackTrace();
             }
         }
-        log.info(sql+",查询记录数："+rtnList.size());
+//        log.info(sql+",查询记录数："+rtnList.size());
         return rtnList;
     }
 
@@ -511,6 +511,46 @@ public class DataService {
             }
         }
 
+        return tableFieldInfoList;
+    }
+
+    public List<TableFieldInfo> getTableFieldList(String sql,Connection connection){
+        List<TableFieldInfo> tableFieldInfoList = new ArrayList<>();
+        List<Map<String,Object>> fieldsMap = new ArrayList<>();
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet set = statement.executeQuery(sql);
+            if (set.next()) {
+                ResultSetMetaData metaData = set.getMetaData();
+                Map<String, Object> map = new HashMap<String, Object>();
+                for (int fieldNum = 1; fieldNum <= metaData.getColumnCount(); fieldNum++) {
+                    if (metaData.getColumnName(fieldNum) != null && !"".equals(metaData.getColumnName(fieldNum))) {
+                        TableFieldInfo tableFieldInfo = new TableFieldInfo();
+                        String fieldName;
+                        if (QueryUtil.isNotBlankStr(metaData.getColumnLabel(fieldNum))) {
+                            fieldName = metaData.getColumnLabel(fieldNum);
+                        } else {
+                            fieldName = metaData.getColumnName(fieldNum);
+                        }
+//                        Object fieldValue = set.getObject(fieldName);
+
+                        tableFieldInfo.setFieldName(fieldName);
+                        tableFieldInfo.setComment(fieldName);
+//                        tableFieldInfo.setFieldType("0");
+//                        tableFieldInfo.setFieldLength(0);
+//                        tableFieldInfo.setDecimalDigit(0);
+//                        tableFieldInfo.setFieldSeq((Integer) map.get("ORDINAL_POSITION"));
+//                        tableFieldInfo.setComment((String) map.get("REMARKS"));
+//                        tableFieldInfo.setDefaultValue((String) map.get("COLUMN_DEF"));
+//                        tableFieldInfo.setIsNullable((String) map.get("IS_NULLABLE"));
+                        tableFieldInfoList.add(tableFieldInfo);
+                    }
+                }
+                fieldsMap.add(map);
+            }
+        }catch(SQLException e){
+            throw new DbException("取数据表结构失败！",e);
+        }
         return tableFieldInfoList;
     }
 

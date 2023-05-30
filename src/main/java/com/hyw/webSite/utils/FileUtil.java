@@ -1,5 +1,6 @@
 package com.hyw.webSite.utils;
 
+import com.hyw.webSite.Application;
 import com.hyw.webSite.exception.BizException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
@@ -12,7 +13,6 @@ import org.apache.tika.mime.MediaType;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.xml.sax.helpers.DefaultHandler;
@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
 
 @Slf4j
 public class FileUtil {
-
 
     /**
      * 获取目录下的所有文件

@@ -3,6 +3,7 @@ package com.hyw.webSite.utils.javaParse;
 import com.alibaba.fastjson.JSON;
 import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.utils.FileUtil;
+import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.utils.javaParse.dto.*;
 import lombok.Data;
 
@@ -31,25 +32,80 @@ public class JavaUtil {
     }
 
     public static void main(String[] args){
-        scanOnePgm();
+        scanModel();
+//        scanOnePgm();
 //        scanProject();
+    }
+
+    private static void scanModel(){
+        String projectRootPath = "D:\\ideaSpace\\DashufSource\\caes_test\\src\\main\\java\\com\\dashuf\\caes\\model";
+        File file = new File(projectRootPath);
+        List<String> filePathList = FileUtil.getFilePathListWithType(file,"java");
+        for(String classPath:filePathList){
+            ClassUnit classUnit = new ClassUnit();
+            classUnit.visit(classPath,null,null);
+            JavaClassInfo javaClassInfo = classUnit.getJavaClassInfo();
+
+            System.out.println("DROP table if exists "+ StringUtil.camelCaseToUnderline(javaClassInfo.getName()) + ";");
+            System.out.println("CREATE TABLE "+ StringUtil.camelCaseToUnderline(javaClassInfo.getName()) + " (");
+            for(JavaClassFieldInfo fieldInfo:javaClassInfo.getJavaClassFieldInfoList()){
+                if("serialVersionUID".equals(fieldInfo.getFieldName())) continue;
+                System.out.print("  "+StringUtil.camelCaseToUnderline(fieldInfo.getFieldName()) + " ");
+                if("String".equals(fieldInfo.getFieldType())){
+                    System.out.print("varchar(32) ");
+                }else if("LocalDate".equals(fieldInfo.getFieldType())){
+                    System.out.print("date ");
+                }else if("LocalDateTime".equals(fieldInfo.getFieldType())){
+                    System.out.print("datetime ");
+                }else if("long".equals(fieldInfo.getFieldType())){
+                    System.out.print("int(11) ");
+                }else if("BigDecimal".equals(fieldInfo.getFieldType())){
+                    System.out.print("decimal(18,4) ");
+                }
+
+                System.out.println("COMMENT '"+fieldInfo.getFieldDesc() + "',");
+            }
+            System.out.println("  created_by varchar(64) DEFAULT 'System' COMMENT '创建人',\n" +
+                    "  created_date datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',\n" +
+                    "  updated_by varchar(64) DEFAULT 'System' COMMENT '更新人',\n" +
+                    "  updated_date datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',\n" +
+                    "  version_val int(11) DEFAULT 1 COMMENT '版本',\n" +
+                    "  record_ind char(1) DEFAULT 'A' COMMENT '逻辑删除标志',");
+            String keyName = javaClassInfo.getJavaClassFieldInfoList().get(1).getFieldName();
+            System.out.println(" PRIMARY KEY ("+StringUtil.camelCaseToUnderline(keyName)+")");
+
+            String comment = javaClassInfo.getComment();
+            comment = comment.substring(0,comment.indexOf("@"));
+            System.out.println(") COMMENT='"+comment+"';");
+            System.out.println(" ");
+
+        }
     }
 
     private static void scanOnePgm(){
 //        String classPath = "D:\\Java\\DaShuSource\\caes_release_001\\src\\main\\java\\com\\dashuf\\caes\\web\\controller\\webapi\\ClaimController.java";
 //        String classPath = "D:\\Java\\DaShuSource\\caes_release_001\\src\\main\\java\\com\\dashuf\\caes\\dto\\BackBillDto.java";
 //        String classPath = "D:\\Java\\HywSource\\webSite\\src\\test\\java\\com\\hyw\\webSite\\TestDto.java";
-        String classPath = "D:\\Java\\DaShuSource\\ucou\\src\\main\\java\\com\\dashuf\\ucou\\web\\Urls.java";
+//        String classPath = "E:\\ideaSpace\\DashufSource\\caes\\src\\main\\java\\com\\dashuf\\caes\\web\\Urls.java";
+        String classPath = "D:\\ideaSpace\\DashufSource\\caes_test\\src\\main\\java\\com\\dashuf\\caes\\model\\ConfigBusinessDate.java";
 
         ClassUnit classUnit = new ClassUnit();
         classUnit.visit(classPath,null,null);
         JavaClassInfo javaClassInfo = classUnit.getJavaClassInfo();
 
-        System.out.println(JSON.toJSONString(javaClassInfo));
+        for(JavaClassFieldInfo fieldInfo:javaClassInfo.getJavaClassFieldInfoList()){
+            if("serialVersionUID".equals(fieldInfo.getFieldName())) continue;
+            System.out.print(javaClassInfo.getName() + "\t");
+            System.out.print(fieldInfo.getFieldName() + "\t");
+            System.out.print(fieldInfo.getFieldType() + "\t");
+            System.out.println(fieldInfo.getFieldDesc() + "\t");
+        }
+
+//        System.out.println(JSON.toJSONString(javaClassInfo));
     }
 
     private static void scanProject(){
-        List<JavaClassInfo> javaClassInfoList = getJavaClassInfo("D:\\Java\\DaShuSource\\ucou\\src\\main\\java");
+        List<JavaClassInfo> javaClassInfoList = getJavaClassInfo("D:\\ideaSpace\\DashufSource\\caes_test\\src\\main\\java\\com\\dashuf\\caes\\model");
 
         List<InterfaceInfo2> interfaceInfo2List = new ArrayList<>();
         for(JavaClassInfo javaClassInfo:javaClassInfoList){
@@ -131,6 +187,15 @@ public class JavaUtil {
 
                     interfaceInfo2List.add(interfaceInfo);
                 }
+            }
+        }
+
+        for(InterfaceInfo2 interfaceInfo2:interfaceInfo2List){
+            for(JavaClassFieldInfo javaClassFieldInfo:interfaceInfo2.getInputFields()){
+                javaClassFieldInfo.setArgString(null);
+            }
+            for(JavaClassFieldInfo javaClassFieldInfo:interfaceInfo2.getOutputFields()){
+                javaClassFieldInfo.setArgString(null);
             }
         }
 

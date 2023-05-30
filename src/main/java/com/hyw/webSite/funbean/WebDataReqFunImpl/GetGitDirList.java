@@ -14,7 +14,7 @@ import java.util.*;
 public class GetGitDirList implements WebDataReqFun {
     @Override
     public Map<String,Object> execute(RequestDto requestDto){
-        String dirPath = "D:\\Java\\DaShuSource";
+        String dirPath = "E:\\ideaSpace\\DashufSource";
         File dir = new File(dirPath);
         File [] files = dir.listFiles();
         BizException.trueThrow(null == files,"指定文件路径下无文件！");
