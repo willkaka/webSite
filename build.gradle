@@ -83,6 +83,10 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.aspectj/aspectjrt
 	compile group: 'org.aspectj', name: 'aspectjrt', version: '1.9.7'
 
+
+	// https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-generator
+	compile group: 'com.baomidou', name: 'mybatis-plus-generator', version: '3.4.1'
+
 }
 
 test {
