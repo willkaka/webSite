@@ -1,7 +1,8 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
 import com.hyw.webSite.funbean.WebDataReqFun;
-import com.hyw.webSite.dbservice.DataService;
+import com.hyw.gdata.DataService;
+import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.EventInfo;
@@ -19,6 +20,8 @@ public class GetFieldList implements WebDataReqFun {
 
     @Autowired
     private DataService dataService;
+    @Autowired
+    private ConfigDatabaseInfoService configDatabaseInfoService;
 
     @Override
     public Map<String,Object> execute(RequestDto requestDto){
@@ -30,7 +33,7 @@ public class GetFieldList implements WebDataReqFun {
         String selectedLib = inputValue.get("libName");
         String tableName = inputValue.get("tableName");
 
-        Connection connection = dataService.getDatabaseConnection(selectedDb,selectedLib);
+        Connection connection = configDatabaseInfoService.getDatabaseConnection(selectedDb,selectedLib);
         List<Map<String,Object>> fields = DbUtil.getFieldInfo(connection,selectedDb,selectedLib,tableName);
         dataService.closeConnection(connection);
 

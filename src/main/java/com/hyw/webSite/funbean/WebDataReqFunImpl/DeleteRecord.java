@@ -2,7 +2,8 @@ package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
-import com.hyw.webSite.dbservice.DataService;
+import com.hyw.gdata.DataService;
+import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.web.dto.RequestDto;
@@ -24,6 +25,8 @@ public class DeleteRecord implements RequestFun {
 
     @Autowired
     private DataService dataService;
+    @Autowired
+    private ConfigDatabaseInfoService configDatabaseInfoService;
 
     @Override
     public ReturnDto execute(RequestDto requestDto){
@@ -41,7 +44,7 @@ public class DeleteRecord implements RequestFun {
 
         Connection connection = null;
         if(StringUtils.isNotBlank(dbName)) {
-            connection = dataService.getDatabaseConnection(dbName,libName);
+            connection = configDatabaseInfoService.getDatabaseConnection(dbName,libName);
         }else{
             tableName = (String) requestDto.getEventInfo().getParamMap().get("tableName");
             connection = dataService.getDatabaseConnection();

@@ -3,19 +3,18 @@ package com.hyw.webSite.funbean.WebDataReqFunImpl;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
 import com.hyw.webSite.model.FieldAttr;
-import com.hyw.webSite.dbservice.DataService;
+import com.hyw.gdata.DataService;
+import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.SqlUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.ReturnDto;
-import com.hyw.webSite.web.dto.EventInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
-import java.util.HashMap;
 import java.util.Map;
 
 @Service("addRecord")
@@ -24,6 +23,8 @@ public class AddRecord implements RequestFun {
 
     @Autowired
     private DataService dataService;
+    @Autowired
+    private ConfigDatabaseInfoService configDatabaseInfoService;
 
     @Override
     public ReturnDto execute(RequestDto requestDto){
@@ -41,7 +42,7 @@ public class AddRecord implements RequestFun {
 
 
         //建立数据库连接，并执行写入操作
-        Connection connection = dataService.getDatabaseConnection(dbName,libName);
+        Connection connection = configDatabaseInfoService.getDatabaseConnection(dbName,libName);
 
         //取数据表字段定义信息
         Map<String,FieldAttr> fieldAttrMap = DbUtil.getFieldAttrMap(connection,dbName,libName,tableName);

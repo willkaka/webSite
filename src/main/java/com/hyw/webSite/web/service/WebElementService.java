@@ -2,8 +2,8 @@ package com.hyw.webSite.web.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.hyw.webSite.dbservice.DataService;
-import com.hyw.webSite.dbservice.NQueryWrapper;
+import com.hyw.gdata.DataService;
+import com.hyw.gdata.NQueryWrapper;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.WebDataReqFun;
 import com.hyw.webSite.utils.CollectionUtil;

@@ -1,12 +1,11 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
-import com.hyw.webSite.dbservice.constant.DbConstant;
+import com.hyw.webSite.constant.DbConstant;
 import com.hyw.webSite.funbean.RequestFun;
 import com.hyw.webSite.model.FieldAttr;
-import com.hyw.webSite.dbservice.NQueryWrapper;
-import com.hyw.webSite.dbservice.DataService;
+import com.hyw.gdata.NQueryWrapper;
+import com.hyw.gdata.DataService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.SqlUtil;
 import com.hyw.webSite.web.dto.RequestDto;
@@ -18,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
-import java.util.HashMap;
 import java.util.Map;
 
 @Service("updateRecord")

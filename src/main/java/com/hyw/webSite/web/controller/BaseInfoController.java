@@ -81,7 +81,8 @@ public class BaseInfoController {
         returnDto.getOutputMap().put("isChanged", false);
         returnDto.getOutputMap().put("outputList", null);
 
-        log.info("返回报文内容{}", JSON.toJSONString(returnDto));
+        String format = "返回报文内容{}";
+        log.info(format, JSON.toJSONString(returnDto));
         return returnDto;
     }
 

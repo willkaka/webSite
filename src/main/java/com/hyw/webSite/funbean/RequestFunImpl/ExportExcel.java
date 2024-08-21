@@ -1,34 +1,25 @@
 package com.hyw.webSite.funbean.RequestFunImpl;
 
 import com.hyw.webSite.constant.WebConstant;
-import com.hyw.webSite.dbservice.DataService;
-import com.hyw.webSite.dbservice.NQueryWrapper;
-import com.hyw.webSite.dbservice.dto.TableFieldInfo;
+import com.hyw.gdata.DataService;
+import com.hyw.gdata.NQueryWrapper;
+import com.hyw.gdata.dto.TableFieldInfo;
 import com.hyw.webSite.exception.IfThrow;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.funbean.abs.RequestPubDto;
+import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.utils.excel.ExcelUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.system.ApplicationHome;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.sql.Connection;
 import java.util.*;
 
@@ -38,6 +29,8 @@ public class ExportExcel extends RequestFunUnit<List<String>, ExportExcel.QryVar
 
     @Autowired
     private DataService dataService;
+    @Autowired
+    private ConfigDatabaseInfoService configDatabaseInfoService;
 
     @Value("${export.file.local.path}")
     private String exportFileLocalPath;
@@ -74,7 +67,7 @@ public class ExportExcel extends RequestFunUnit<List<String>, ExportExcel.QryVar
         int pageSize = 200000;
         //取脚本记录的字段名称
         Map<String, String> headFieldName = new LinkedHashMap<>();
-        Connection connection = dataService.getDatabaseConnection(variable.getDbName(),variable.getLibName());
+        Connection connection = configDatabaseInfoService.getDatabaseConnection(variable.getDbName(),variable.getLibName());
         List<TableFieldInfo> tableFieldInfoList = dataService.getTableFieldList(variable.getSql() + " limit 1", connection);
         tableFieldInfoList.forEach(tf -> headFieldName.put(tf.getFieldName(), tf.getComment()));
 

@@ -16,12 +16,12 @@ import org.apache.tika.parser.Parser;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.xml.sax.helpers.DefaultHandler;
-import sun.misc.BASE64Encoder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -131,12 +131,11 @@ public class FileUtil {
     public static String getFileBase64(File file){
         String fileStr=null;
         // 通过base64来转化图片
-        BASE64Encoder encoder = new BASE64Encoder();
-        //File fileThumb = ImageUtil.getImgThumb(file);
+        Base64.Encoder encoder = Base64.getEncoder();
         FileItem fileItem = createFileItem(file.getAbsolutePath());
         MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
         try {
-            fileStr = encoder.encode(multipartFile.getBytes());
+            fileStr = encoder.encodeToString(multipartFile.getBytes());
         } catch (Exception e) {
             log.error("图片转base64出错！", e);
         }

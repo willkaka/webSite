@@ -1,11 +1,11 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
-import com.hyw.webSite.dbservice.constant.DbConstant;
+import com.hyw.webSite.constant.DbConstant;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
-import com.hyw.webSite.dbservice.NQueryWrapper;
-import com.hyw.webSite.dbservice.DataService;
+import com.hyw.gdata.NQueryWrapper;
+import com.hyw.gdata.DataService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;

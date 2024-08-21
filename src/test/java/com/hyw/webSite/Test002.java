@@ -2,10 +2,10 @@ package com.hyw.webSite;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hyw.webSite.dao.ConfigDatabaseInfo;
-import com.hyw.webSite.dbservice.NQueryWrapper;
-import com.hyw.webSite.dbservice.NUpdateWrapper;
-import com.hyw.webSite.dbservice.DataService;
-import com.hyw.webSite.dbservice.dto.IPage;
+import com.hyw.gdata.NQueryWrapper;
+import com.hyw.gdata.NUpdateWrapper;
+import com.hyw.gdata.DataService;
+import com.hyw.gdata.dto.IPage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

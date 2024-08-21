@@ -2,9 +2,9 @@ package com.hyw.webSite.funbean.RequestFunImpl;
 
 import com.hyw.webSite.constant.WebConstant;
 import com.hyw.webSite.dao.WebElement;
-import com.hyw.webSite.dbservice.DataService;
-import com.hyw.webSite.dbservice.NQueryWrapper;
-import com.hyw.webSite.dbservice.dto.TableFieldInfo;
+import com.hyw.gdata.DataService;
+import com.hyw.gdata.NQueryWrapper;
+import com.hyw.gdata.dto.TableFieldInfo;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.funbean.abs.RequestPubDto;

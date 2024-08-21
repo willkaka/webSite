@@ -2,7 +2,8 @@ package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
 import com.hyw.webSite.funbean.WebDataReqFun;
 import com.hyw.webSite.model.FieldAttr;
-import com.hyw.webSite.dbservice.DataService;
+import com.hyw.gdata.DataService;
+import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
@@ -21,6 +22,8 @@ public class GetFieldFromTab implements WebDataReqFun {
 
     @Autowired
     private DataService dataService;
+    @Autowired
+    private ConfigDatabaseInfoService configDatabaseInfoService;
 
     @Override
     public Map<String,Object> execute(RequestDto requestDto){
@@ -40,7 +43,7 @@ public class GetFieldFromTab implements WebDataReqFun {
             return changedEleMap;
         }
 
-        Connection connection = dataService.getDatabaseConnection(selectedDb,selectedLib);
+        Connection connection = configDatabaseInfoService.getDatabaseConnection(selectedDb,selectedLib);
         Map<String, FieldAttr> fields = DbUtil.getFieldAttrMap(connection,selectedDb,selectedLib,tableName);
         dataService.closeConnection(connection);
 

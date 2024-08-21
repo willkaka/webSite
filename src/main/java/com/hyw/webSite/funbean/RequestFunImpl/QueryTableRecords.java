@@ -5,7 +5,8 @@ import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.abs.RequestFunUnit;
 import com.hyw.webSite.funbean.abs.RequestPubDto;
 import com.hyw.webSite.model.FieldAttr;
-import com.hyw.webSite.dbservice.DataService;
+import com.hyw.gdata.DataService;
+import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
@@ -24,6 +25,8 @@ public class QueryTableRecords extends RequestFunUnit<List<Map<String,FieldAttr>
 
     @Autowired
     private DataService dataService;
+    @Autowired
+    private ConfigDatabaseInfoService configDatabaseInfoService;
 
     /**
      * 输入参数检查
@@ -54,7 +57,7 @@ public class QueryTableRecords extends RequestFunUnit<List<Map<String,FieldAttr>
         int totalCount;      //表中记录的总行数
 
         //连接数据库，查询数据，关闭数据库
-        Connection connection = dataService.getDatabaseConnection(variable.getDbName(),variable.getLibName());
+        Connection connection = configDatabaseInfoService.getDatabaseConnection(variable.getDbName(),variable.getLibName());
         totalCount = DbUtil.getTableRecordCount(connection,variable.getDbName(),variable.getLibName(),variable.getTableName());
         List<Map<String,FieldAttr>> records = DbUtil.getTableRecords(connection,variable.getDbName(),variable.getLibName(),variable.getTableName(),(pageNow-1)*pageSize,pageSize);
         if(!connection.equals(dataService.getDatabaseConnection())) {

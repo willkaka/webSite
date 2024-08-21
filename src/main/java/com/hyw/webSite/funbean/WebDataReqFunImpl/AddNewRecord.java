@@ -3,7 +3,8 @@ package com.hyw.webSite.funbean.WebDataReqFunImpl;
 import com.hyw.webSite.exception.BizException;
 import com.hyw.webSite.funbean.RequestFun;
 import com.hyw.webSite.model.FieldAttr;
-import com.hyw.webSite.dbservice.DataService;
+import com.hyw.gdata.DataService;
+import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
 import com.hyw.webSite.web.dto.RequestDto;
@@ -23,6 +24,8 @@ public class AddNewRecord implements RequestFun {
 
     @Autowired
     private DataService dataService;
+    @Autowired
+    private ConfigDatabaseInfoService configDatabaseInfoService;
 
     @Override
     public ReturnDto execute(RequestDto requestDto){
@@ -36,7 +39,7 @@ public class AddNewRecord implements RequestFun {
         String tableName = (String) inputValue.get("tableName");
         BizException.trueThrow(StringUtil.isBlank(tableName),"表名,不允许为空值!");
 
-        Connection connection = dataService.getDatabaseConnection(dbName,libName);
+        Connection connection = configDatabaseInfoService.getDatabaseConnection(dbName,libName);
 
         Map<String,FieldAttr> recordMap = DbUtil.getFieldAttrMap(connection,dbName,libName,tableName);
         dataService.closeConnection(connection);

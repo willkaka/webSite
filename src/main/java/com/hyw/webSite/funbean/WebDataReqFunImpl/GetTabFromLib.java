@@ -1,7 +1,8 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
 import com.hyw.webSite.funbean.WebDataReqFun;
-import com.hyw.webSite.dbservice.DataService;
+import com.hyw.gdata.DataService;
+import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.web.dto.RequestDto;
 import com.hyw.webSite.web.dto.EventInfo;
@@ -19,6 +20,8 @@ public class GetTabFromLib implements WebDataReqFun {
 
     @Autowired
     private DataService dataService;
+    @Autowired
+    private ConfigDatabaseInfoService configDatabaseInfoService;
 
     @Override
     public Map<String,Object> execute(RequestDto requestDto){
@@ -29,7 +32,7 @@ public class GetTabFromLib implements WebDataReqFun {
         String selectedDb = inputValue.get("dbName");
         String selectedLib = inputValue.get("libName");
 
-        Connection connection = dataService.getDatabaseConnection(selectedDb,selectedLib);
+        Connection connection = configDatabaseInfoService.getDatabaseConnection(selectedDb,selectedLib);
         List<String> tables = DbUtil.getTableNames(connection, selectedLib);
         dataService.closeConnection(connection);
 

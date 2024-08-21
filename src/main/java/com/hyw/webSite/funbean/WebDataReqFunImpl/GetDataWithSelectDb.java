@@ -1,7 +1,8 @@
 package com.hyw.webSite.funbean.WebDataReqFunImpl;
 
 import com.hyw.webSite.funbean.WebDataReqFun;
-import com.hyw.webSite.dbservice.DataService;
+import com.hyw.gdata.DataService;
+import com.hyw.webSite.service.ConfigDatabaseInfoService;
 import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.utils.DbUtil;
 import com.hyw.webSite.utils.StringUtil;
@@ -23,6 +24,8 @@ public class GetDataWithSelectDb implements WebDataReqFun {
 
     @Autowired
     private DataService dataService;
+    @Autowired
+    private ConfigDatabaseInfoService configDatabaseInfoService;
 
     @Override
     public Map<String,Object> execute(RequestDto requestDto){
@@ -39,7 +42,7 @@ public class GetDataWithSelectDb implements WebDataReqFun {
         if(StringUtil.isBlank(selectedDb) || StringUtil.isBlank(selectedLib)) return changedEleMap;
 
         String sql = getSqlStm(eventInfo,inputValue);
-        Connection connection = dataService.getDatabaseConnection(selectedDb,selectedLib);
+        Connection connection = configDatabaseInfoService.getDatabaseConnection(selectedDb,selectedLib);
 
         List<Map<String,Object>> records = DbUtil.getSqlRecords(connection,sql);
         dataService.closeConnection(connection);

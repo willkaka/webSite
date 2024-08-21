@@ -1,4 +1,4 @@
-package com.hyw.webSite.dbservice.constant;
+package com.hyw.webSite.constant;
 
 public class DbConstant {
 

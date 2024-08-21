@@ -1,8 +1,8 @@
 package com.hyw.webSite.web.service;
 
 import com.alibaba.fastjson.JSON;
-import com.hyw.webSite.dbservice.DataService;
-import com.hyw.webSite.dbservice.NQueryWrapper;
+import com.hyw.gdata.DataService;
+import com.hyw.gdata.NQueryWrapper;
 import com.hyw.webSite.utils.CollectionUtil;
 import com.hyw.webSite.web.dto.EventInfo;
 import com.hyw.webSite.web.dto.WebElementDto;
